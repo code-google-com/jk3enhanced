@@ -2109,6 +2109,10 @@ void CG_MissileHitWall(int weapon, int clientNum, vec3_t origin, vec3_t dir, imp
 		{
 			FX_FlechetteWeaponHitWall( origin, dir );
 		}
+		else
+		{
+			FX_FlechetteWeaponHitWallAlt(origin, dir);
+		}
 		break;
 
 	case WP_ROCKET_LAUNCHER:

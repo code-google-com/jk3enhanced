@@ -8,9 +8,9 @@ extern void NPC_AimAdjust( int change );
 
 extern void G_SoundOnEnt (gentity_t *ent, soundChannel_t channel, const char *soundPath);
 
-#include "../namespace_begin.h"
+
 extern qboolean BG_CrouchAnim( int anim );
-#include "../namespace_end.h"
+
 
 //extern void NPC_Mark1_Part_Explode(gentity_t *self,int bolt);
 

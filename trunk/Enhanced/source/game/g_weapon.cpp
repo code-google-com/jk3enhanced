@@ -1279,9 +1279,9 @@ int SkillLevelforWeapon(gentity_t *ent, int weapon)
 FireWeapon
 ===============
 */
-#include "../namespace_begin.h"
+
 int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float *newYaw, float constraint);
-#include "../namespace_end.h"
+
 extern qboolean PM_InKnockDown( playerState_t *ps );
 extern void G_AddMercBalance(gentity_t *self, int amount);
 

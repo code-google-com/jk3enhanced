@@ -24,9 +24,9 @@ int	ysalamiriLoopSound = 0;
 
 extern vmCvar_t		g_saberRestrictForce;
 
-#include "../namespace_begin.h"
+
 extern qboolean BG_FullBodyTauntAnim( int anim );
-#include "../namespace_end.h"
+
 
 extern bot_state_t *botstates[MAX_CLIENTS];
 
@@ -690,9 +690,9 @@ void WP_SpawnInitForcePowers( gentity_t *ent )
 	}
 }
 
-#include "../namespace_begin.h"
+
 extern qboolean BG_InKnockDown( int anim ); //bg_pmove.c
-#include "../namespace_end.h"
+
 
 qboolean IsGunSkill(int skill)
 {
@@ -1052,7 +1052,6 @@ void WP_ForcePowerStart( gentity_t *self, forcePowers_t forcePower, int override
 		hearDist = 256;
 		//[ForceSys]
 		duration = 500;
-		self->client->forceSpeedStartTime = level.time;
 		/*
 		if (self->client->ps.fd.forcePowerLevel[FP_SPEED] == FORCE_LEVEL_1)
 		{
@@ -1399,8 +1398,6 @@ void WP_ForcePowerStop( gentity_t *self, forcePowers_t forcePower )
 		{
 			G_MuteSound(self->client->ps.fd.killSoundEntIndex[TRACK_CHANNEL_2-50], CHAN_VOICE);
 		}
-		if(self->client->forceSpeedStartTime+2000 > level.time && self->client->ps.fd.forcePowerLevel[FP_SPEED] >= FORCE_LEVEL_3)
-			self->client->ps.fd.forcePower -= 10;
 		break;
 	case FP_PUSH:
 		break;

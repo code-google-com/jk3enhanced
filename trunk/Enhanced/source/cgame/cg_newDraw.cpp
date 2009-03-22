@@ -264,9 +264,9 @@ const char *CG_GameTypeString(void) {
 	return "";
 }
 						 
-#include "../namespace_begin.h"
+
 extern int MenuFontToHandle(int iMenuFont);
-#include "../namespace_end.h"
+
 
 // maxX param is initially an X limit, but is also used as feedback. 0 = text was clipped to fit within, else maxX = next pos
 //
@@ -570,14 +570,14 @@ void CG_MouseEvent(int x, int y) {
 	cgs.cursorX+= x;
 	if (cgs.cursorX < 0)
 		cgs.cursorX = 0;
-	else if (cgs.cursorX > 640)
-		cgs.cursorX = 640;
+	else if (cgs.cursorX > SCREEN_WIDTH)
+		cgs.cursorX = SCREEN_WIDTH;
 
 	cgs.cursorY += y;
 	if (cgs.cursorY < 0)
 		cgs.cursorY = 0;
-	else if (cgs.cursorY > 480)
-		cgs.cursorY = 480;
+	else if (cgs.cursorY > SCREEN_HEIGHT)
+		cgs.cursorY = SCREEN_HEIGHT;
 
 	n = Display_CursorType(cgs.cursorX, cgs.cursorY);
 	cgs.activeCursor = 0;

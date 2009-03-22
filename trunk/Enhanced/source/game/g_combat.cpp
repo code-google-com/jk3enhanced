@@ -3569,9 +3569,9 @@ void LimbThink( gentity_t *ent )
 	ent->nextthink = level.time;
 }
 
-#include "../namespace_begin.h"
+
 extern qboolean BG_GetRootSurfNameWithVariant( void *ghoul2, const char *rootSurfName, char *returnSurfName, int returnSize );
-#include "../namespace_end.h"
+
 
 void G_Dismember( gentity_t *ent, gentity_t *enemy, vec3_t point, int limbType, float limbRollBase, float limbPitchBase, int deathAnim, qboolean postDeath )
 {
@@ -5026,7 +5026,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	if((mod == MOD_REPEATER_ALT || mod == MOD_REPEATER_ALT_SPLASH) && targ && targ->client)
 	{//Don't really like putting this here, move it later
 		G_DodgeDrain(targ,attacker,Q_irand(2,5));
-		G_Throw(targ,dir,2);
+		G_Throw(targ,dir,1);
 		//targ->client->ps.velocity[2] += 5;
 		return;
 	}
@@ -5092,14 +5092,14 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 			vec3_t blowBackDir;
 			VectorSubtract(targ->client->ps.origin,attacker->client->ps.origin, blowBackDir);
 
-			G_Throw(targ,blowBackDir,4);
+			G_Throw(targ,blowBackDir, 1);
 			if ( targ->client->ps.saberAttackChainCount >= MISHAPLEVEL_FULL )
 			{
-				G_Knockdown( targ, attacker, dir, 300, qtrue );
+				G_Knockdown( targ, attacker, dir, 150, qtrue );
 			}
 			else
 			{
-				G_Knockdown( targ, attacker, dir, 100, qtrue );
+				G_Knockdown( targ, attacker, dir, 50, qtrue );
 			}
 		}
 		else if(targ->client->ps.saberAttackChainCount >= MISHAPLEVEL_LIGHT)

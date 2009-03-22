@@ -13,6 +13,8 @@
 #include "g_local.h" //ahahahahhahahaha@$!$!
 #endif
 
+int JumpHeightDeduction(void);
+
 #define MAX_WEAPON_CHARGE_TIME 5000
 
 #ifdef QAGAME
@@ -21,7 +23,6 @@ extern qboolean TryGrapple(gentity_t *ent); //g_cmds.c
 extern void trap_FX_PlayEffect( const char *file, vec3_t org, vec3_t fwd, int vol, int rad );
 #endif
 
-#include "../namespace_begin.h"
 extern qboolean BG_FullBodyTauntAnim( int anim );
 extern float PM_WalkableGroundDistance(void);
 extern qboolean PM_GroundSlideOkay( float zNormal );
@@ -121,7 +122,7 @@ int forcePowerNeeded[NUM_FORCE_POWER_LEVELS][NUM_FORCE_POWERS] =
 		60,//FP_HEAL,//instant
 		10,//FP_LEVITATION,//hold/duration
 		//[ForceSys]
-		2,//FP_SPEED,//hold/duration
+		1,//FP_SPEED,//hold/duration
 		//reduced the FP cost for pull/push
 		15,//FP_PUSH,//hold/duration
 		15,//FP_PULL,//hold/duration
@@ -813,8 +814,6 @@ void BG_VehicleTurnRateForSpeed( Vehicle_t *pVeh, float speed, float *mPitchOver
 	}
 }
 
-#include "../namespace_end.h"
-
 // Following couple things don't belong in the DLL namespace!
 #ifdef QAGAME
 //[Linux]//[Mac]
@@ -824,9 +823,6 @@ typedef struct gentity_s gentity_t;
 //[/Linux]//[/Mac]
 gentity_t *G_PlayEffectID(const int fxID, vec3_t org, vec3_t ang);
 #endif
-
-
-#include "../namespace_begin.h"
 
 static void PM_GroundTraceMissed( void );
 void PM_HoverTrace( void )
@@ -2384,18 +2380,25 @@ int NumberOfWeapons(void)
 		return numWeaps;
 }
 
+int GetJumpHeight()
+{
+	float height = forceJumpHeight[pm->ps->fd.forcePowerLevel[FP_LEVITATION]];
+
+	return height;
+}
+
 int JumpHeightDeduction(void)
 {
-	int deduction=0,i;
+	int deduction=0, i;
 	if(!NumberOfWeapons())
 		return 0;
 	if(pm->ps->fd.forcePowerLevel[FP_LEVITATION] == FORCE_LEVEL_0)
 		return 0;
 	if(BG_InBackFlip(pm->ps->legsAnim))
 		return 200;
-	for(i=0;i<NumberOfWeapons();i++)
+	for(i = 0;i < NumberOfWeapons(); i++)
 	{
-		deduction+=forceJumpHeight[pm->ps->fd.forcePowerLevel[FP_LEVITATION]]/10;
+		deduction += GetJumpHeight() / 10;//forceJumpHeight[pm->ps->fd.forcePowerLevel[FP_LEVITATION]]/10;
 	}
 	return deduction;
 }
@@ -2499,19 +2502,6 @@ static qboolean PM_CheckJump( void )
 				if(!BG_InLedgeMove(pm->ps->legsAnim))
  				BG_ForcePowerDrain( pm->ps, FP_LEVITATION, 1 );
 			}
-			/*
-			else if ( pm->gametype == GT_DUEL 
-			//if ( pm->gametype == GT_DUEL 
-			//[/FatigueSys]
-				|| pm->gametype == GT_POWERDUEL )
-			{//jump takes less power
-				BG_ForcePowerDrain( pm->ps, FP_LEVITATION, 1 );
-			}
-			else
-			{
-				BG_ForcePowerDrain( pm->ps, FP_LEVITATION, 5 );
-			}
-			*/
 			if(!BG_InLedgeMove( pm->ps->legsAnim ))
 			//pm->ps->velocity[2]+=100;//[JumpIncrease]
 			//[/FatigueSys]
@@ -2586,9 +2576,9 @@ static qboolean PM_CheckJump( void )
 			{//holding jump in air
 				float curHeight = pm->ps->origin[2] - pm->ps->fd.forceJumpZStart;
 				//check for max force jump level and cap off & cut z vel
-				if ( ( curHeight<=forceJumpHeight[0] ||//still below minimum jump height
-						(pm->ps->fd.forcePower&&pm->cmd.upmove>=10) ) &&////still have force power available and still trying to jump up 
-						curHeight < forceJumpHeight[pm->ps->fd.forcePowerLevel[FP_LEVITATION]]-JumpHeightDeduction() &&//[Weight]
+				if ( ( curHeight <= forceJumpHeight[0] ||//still below minimum jump height
+						(pm->ps->fd.forcePower && pm->cmd.upmove >= 10) ) &&////still have force power available and still trying to jump up 
+						curHeight < (GetJumpHeight() - JumpHeightDeduction()) && //[Weight] 
 					pm->ps->fd.forceJumpZStart)//still below maximum jump height
 				{//can still go up
 					if ( curHeight > forceJumpHeight[0] )
@@ -2714,14 +2704,15 @@ static qboolean PM_CheckJump( void )
 					}
 
 					//need to scale this down, start with height velocity (based on max force jump height) and scale down to regular jump vel
-					pm->ps->velocity[2] = (forceJumpHeight[pm->ps->fd.forcePowerLevel[FP_LEVITATION]]-curHeight)/forceJumpHeight[pm->ps->fd.forcePowerLevel[FP_LEVITATION]]*forceJumpStrength[pm->ps->fd.forcePowerLevel[FP_LEVITATION]];//JUMP_VELOCITY;
+					pm->ps->velocity[2] = (GetJumpHeight()-curHeight)/GetJumpHeight()*forceJumpStrength[pm->ps->fd.forcePowerLevel[FP_LEVITATION]];//JUMP_VELOCITY;
 					pm->ps->velocity[2] /= 10;
 					pm->ps->velocity[2] += JUMP_VELOCITY;
 					pm->ps->velocity[2]+=150;
 					pm->ps->pm_flags |= PMF_JUMP_HELD;
 					
 				}
-				else if ( curHeight > forceJumpHeight[0] && curHeight < forceJumpHeight[pm->ps->fd.forcePowerLevel[FP_LEVITATION]] - forceJumpHeight[0] )
+				//else if ( curHeight > forceJumpHeight[0] && curHeight < GetJumpHeight() - forceJumpHeight[0] )
+				else if(curHeight > GetJumpHeight() && curHeight < GetJumpHeight() - forceJumpHeight[0])
 				{//still have some headroom, don't totally stop it
 					if ( pm->ps->velocity[2] > JUMP_VELOCITY )
 					{
@@ -2996,16 +2987,6 @@ static qboolean PM_CheckJump( void )
 							VectorMA( pm->ps->velocity, -150, fwd, pm->ps->velocity );
 						}
 
-						/*
-						if ( doTrace && anim != BOTH_WALL_RUN_LEFT && anim != BOTH_WALL_RUN_RIGHT )
-						{
-							if (trace.entityNum < MAX_CLIENTS)
-							{
-								pm->ps->forceKickFlip = trace.entityNum+1; //let the server know that this person gets kicked by this client
-							}
-						}
-						*/
-
 						//up
 						if ( vertPush )
 						{
@@ -3159,57 +3140,6 @@ static qboolean PM_CheckJump( void )
 					return qfalse;
 				}
 			}
-			/*
-			else if ( pm->cmd.forwardmove > 0 //pushing forward
-				&& pm->ps->fd.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_1
-				&& pm->ps->velocity[2] > 200
-				&& PM_GroundDistance() <= 80 //unfortunately we do not have a happy ground timer like SP (this would use up more bandwidth if we wanted prediction workign right), so we'll just use the actual ground distance.
-				&& !BG_InSpecialJump(pm->ps->legsAnim))
-			{//run up wall, flip backwards
-				vec3_t fwd, traceto, mins, maxs, fwdAngles;
-				trace_t	trace;
-				vec3_t	idealNormal;
-
-				VectorSet(mins, pm->mins[0],pm->mins[1],pm->mins[2]);
-				VectorSet(maxs, pm->maxs[0],pm->maxs[1],pm->maxs[2]);
-				VectorSet(fwdAngles, 0, pm->ps->viewangles[YAW], 0);
-
-				AngleVectors( fwdAngles, fwd, NULL, NULL );
-				VectorMA( pm->ps->origin, 32, fwd, traceto );
-
-				pm->trace( &trace, pm->ps->origin, mins, maxs, traceto, pm->ps->clientNum, MASK_PLAYERSOLID );//FIXME: clip brushes too?
-				VectorSubtract( pm->ps->origin, traceto, idealNormal );
-				VectorNormalize( idealNormal );
-				
-				if ( trace.fraction < 1.0f )
-				{//there is a wall there
-					int parts = SETANIM_LEGS;
-
-					pm->ps->velocity[0] = pm->ps->velocity[1] = 0;
-					VectorMA( pm->ps->velocity, -150, fwd, pm->ps->velocity );
-					pm->ps->velocity[2] += 128;
-
-					if ( !pm->ps->weaponTime )
-					{
-						parts = SETANIM_BOTH;
-					}
-					PM_SetAnim( parts, BOTH_WALL_FLIP_BACK1, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD, 0 );
-
-					pm->ps->legsTimer -= 600; //I force this anim to play to the end to prevent landing on your head and suddenly flipping over.
-											  //It is a bit too long at the end though, so I'll just shorten it.
-
-					PM_SetForceJumpZStart(pm->ps->origin[2]);//so we don't take damage if we land at same height
-					pm->cmd.upmove = 0;
-					pm->ps->fd.forceJumpSound = 1;
-					BG_ForcePowerDrain( pm->ps, FP_LEVITATION, 5 );
-
-					if (trace.entityNum < MAX_CLIENTS)
-					{
-						pm->ps->forceKickFlip = trace.entityNum+1; //let the server know that this person gets kicked by this client
-					}
-				}
-			}
-			*/
 			else if ( pm->cmd.forwardmove > 0 //pushing forward
 				&& pm->ps->fd.forceRageRecoveryTime < pm->cmd.serverTime	//not in a force Rage recovery period
 				&& pm->ps->fd.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_1 
@@ -3371,74 +3301,10 @@ static qboolean PM_CheckJump( void )
 					}
 				}
 			}
-			else
-			{
-				//FIXME: if in a butterfly, kick people away?
-			}
 			//END NEW JKA
 		}
 	}
 
-	/*
-	if ( pm->cmd.upmove > 0 
-		&& (pm->ps->weapon == WP_SABER || pm->ps->weapon == WP_MELEE)
-		&& !PM_IsRocketTrooper()
-		&& (pm->ps->weaponTime > 0||pm->cmd.buttons&BUTTON_ATTACK) )
-	{//okay, we just jumped and we're in an attack
-		if ( !BG_InRoll( pm->ps, pm->ps->legsAnim )
-			&& !PM_InKnockDown( pm->ps )
-			&& !BG_InDeathAnim(pm->ps->legsAnim)
-			&& !BG_FlippingAnim( pm->ps->legsAnim )
-			&& !PM_SpinningAnim( pm->ps->legsAnim )
-			&& !BG_SaberInSpecialAttack( pm->ps->torsoAnim )
-			&& ( BG_SaberInAttack( pm->ps->saberMove ) ) )
-		{//not in an anim we shouldn't interrupt
-			//see if it's not too late to start a special jump-attack
-			float animLength = PM_AnimLength( 0, (animNumber_t)pm->ps->torsoAnim );
-			if ( animLength - pm->ps->torsoTimer < 500 )
-			{//just started the saberMove
-				//check for special-case jump attacks
-				if ( pm->ps->fd.saberAnimLevel == FORCE_LEVEL_2 )
-				{//using medium attacks
-					if (PM_GroundDistance() < 32 &&
-						!BG_InSpecialJump(pm->ps->legsAnim))
-					{ //FLIP AND DOWNWARD ATTACK
-						//trace_t tr;
-
-						//if (PM_SomeoneInFront(&tr))
-						{
-							PM_SetSaberMove(PM_SaberFlipOverAttackMove());
-							pml.groundPlane = qfalse;
-							pml.walking = qfalse;
-							pm->ps->pm_flags |= PMF_JUMP_HELD;
-							pm->ps->groundEntityNum = ENTITYNUM_NONE;
-							VectorClear(pml.groundTrace.plane.normal);
-
-							pm->ps->weaponTime = pm->ps->torsoTimer;
-						}
-					}
-				}
-				else if ( pm->ps->fd.saberAnimLevel == FORCE_LEVEL_3 )
-				{//using strong attacks
-					if ( pm->cmd.forwardmove > 0 && //going forward
-						(pm->cmd.buttons & BUTTON_ATTACK) && //must be holding attack still
-						PM_GroundDistance() < 32 &&
-						!BG_InSpecialJump(pm->ps->legsAnim))
-					{//strong attack: jump-hack
-						PM_SetSaberMove( PM_SaberJumpAttackMove() );
-						pml.groundPlane = qfalse;
-						pml.walking = qfalse;
-						pm->ps->pm_flags |= PMF_JUMP_HELD;
-						pm->ps->groundEntityNum = ENTITYNUM_NONE;
-						VectorClear(pml.groundTrace.plane.normal);
-
-						pm->ps->weaponTime = pm->ps->torsoTimer;
-					}
-				}
-			}
-		}
-	}
-	*/
 	if ( pm->ps->groundEntityNum == ENTITYNUM_NONE )
 	{
 		return qfalse;
@@ -3454,8 +3320,12 @@ static qboolean PM_CheckJump( void )
 	//[/FatigueSys]
 
 	if ( pm->cmd.upmove > 0 )
-	{//no special jumps
+	{//no special jumps -- Normal jump
 		pm->ps->velocity[2] = JUMP_VELOCITY;
+#ifdef QAGAME
+		if(g_entities[pm->ps->clientNum].client->skillLevel[SK_ACROBATICS])
+			pm->ps->velocity[2] += 75;
+#endif
 		PM_SetForceJumpZStart(pm->ps->origin[2]);//so we don't take damage if we land at same height
 		pm->ps->pm_flags |= PMF_JUMP_HELD;
 	}
@@ -4657,6 +4527,8 @@ static void PM_CrashLand( void ) {
 	delta = vel + t * acc;
 	delta = delta*delta * 0.0001;
 
+	//delta *= 0.25;
+
 #ifdef QAGAME
 	PM_CrashLandEffect();
 #endif
@@ -4820,8 +4692,8 @@ static void PM_CrashLand( void ) {
 	{
 		if( delta >= 2 && !PM_InOnGroundAnim( pm->ps->legsAnim ) && !PM_InKnockDown( pm->ps ) && !BG_InRoll(pm->ps, pm->ps->legsAnim) &&
 			pm->ps->forceHandExtend == HANDEXTEND_NONE )
-		{//roll!
-			int anim = PM_TryRoll();
+		{//roll! JUMP ROLL DISABLED
+			/*int anim = PM_TryRoll();
 
 			if (PM_InRollComplete(pm->ps, pm->ps->legsAnim))
 			{
@@ -4846,7 +4718,7 @@ static void PM_CrashLand( void ) {
 				PM_SetAnim(SETANIM_BOTH,anim,SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD, 150);
 				didRoll = qtrue;
 				pm->ps->forceHandExtend = HANDEXTEND_WEAPONREADY;//1.3
-			}
+			}*/
 		}
 	}
 
@@ -4876,7 +4748,7 @@ static void PM_CrashLand( void ) {
 					if (delta_send > 8)
 					{
 						int dif = ((int)pm->ps->fd.forceJumpZStart - (int)pm->ps->origin[2]);
-						int dmgLess = (forceJumpHeight[pm->ps->fd.forcePowerLevel[FP_LEVITATION]] - dif);
+						int dmgLess = (GetJumpHeight() - dif);
 
 						if (dmgLess < 0)
 						{
@@ -4896,11 +4768,8 @@ static void PM_CrashLand( void ) {
 			}
 
 			//[DoubleFallDamage]
-			delta_send /= 2;//half it
-			delta_send *= 3;
-			//misc2 = pm->ps->fd.forceJumpZStart - pm->ps->origin[2];
-			//if(!pm->ps->fd.forceJumpZStart)
- 			//delta_send+=c*3/2;
+			//delta_send /= 2;//half it
+			//delta_send *= 3;
 			//[/DoubleFallDamage]
 
 			if (didRoll)
@@ -7027,7 +6896,7 @@ static void PM_Footsteps( void ) {
 					|| pm->ps->weapon == WP_THERMAL))
 						PM_SetAnim(SETANIM_TORSO, desiredAnim, setAnimFlags, 100);
 			}
-			else if(pm->ps->weapon != WP_SABER)
+			else if(pm->ps->weapon != WP_SABER && pm->ps->weapon != WP_MELEE)
 				PM_SetAnim(SETANIM_TORSO, WeaponReadyAnim[pm->ps->weapon], setAnimFlags, 100);
 		}
 	}
@@ -7234,6 +7103,11 @@ void PM_BeginWeaponChange( int weapon ) {
 	if ( pm->ps->weaponstate == WEAPON_DROPPING ) {
 		return;
 	}
+
+#ifdef QAGAME
+	if(g_entities[pm->ps->clientNum].reloadTime > 0)
+		return;
+#endif
 
 	if(pm->ps->weapon == WP_BRYAR_PISTOL)
 	{//Changing weaps, remove dual weaps
@@ -8979,21 +8853,11 @@ static void PM_Weapon( void )
 	}
 
 //1.3
-	if ( pm->ps->weaponTime > 0 && pm->ps->weapon != WP_REPEATER && 
-		(pm->ps->weapon != WP_BRYAR_PISTOL
-#ifdef QAGAME
-		|| g_entities[pm->ps->clientNum].client->skillLevel[SK_PISTOL] < FORCE_LEVEL_2
-#endif
-		))
+	if ( pm->ps->weaponTime > 0 && pm->ps->weapon != WP_REPEATER)
 	{
 		return;
 	}
-	else if(pm->ps->weapon == WP_REPEATER || (pm->ps->weapon == WP_BRYAR_PISTOL
-#ifdef QGAME
-		&& g_entities[pm->ps->clientNum].client->skillLevel[SK_PISTOL] == FORCE_LEVEL_2
-#endif
-		))
-
+	else if(pm->ps->weapon == WP_REPEATER)
 	{
 		if ( ! (pm->cmd.buttons & (BUTTON_ATTACK|BUTTON_ALT_ATTACK)) && pm->ps->weaponTime > 50000 ) 
 		{
@@ -9573,7 +9437,7 @@ static void PM_DropTimers( void ) {
 // which includes files that are also compiled in SP. We do need to make
 // sure we only get one copy in the linker, though.
 
-#include "../namespace_end.h"
+
 
 extern	vmCvar_t	bg_fighterAltControl;
 qboolean BG_UnrestrainedPitchRoll( playerState_t *ps, Vehicle_t *pVeh )
@@ -9591,7 +9455,6 @@ qboolean BG_UnrestrainedPitchRoll( playerState_t *ps, Vehicle_t *pVeh )
 	}
 	return qfalse;
 }
-#include "../namespace_begin.h"
 
 /*
 ================
@@ -10331,11 +10194,11 @@ void BG_AdjustClientSpeed(playerState_t *ps, usercmd_t *cmd, int svTime)
 	if (ps->fd.forcePowersActive & (1 << FP_SPEED))
 	{//1.3
 		if(pm->ps->fd.forcePowerLevel[FP_SPEED] >= FORCE_LEVEL_3)
-			ps->speed *= 2.0;
+			ps->speed *= 1.4;
 		else if(pm->ps->fd.forcePowerLevel[FP_SPEED] >= FORCE_LEVEL_2)
-			ps->speed *= 1.6;//was 1.7
+			ps->speed *= 1.2;//was 1.7
 		else
-			ps->speed *= 1.25;
+			ps->speed *= 1.1;
 		if(BG_CrouchAnim(pm->ps->legsAnim))
 			ps->speed*=1.0;
 		//1.25
@@ -14380,4 +14243,4 @@ qboolean PM_GettingUpFromKnockDown( float standheight, float crouchheight )
 }
 //[/KnockdownSys]
 
-#include "../namespace_end.h"
+

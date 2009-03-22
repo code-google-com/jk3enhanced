@@ -5,8 +5,7 @@
 
 //[SVN]
 //rearraigned repository to make it easier to initially compile.
-#include "../../kotold/ui/jamp/menudef.h"
-//#include "../../ui/menudef.h"			// for the voice chats
+#include "../../jke/ui/jamp/menudef.h"
 //[/SVN]
 
 //[CoOp]
@@ -17,9 +16,9 @@ extern	qboolean		in_camera;
 int AcceptBotCommand(char *cmd, gentity_t *pl);
 //end rww
 
-#include "../namespace_begin.h"
+
 void WP_SetSaber( int entNum, saberInfo_t *sabers, int saberNum, const char *saberName );
-#include "../namespace_end.h"
+
 
 void Cmd_NPC_f( gentity_t *ent );
 void SetTeamQuick(gentity_t *ent, int team, qboolean doBegin);

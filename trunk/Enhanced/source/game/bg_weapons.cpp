@@ -147,7 +147,7 @@ weaponData_t weaponData[WP_NUM_WEAPONS] =
 		0,//15,						//	int		ammoLow;			// Count when ammo is low
 		0,//2,						//	int		energyPerShot;		// Amount of energy used per shot
 		//[WeaponSys]
-		90000,						//	int		fireTime;			// Amount of time between firings was 800 -- 1.3 was 500
+		450,						//	int		fireTime;			// Amount of time between firings was 800 -- 1.3 was 500
 		//800,//400,				//	int		fireTime;			// Amount of time between firings
 		//[WeaponSys]
 		8192,					//	int		range;				// Range of weapon

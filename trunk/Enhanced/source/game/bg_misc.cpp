@@ -24,8 +24,6 @@
 extern void Q3_SetParm (int entID, int parmNum, const char *parmValue);
 #endif
 
-#include "../namespace_begin.h"
-
 const char *bgToggleableSurfaces[BG_NUM_TOGGLEABLE_SURFACES] = 
 {
 	"l_arm_key",					//0
@@ -221,6 +219,7 @@ int bgForcePowerCost[NUM_TOTAL_SKILLS][NUM_FORCE_POWER_LEVELS] = //0 == neutral
 	{	0,	1,	0,	0	},//SK_FLASHGRENADE
 	{	0,	1,	0,	0	},//SK_CRYOBAN
 	{	0,	1,	0,	0	},//SK_EMP
+	{	0,	10,	0,	0	},//SK_ACROBATICS
 	//[/ExpSys]
 };
 
@@ -416,17 +415,11 @@ qboolean BG_FileExists(const char *fileName)
 
 #ifndef UI_EXPORTS //don't need this stuff in the ui
 
-// Following functions don't need to be in namespace, they're already
-// different per-module
-#include "../namespace_end.h"
-
 #ifdef QAGAME
 char *G_NewString( const char *string );
 #else
 char *CG_NewString( const char *string );
 #endif
-
-#include "../namespace_begin.h"
 
 /*
 ===============
@@ -3704,4 +3697,4 @@ qboolean BG_IsUsingHeavyWeap (playerState_t *ps)
 	};
 }
 //[/ForceSys]
-#include "../namespace_end.h"
+

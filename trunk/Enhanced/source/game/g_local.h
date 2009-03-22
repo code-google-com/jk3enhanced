@@ -36,9 +36,6 @@ void CancelReload(gentity_t *ent);
 #ifndef G_INFINITE
 #define G_INFINITE			1000000
 #endif
-/*#ifndef INFINITE
-#define INFINITE			1000000
-#endif*/
 //[/CrashLog]
 
 #define	FRAMETIME			100					// msec
@@ -193,10 +190,6 @@ extern	vmCvar_t	g_saberDamageScale;
 extern	vmCvar_t	g_saberanimspeed;
 //[/SaberSys]
 
-//[ForceSys]
-//extern	vmCvar_t	g_useWhileThrowing;
-//[/ForceSys]
-
 extern	vmCvar_t	g_RMG;
 
 extern	vmCvar_t	g_svfps;
@@ -282,14 +275,12 @@ extern	vmCvar_t	g_filterBan;
 extern	vmCvar_t	g_debugForward;
 extern	vmCvar_t	g_debugRight;
 extern	vmCvar_t	g_debugUp;
-//extern	vmCvar_t	g_redteam;
-//extern	vmCvar_t	g_blueteam;
 extern	vmCvar_t	g_smoothClients;
 
-#include "../namespace_begin.h"
+
 extern	vmCvar_t	pmove_fixed;
 extern	vmCvar_t	pmove_msec;
-#include "../namespace_end.h"
+
 
 extern	vmCvar_t	g_enableBreath;
 extern	vmCvar_t	g_singlePlayer;
@@ -894,8 +885,6 @@ typedef struct renderInfo_s
 	vec3_t		muzzleDir;
 	vec3_t		muzzlePointOld;
 	vec3_t		muzzleDirOld;
-	//vec3_t		muzzlePointNext;	// Muzzle point one server frame in the future!
-	//vec3_t		muzzleDirNext;
 	int			mPCalcTime;//Last time muzzle point was calced
 
 	//
@@ -1011,8 +1000,6 @@ struct gclient_s {
 
 	int			accuracy_shots;		// total number of shots
 	int			accuracy_hits;		// total number of hits
-
-	int			forceSpeedStartTime;
 
 	//
 	int			lastkilled_client;	// last client that this client killed
@@ -1267,8 +1254,6 @@ typedef struct
 {
 	vec3_t		origin;
 	int			flags;
-//	char		*NPC_targetname;
-//	team_t		team;
 	qboolean	occupied;
 	int			waypoint;
 	int			dangerTime;
@@ -1279,7 +1264,6 @@ typedef struct
 //[CoOp]
 //increasing the limit to account for all NPCs and players now making these events
 #define	MAX_ALERT_EVENTS	128
-//#define	MAX_ALERT_EVENTS	32
 //[/CoOp]
 
 typedef enum
@@ -1410,13 +1394,6 @@ typedef struct {
 
 	qboolean	locationLinked;			// target_locations get linked
 	gentity_t	*locationHead;			// head of the location list
-	//[NOBODYQUE]
-	//don't need this stuff anymore.
-	/*
-	int			bodyQueIndex;			// dead bodies
-	gentity_t	*bodyQue[BODY_QUEUE_SIZE];
-	*/
-	//[/NOBODYQUE]
 	int			portalSequence;
 
 	alertEvent_t	alertEvents[ MAX_ALERT_EVENTS ];
@@ -1602,7 +1579,7 @@ Ghoul2 Insert Start
 */
 int G_BoneIndex( const char *name );
 
-#include "../namespace_begin.h"
+
 
 qhandle_t	trap_R_RegisterSkin( const char *name );
 
@@ -1677,7 +1654,7 @@ void		trap_G2API_ClearAttachedInstance(int entityNum);
 void		trap_G2API_CleanEntAttachments(void);
 qboolean	trap_G2API_OverrideServer(void *serverInstance);
 
-#include "../namespace_end.h"
+
 
 /*
 Ghoul2 Insert End
@@ -1828,7 +1805,6 @@ team_t TeamCount( int ignoreClientNum, int team );
 int TeamLeader( int team );
 //[AdminSys]
 team_t PickTeam( int ignoreClientNum, qboolean isBot );
-//team_t PickTeam( int ignoreClientNum );
 //[/AdminSys]
 void SetClientViewAngle( gentity_t *ent, vec3_t angle );
 gentity_t *SelectSpawnPoint ( vec3_t avoidPoint, vec3_t origin, vec3_t angles, team_t team );
@@ -1866,14 +1842,6 @@ void BlowDetpacks(gentity_t *ent);
 void MoveClientToIntermission (gentity_t *client);
 void G_SetStats (gentity_t *ent);
 void DeathmatchScoreboardMessage (gentity_t *client);
-
-//
-// g_cmds.c
-//
-
-//
-// g_pweapon.c
-//
 
 
 //
@@ -1950,12 +1918,10 @@ void G_WriteSessionData( void );
 extern void AddSightEvent( gentity_t *owner, vec3_t position, float radius, alertEventLevel_e alertLevel, float addLight ); //addLight = 0.0f
 //[CoOp]
 extern void AddSoundEvent( gentity_t *owner, vec3_t position, float radius, alertEventLevel_e alertLevel, qboolean needLOS, qboolean onGround );
-//extern void AddSoundEvent( gentity_t *owner, vec3_t position, float radius, alertEventLevel_e alertLevel, qboolean needLOS ); //needLOS = qfalse
 //[/CoOp]
 extern qboolean G_CheckForDanger( gentity_t *self, int alertEvent );
 //[CoOp]
 extern int G_CheckAlertEvents( gentity_t *self, qboolean checkSight, qboolean checkSound, float maxSeeDist, float maxHearDist, int ignoreAlert, qboolean mustHaveOwner, int minAlertLevel, qboolean onGroundOnly );
-//extern int G_CheckAlertEvents( gentity_t *self, qboolean checkSight, qboolean checkSound, float maxSeeDist, float maxHearDist, int ignoreAlert, qboolean mustHaveOwner, int minAlertLevel ); //ignoreAlert = -1, mustHaveOwner = qfalse, minAlertLevel = AEL_MINOR
 //[/CoOp]
 extern qboolean G_CheckForDanger( gentity_t *self, int alertEvent );
 extern qboolean G_ClearLOS( gentity_t *self, const vec3_t start, const vec3_t end );
@@ -1968,8 +1934,6 @@ extern qboolean G_ClearLOS5( gentity_t *self, const vec3_t end );
 // g_arenas.c
 //
 void UpdateTournamentInfo( void );
-//void SpawnModelsOnVictoryPads( void );
-//void Svcmd_AbortPodium_f( void );
 
 //
 // g_bot.c
@@ -2115,7 +2079,7 @@ extern	gentity_t		g_entities[MAX_GENTITIES];
 
 #define	FOFS(x) ((int)&(((gentity_t *)0)->x))
 
-#include "../namespace_begin.h"
+
 
 void	trap_Printf( const char *fmt );
 void	trap_Error( const char *fmt );
@@ -2217,10 +2181,10 @@ int		trap_AAS_PredictRoute(void /*struct aas_predictroute_s*/ *route, int areanu
 							int stopevent, int stopcontents, int stoptfl, int stopareanum);
 
 int		trap_AAS_AlternativeRouteGoals(vec3_t start, int startareanum, vec3_t goal, int goalareanum, int travelflags,
-										void /*struct aas_altroutegoal_s*/ *altroutegoals, int maxaltroutegoals,
+										void *altroutegoals, int maxaltroutegoals,
 										int type);
 int		trap_AAS_Swimming(vec3_t origin);
-int		trap_AAS_PredictClientMovement(void /* aas_clientmove_s */ *move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize);
+int		trap_AAS_PredictClientMovement(void *move, int entnum, vec3_t origin, int presencetype, int onground, vec3_t velocity, vec3_t cmdmove, int cmdframes, int maxframes, float frametime, int stopevent, int stopareanum, int visualize);
 
 
 void	trap_EA_Say(int client, char *str);
@@ -2274,8 +2238,8 @@ int		trap_BotChatLength(int chatstate);
 void	trap_BotEnterChat(int chatstate, int client, int sendto);
 void	trap_BotGetChatMessage(int chatstate, char *buf, int size);
 int		trap_StringContains(char *str1, char *str2, int casesensitive);
-int		trap_BotFindMatch(char *str, void /* struct bot_match_s */ *match, unsigned long int context);
-void	trap_BotMatchVariable(void /* struct bot_match_s */ *match, int variable, char *buf, int size);
+int		trap_BotFindMatch(char *str, void *match, unsigned long int context);
+void	trap_BotMatchVariable(void *match, int variable, char *buf, int size);
 void	trap_UnifyWhiteSpaces(char *string);
 void	trap_BotReplaceSynonyms(char *string, unsigned long int context);
 int		trap_BotLoadChatFile(int chatstate, char *chatfile, char *chatname);
@@ -2284,21 +2248,21 @@ void	trap_BotSetChatName(int chatstate, char *name, int client);
 void	trap_BotResetGoalState(int goalstate);
 void	trap_BotRemoveFromAvoidGoals(int goalstate, int number);
 void	trap_BotResetAvoidGoals(int goalstate);
-void	trap_BotPushGoal(int goalstate, void /* struct bot_goal_s */ *goal);
+void	trap_BotPushGoal(int goalstate, void *goal);
 void	trap_BotPopGoal(int goalstate);
 void	trap_BotEmptyGoalStack(int goalstate);
 void	trap_BotDumpAvoidGoals(int goalstate);
 void	trap_BotDumpGoalStack(int goalstate);
 void	trap_BotGoalName(int number, char *name, int size);
-int		trap_BotGetTopGoal(int goalstate, void /* struct bot_goal_s */ *goal);
-int		trap_BotGetSecondGoal(int goalstate, void /* struct bot_goal_s */ *goal);
+int		trap_BotGetTopGoal(int goalstate, void *goal);
+int		trap_BotGetSecondGoal(int goalstate, void *goal);
 int		trap_BotChooseLTGItem(int goalstate, vec3_t origin, int *inventory, int travelflags);
-int		trap_BotChooseNBGItem(int goalstate, vec3_t origin, int *inventory, int travelflags, void /* struct bot_goal_s */ *ltg, float maxtime);
-int		trap_BotTouchingGoal(vec3_t origin, void /* struct bot_goal_s */ *goal);
-int		trap_BotItemGoalInVisButNotVisible(int viewer, vec3_t eye, vec3_t viewangles, void /* struct bot_goal_s */ *goal);
-int		trap_BotGetNextCampSpotGoal(int num, void /* struct bot_goal_s */ *goal);
-int		trap_BotGetMapLocationGoal(char *name, void /* struct bot_goal_s */ *goal);
-int		trap_BotGetLevelItemGoal(int index, char *classname, void /* struct bot_goal_s */ *goal);
+int		trap_BotChooseNBGItem(int goalstate, vec3_t origin, int *inventory, int travelflags, void *ltg, float maxtime);
+int		trap_BotTouchingGoal(vec3_t origin, void *goal);
+int		trap_BotItemGoalInVisButNotVisible(int viewer, vec3_t eye, vec3_t viewangles, void *goal);
+int		trap_BotGetNextCampSpotGoal(int num, void *goal);
+int		trap_BotGetMapLocationGoal(char *name, void *goal);
+int		trap_BotGetLevelItemGoal(int index, char *classname, void *goal);
 float	trap_BotAvoidGoalTime(int goalstate, int number);
 void	trap_BotSetAvoidGoalTime(int goalstate, int number, float avoidtime);
 void	trap_BotInitLevelItems(void);
@@ -2312,20 +2276,20 @@ int		trap_BotAllocGoalState(int state);
 void	trap_BotFreeGoalState(int handle);
 
 void	trap_BotResetMoveState(int movestate);
-void	trap_BotMoveToGoal(void /* struct bot_moveresult_s */ *result, int movestate, void /* struct bot_goal_s */ *goal, int travelflags);
+void	trap_BotMoveToGoal(void *result, int movestate, void *goal, int travelflags);
 int		trap_BotMoveInDirection(int movestate, vec3_t dir, float speed, int type);
 void	trap_BotResetAvoidReach(int movestate);
 void	trap_BotResetLastAvoidReach(int movestate);
 int		trap_BotReachabilityArea(vec3_t origin, int testground);
-int		trap_BotMovementViewTarget(int movestate, void /* struct bot_goal_s */ *goal, int travelflags, float lookahead, vec3_t target);
-int		trap_BotPredictVisiblePosition(vec3_t origin, int areanum, void /* struct bot_goal_s */ *goal, int travelflags, vec3_t target);
+int		trap_BotMovementViewTarget(int movestate, void *goal, int travelflags, float lookahead, vec3_t target);
+int		trap_BotPredictVisiblePosition(vec3_t origin, int areanum, void *goal, int travelflags, vec3_t target);
 int		trap_BotAllocMoveState(void);
 void	trap_BotFreeMoveState(int handle);
-void	trap_BotInitMoveState(int handle, void /* struct bot_initmove_s */ *initmove);
+void	trap_BotInitMoveState(int handle, void *initmove);
 void	trap_BotAddAvoidSpot(int movestate, vec3_t origin, float radius, int type);
 
 int		trap_BotChooseBestFightWeapon(int weaponstate, int *inventory);
-void	trap_BotGetWeaponInfo(int weaponstate, int weapon, void /* struct weaponinfo_s */ *weaponinfo);
+void	trap_BotGetWeaponInfo(int weaponstate, int weapon, void *weaponinfo);
 int		trap_BotLoadWeaponWeights(int weaponstate, char *filename);
 int		trap_BotAllocWeaponState(void);
 void	trap_BotFreeWeaponState(int weaponstate);
@@ -2376,14 +2340,14 @@ void		trap_Nav_Free( void );
 qboolean	trap_Nav_Load( const char *filename, int checksum );
 qboolean	trap_Nav_Save( const char *filename, int checksum );
 int			trap_Nav_AddRawPoint( vec3_t point, int flags, int radius );
-void		trap_Nav_CalculatePaths( qboolean recalc ); //recalc = qfalse
+void		trap_Nav_CalculatePaths( qboolean recalc );
 void		trap_Nav_HardConnect( int first, int second );
 
 void		trap_Nav_ShowNodes( void );
 void		trap_Nav_ShowEdges( void );
 void		trap_Nav_ShowPath( int start, int end );
 int			trap_Nav_GetNearestNode( gentity_t *ent, int lastID, int flags, int targetID );
-int			trap_Nav_GetBestNode( int startID, int endID, int rejectID ); //rejectID = NODE_NONE
+int			trap_Nav_GetBestNode( int startID, int endID, int rejectID );
 int			trap_Nav_GetNodePosition( int nodeID, vec3_t out );
 int			trap_Nav_GetNodeNumEdges( int nodeID );
 int			trap_Nav_GetNodeEdge( int nodeID, int edge );
@@ -2461,4 +2425,4 @@ void DisableStackTrace(void);
 //[/CrashLog]
 
 
-#include "../namespace_end.h"
+

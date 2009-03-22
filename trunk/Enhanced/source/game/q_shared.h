@@ -664,6 +664,7 @@ typedef enum
 	SK_FLASHGRENADE,
 	SK_CRYOBAN,
 	SK_EMP,
+	SK_ACROBATICS,
 	NUM_SKILLS
 } skills_t;
 

@@ -25,9 +25,9 @@ extern const char *UI_TeamName(int team);
 qboolean gTouchedForce = qfalse;
 vmCvar_t	ui_freeSaber, ui_forcePowerDisable;
 
-#include "../namespace_begin.h"
+
 void Menu_ShowItemByName(menuDef_t *menu, const char *p, qboolean bShow);
-#include "../namespace_end.h"
+
 
 int uiForceStarShaders[NUM_FORCE_STAR_IMAGES][2];
 int uiSaberColorShaders[NUM_SABER_COLORS];
@@ -644,7 +644,7 @@ void UpdateForceUsed()
 
 	if(spentInForce >= 25)
 	{
-		for(i=NUM_FORCE_POWERS;i<NUM_FORCE_POWERS+SK_DISRUPTOR+1;i++)
+		for(i = NUM_FORCE_POWERS; i < NUM_FORCE_POWERS + SK_DISRUPTOR + 1; i++)
 		{
 			if(uiRank[i].uiForcePowersRank > FORCE_LEVEL_1)
 				uiRank[i].uiForcePowersRank = FORCE_LEVEL_1;
@@ -655,16 +655,22 @@ void UpdateForceUsed()
 			uiRank[NUM_FORCE_POWERS+SK_GRENADE].uiForcePowersRank = 1;
 		if(uiRank[NUM_FORCE_POWERS+SK_MELEE].uiForcePowersRank > FORCE_LEVEL_1)
 			uiRank[NUM_FORCE_POWERS+SK_MELEE].uiForcePowersRank = 1;
+		if(uiRank[NUM_FORCE_POWERS + SK_TUSKEN_RIFLE].uiForcePowersRank > FORCE_LEVEL_1)
+			uiRank[NUM_FORCE_POWERS + SK_TUSKEN_RIFLE].uiForcePowersRank = 1;
 	}
 	else if(spentInForce)
 	{
-		for(i=NUM_FORCE_POWERS;i<NUM_FORCE_POWERS+SK_DISRUPTOR+1;i++)
+		for(i = NUM_FORCE_POWERS; i < NUM_FORCE_POWERS + SK_DISRUPTOR + 1; i++)
 		{
 			if(uiRank[i].uiForcePowersRank > FORCE_LEVEL_2)
 				uiRank[i].uiForcePowersRank = FORCE_LEVEL_2;
 		}
 		if(uiRank[NUM_FORCE_POWERS+SK_FLECHETTE].uiForcePowersRank > FORCE_LEVEL_2)
 			uiRank[NUM_FORCE_POWERS+SK_FLECHETTE].uiForcePowersRank = 2;
+		if(uiRank[NUM_FORCE_POWERS + SK_TUSKEN_RIFLE].uiForcePowersRank > FORCE_LEVEL_2)
+			uiRank[NUM_FORCE_POWERS + SK_TUSKEN_RIFLE].uiForcePowersRank = 2;
+		if(uiRank[NUM_FORCE_POWERS+SK_GRENADE].uiForcePowersRank > FORCE_LEVEL_2)
+			uiRank[NUM_FORCE_POWERS+SK_GRENADE].uiForcePowersRank = 2;
 	}
 
 	if(uiRank[FP_LEVITATION].uiForcePowersRank >= FORCE_LEVEL_1)
