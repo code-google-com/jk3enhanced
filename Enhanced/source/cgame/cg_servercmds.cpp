@@ -7,7 +7,7 @@
 #include "cg_local.h"
 //[SVN]
 //rearraigned repository to make it easier to initially compile.
-#include "../../kotold/ui/jamp/menudef.h"
+#include "../../jke/ui/jamp/menudef.h"
 //#include "../../ui/menudef.h"
 //[/SVN]
 #if !defined(CL_LIGHT_H_INC)
@@ -1826,7 +1826,7 @@ static void CG_ServerCommand( void ) {
 		
 		CinematicNum = trap_CIN_PlayCinematic(name, 0, 0, 0, 0, 0);
 		trap_CIN_RunCinematic(CinematicNum);
-		trap_CIN_SetExtents(CinematicNum, 0, 0, 640, 480);
+		trap_CIN_SetExtents(CinematicNum, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
  		trap_CIN_DrawCinematic(CinematicNum);
 		InCinematic = qtrue;
 		return;

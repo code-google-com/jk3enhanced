@@ -542,8 +542,8 @@ void CG_LoadBar(void)
 	const int numticks = 9, tickwidth = 40, tickheight = 8;
 	const int tickpadx = 20, tickpady = 12;
 	const int capwidth = 8;
-	const int barwidth = numticks*tickwidth+tickpadx*2+capwidth*2, barleft = ((640-barwidth)/2);
-	const int barheight = tickheight + tickpady*2, bartop = 480-barheight;
+	const int barwidth = numticks*tickwidth+tickpadx*2+capwidth*2, barleft = ((SCREEN_WIDTH-barwidth)/2);
+	const int barheight = tickheight + tickpady*2, bartop = SCREEN_HEIGHT-barheight;
 	const int capleft = barleft+tickpadx, tickleft = capleft+capwidth, ticktop = bartop+tickpady;
 
 	trap_R_SetColor( colorWhite );

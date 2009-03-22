@@ -10,8 +10,7 @@
 // for the voice chats
 //[SVN]
 //rearraigned repository to make it easier to initially compile.
-#include "../../kotold/ui/jamp/menudef.h"
-//#include "../../ui/menudef.h"
+#include "../../jke/ui/jamp/menudef.h"
 //[/SVN]
 
 #include "../ghoul2/G2.h"
@@ -855,7 +854,7 @@ static void CG_UseItem( centity_t *cent ) {
 	if (cg.snap && cg.snap->ps.clientNum == cent->currentState.number && itemNum != HI_BINOCULARS &&
 		//[Flamethrower]
 		itemNum != HI_JETPACK && itemNum != HI_HEALTHDISP && itemNum != HI_AMMODISP && itemNum != HI_CLOAK && itemNum != HI_EWEB 
-		&& itemNum != HI_FLAMETHROWER && itemNum != HI_SEEKER)
+		&& itemNum != HI_FLAMETHROWER && itemNum != HI_SEEKER && itemNum != HI_SENTRY_GUN)
 		//itemNum != HI_JETPACK && itemNum != HI_HEALTHDISP && itemNum != HI_AMMODISP && itemNum != HI_CLOAK && itemNum != HI_EWEB)
 		//[/Flamethrower]
 	{ //if not using binoculars/jetpack/dispensers/cloak, we just used that item up, so switch
@@ -1188,9 +1187,9 @@ void CG_GetCTFMessageEvent(entityState_t *es)
 	CG_PrintCTFMessage(ci, teamName, es->eventParm);
 }
 
-#include "../namespace_begin.h"
+
 qboolean BG_InKnockDownOnly( int anim );
-#include "../namespace_end.h"
+
 
 void DoFall(centity_t *cent, entityState_t *es, int clientNum)
 {

@@ -58,7 +58,7 @@ void CGCam_Enable( void )
 	client_camera.bar_alpha_dest = 1.0f;
 	
 	client_camera.bar_height_source = 0.0f;
-	client_camera.bar_height_dest = 480/10;
+	client_camera.bar_height_dest = SCREEN_HEIGHT/10;
 	client_camera.bar_height = 0.0f;
 
 	client_camera.info_state |= CAMERA_BAR_FADING;
@@ -86,7 +86,7 @@ void CGCam_Disable( void )
 	client_camera.bar_alpha_source = 1.0f;
 	client_camera.bar_alpha_dest = 0.0f;
 	
-	client_camera.bar_height_source = 480/10;
+	client_camera.bar_height_source = SCREEN_HEIGHT/10;
 	client_camera.bar_height_dest = 0.0f;
 
 	client_camera.info_state |= CAMERA_BAR_FADING;
@@ -1065,15 +1065,15 @@ void CGCam_DrawWideScreen( void )
 		modulate[0] = modulate[1] = modulate[2] = 0.0f;
 		modulate[3] = client_camera.bar_alpha;
 	
-		CG_FillRect( cg.refdef.x, cg.refdef.y, 640, client_camera.bar_height, modulate  );
-		CG_FillRect( cg.refdef.x, cg.refdef.y + 480 - client_camera.bar_height, 640, client_camera.bar_height, modulate  );
+		CG_FillRect( cg.refdef.x, cg.refdef.y, SCREEN_WIDTH, client_camera.bar_height, modulate  );
+		CG_FillRect( cg.refdef.x, cg.refdef.y + SCREEN_HEIGHT - client_camera.bar_height, SCREEN_WIDTH, client_camera.bar_height, modulate  );
 	}
 
 	//NOTENOTE: Camera always draws the fades unless the alpha is 0
 	if ( client_camera.fade_color[3] == 0.0f )
 		return;
 
-	CG_FillRect( cg.refdef.x, cg.refdef.y, 640, 480, client_camera.fade_color );
+	CG_FillRect( cg.refdef.x, cg.refdef.y, SCREEN_WIDTH, SCREEN_HEIGHT, client_camera.fade_color );
 }
 
 /*

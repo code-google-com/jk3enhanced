@@ -157,7 +157,7 @@ char *showPowersName[] =
 };
 
 //Called from UI shared code. For now we'll just redirect to the normal anim load function.
-#include "../namespace_begin.h"
+
 
 
 int UI_ParseAnimationFile(const char *filename, animation_t *animset, qboolean isHumanoid) 
@@ -179,7 +179,7 @@ int MenuFontToHandle(int iMenuFont)
 	return cgDC.Assets.qhMediumFont;
 }
 
-#include "../namespace_end.h"
+
 
 int CG_Text_Width(const char *text, float scale, int iMenuFont) 
 {
@@ -319,7 +319,7 @@ static void CG_DrawZoomMask( void )
 		color1[3] = 1.0f;
 		trap_R_SetColor( color1 );
 	
-		CG_DrawPic( 0, 0, 640, 480, cgs.media.binocularMask );
+		CG_DrawPic( 0, 0, SCREEN_HEIGHT, SCREEN_WIDTH, cgs.media.binocularMask );
 
 		CG_DrawPic( 4, 282 - level, 16, 16, cgs.media.binocularArrow );
 
@@ -358,7 +358,7 @@ static void CG_DrawZoomMask( void )
 
 		// Draw target mask
 		trap_R_SetColor( colorTable[CT_WHITE] );
-		CG_DrawPic( 0, 0, 640, 480, cgs.media.disruptorMask );
+		CG_DrawPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, cgs.media.disruptorMask );
 
 		// apparently 99.0f is the full zoom level
 		if ( level >= 96)
@@ -373,7 +373,7 @@ static void CG_DrawZoomMask( void )
 		}
 
 		// Draw rotating insert
-		CG_DrawRotatePic2( 320, 240, 640, 480, -level, cgs.media.disruptorInsert );
+		CG_DrawRotatePic2( 320, 240, SCREEN_WIDTH, SCREEN_HEIGHT, -level, cgs.media.disruptorInsert );
 
 		
 		if ( (cg.snap->ps.eFlags & EF_DOUBLE_AMMO) )
@@ -437,7 +437,7 @@ static void CG_DrawZoomMask( void )
 			trap_R_DrawStretchPic(257, 435, 134*max, 34, 0, 0, max, 1, cgs.media.disruptorChargeShader);
 		}
 //		trap_R_SetColor( colorTable[CT_WHITE] );
-//		CG_DrawPic( 0, 0, 640, 480, cgs.media.disruptorMask );
+//		CG_DrawPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, cgs.media.disruptorMask );
 
 	}
 }
@@ -3065,7 +3065,7 @@ static float CG_DrawEnemyInfo ( float y )
 			size = ICON_SIZE * 1.25;
 			y += 5;
 
-			CG_DrawPic( 640 - size - 12 + xOffset, y, size, size, cgs.media.weaponIcons[WP_SABER] );
+			CG_DrawPic( SCREEN_WIDTH - size - 12 + xOffset, y, size, size, cgs.media.weaponIcons[WP_SABER] );
 
 			y += size;
 
@@ -3124,7 +3124,7 @@ static float CG_DrawEnemyInfo ( float y )
 
 	if ( ci->modelIcon )
 	{
-		CG_DrawPic( 640 - size - 5 + xOffset, y, size, size, ci->modelIcon );
+		CG_DrawPic( SCREEN_WIDTH - size - 5 + xOffset, y, size, size, ci->modelIcon );
 	}
 
 	y += size;
@@ -3150,11 +3150,11 @@ static float CG_DrawEnemyInfo ( float y )
 		y += 15;
 		if ( cgs.duelist1 == clientNum )
 		{
-			CG_DrawDuelistHealth ( 640 - size - 5 + xOffset, y, 64, 8, 1 );
+			CG_DrawDuelistHealth ( SCREEN_WIDTH - size - 5 + xOffset, y, 64, 8, 1 );
 		}
 		else if ( cgs.duelist2 == clientNum )
 		{
-			CG_DrawDuelistHealth ( 640 - size - 5 + xOffset, y, 64, 8, 2 );
+			CG_DrawDuelistHealth ( SCREEN_WIDTH - size - 5 + xOffset, y, 64, 8, 2 );
 		}
 	}
 
@@ -3939,7 +3939,7 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 	w = (pwidth + lwidth + 4 + 7) * TINYCHAR_WIDTH;
 
 	if ( right )
-		x = 640 - w;
+		x = SCREEN_WIDTH - w;
 	else
 		x = 0;
 
@@ -4091,13 +4091,13 @@ static void CG_DrawPowerupIcons(int y)
 					icoShader = trap_R_RegisterShader( item->icon );
 				}
 
-				CG_DrawPic( (640-(ico_size*1.1)) + xOffset, y, ico_size, ico_size, icoShader );
+				CG_DrawPic( (SCREEN_WIDTH-(ico_size*1.1)) + xOffset, y, ico_size, ico_size, icoShader );
 	
 				y += ico_size;
 
 				if (j != PW_REDFLAG && j != PW_BLUEFLAG && secondsleft < 999)
 				{
-					UI_DrawProportionalString((640-(ico_size*1.1))+(ico_size/2) + xOffset, y-8, va("%i", secondsleft), UI_CENTER | UI_BIGFONT | UI_DROPSHADOW, colorTable[CT_WHITE]);
+					UI_DrawProportionalString((SCREEN_WIDTH-(ico_size*1.1))+(ico_size/2) + xOffset, y-8, va("%i", secondsleft), UI_CENTER | UI_BIGFONT | UI_DROPSHADOW, colorTable[CT_WHITE]);
 				}
 
 				y += (ico_size/3);
@@ -4315,8 +4315,8 @@ static void CG_DrawDisconnect( void ) {
 		return;
 	}
 
-	x = 640 - 48;
-	y = 480 - 48;
+	x = SCREEN_WIDTH - 48;
+	y = SCREEN_HEIGHT - 48;
 
 	CG_DrawPic( x, y, 48, 48, trap_R_RegisterShader("gfx/2d/net.tga" ) );
 }
@@ -4345,8 +4345,8 @@ static void CG_DrawLagometer( void ) {
 	//
 	// draw the graph
 	//
-	x = 640 - 48;
-	y = 480 - 144;
+	x = SCREEN_WIDTH - 48;
+	y = SCREEN_HEIGHT - 144;
 
 	trap_R_SetColor( NULL );
 	CG_DrawPic( x, y, 48, 48, cgs.media.lagometerShader );
@@ -4927,13 +4927,13 @@ CG_DrawCrosshair
 
 float cg_crosshairPrevPosX = 0;
 float cg_crosshairPrevPosY = 0;
-#define CRAZY_CROSSHAIR_MAX_ERROR_X	(100.0f*640.0f/480.0f)
+#define CRAZY_CROSSHAIR_MAX_ERROR_X	(100.0f*SCREEN_WIDTH/SCREEN_HEIGHT)
 #define CRAZY_CROSSHAIR_MAX_ERROR_Y	(100.0f)
 void CG_LerpCrosshairPos( float *x, float *y )
 {
 	if ( cg_crosshairPrevPosX )
 	{//blend from old pos
-		float maxMove = 30.0f * ((float)cg.frametime/500.0f) * 640.0f/480.0f;
+		float maxMove = 30.0f * ((float)cg.frametime/500.0f) * SCREEN_WIDTH/SCREEN_HEIGHT;
 		float xDiff = (*x - cg_crosshairPrevPosX);
 		if ( fabs(xDiff) > CRAZY_CROSSHAIR_MAX_ERROR_X )
 		{
@@ -5310,8 +5310,8 @@ static void CG_DrawCrosshair( vec3_t worldPoint, int chEntValid ) {
 		hShader = cgs.media.crosshairShader[ cg_drawCrosshair.integer % NUM_CROSSHAIRS ];
 	}
 
-	chX = x + cg.refdef.x + 0.5 * (640 - w);
-	chY = y + cg.refdef.y + 0.5 * (480 - h);
+	chX = x + cg.refdef.x + 0.5 * (SCREEN_WIDTH - w);
+	chY = y + cg.refdef.y + 0.5 * (SCREEN_HEIGHT - h);
 	trap_R_DrawStretchPic( chX, chY, w, h, 0, 0, 1, 1, hShader );
 
 	//draw a health bar directly under the crosshair if we're looking at something
@@ -5365,8 +5365,8 @@ static void CG_DrawCrosshair( vec3_t worldPoint, int chEntValid ) {
 		w *= 2.0f;
 		h *= 2.0f;
 
-		trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (640 - w), 
-			y + cg.refdef.y + 0.5 * (480 - h), 
+		trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (SCREEN_WIDTH - w), 
+			y + cg.refdef.y + 0.5 * (SCREEN_HEIGHT - h), 
 			w, h, 0, 0, 1, 1, cgs.media.forceCoronaShader );
 	}
 }
@@ -5386,8 +5386,8 @@ qboolean CG_WorldCoordToScreenCoordFloat(vec3_t worldCoord, float *x, float *y)
 	
 	//NOTE: did it this way because most draw functions expect virtual 640x480 coords
 	//	and adjust them for current resolution
-	xcenter = 640.0f / 2.0f;//gives screen coords in virtual 640x480, to be adjusted when drawn
-	ycenter = 480.0f / 2.0f;//gives screen coords in virtual 640x480, to be adjusted when drawn
+	xcenter = SCREEN_WIDTH / 2.0f;//gives screen coords in virtual 640x480, to be adjusted when drawn
+	ycenter = SCREEN_HEIGHT / 2.0f;//gives screen coords in virtual 640x480, to be adjusted when drawn
 
 	AngleVectors (cg.refdef.viewangles, vfwd, vright, vup);
 

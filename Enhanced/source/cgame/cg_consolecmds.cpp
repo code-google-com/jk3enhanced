@@ -389,6 +389,7 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand ("sv_forceprev");
 	trap_AddCommand ("sv_saberswitch");
 	trap_AddCommand ("engage_duel");
+	trap_AddCommand ("force_manipulate");
 	trap_AddCommand ("force_heal");
 	trap_AddCommand ("force_speed");
 	trap_AddCommand ("force_throw");

@@ -45,7 +45,7 @@ extern vmCvar_t		g_saberWallDamageScale;
 int saberSpinSound = 0;
 
 //would be cleaner if these were renamed to BG_ and proto'd in a header.
-#include "../namespace_begin.h"
+
 qboolean PM_SaberInTransition( int move );
 qboolean PM_SaberInDeflect( int move );
 qboolean PM_SaberInBrokenParry( int move );
@@ -58,7 +58,7 @@ qboolean BG_SaberInTransitionAny( int move );
 qboolean BG_SaberInAttackPure( int move );
 qboolean WP_SaberBladeUseSecondBladeStyle( saberInfo_t *saber, int bladeNum );
 qboolean WP_SaberBladeDoTransitionDamage( saberInfo_t *saber, int bladeNum );
-#include "../namespace_end.h"
+
 
 void WP_SaberAddG2Model( gentity_t *saberent, const char *saberModel, qhandle_t saberSkin );
 void WP_SaberRemoveG2Model( gentity_t *saberent );
@@ -582,9 +582,9 @@ void SaberGotHit( gentity_t *self, gentity_t *other, trace_t *trace )
 	//Do something here..? Was handling projectiles here, but instead they're now handled in their own functions.
 }
 
-#include "../namespace_begin.h"
+
 qboolean BG_SuperBreakLoseAnim( int anim );
-#include "../namespace_end.h"
+
 
 static GAME_INLINE void SetSaberBoxSize(gentity_t *saberent)
 {
@@ -1425,9 +1425,9 @@ int G_SaberLockAnim( int attackerSaberStyle, int defenderSaberStyle, int topOrSi
 	return baseAnim;
 }
 
-#include "../namespace_begin.h"
+
 extern qboolean BG_CheckIncrementLockAnim( int anim, int winOrLose ); //bg_saber.c
-#include "../namespace_end.h"
+
 #define LOCK_IDEAL_DIST_JKA 46.0f//all of the new saberlocks are 46.08 from each other because Richard Lico is da MAN
 
 static GAME_INLINE qboolean WP_SabersCheckLock2( gentity_t *attacker, gentity_t *defender, sabersLockMode_t lockMode )
@@ -2345,10 +2345,10 @@ static GAME_INLINE int G_GetParryForBlock(int block)
 	return LS_NONE;
 }
 
-#include "../namespace_begin.h"
+
 int PM_SaberBounceForAttack( int move );
 int PM_SaberDeflectionForQuad( int quad );
-#include "../namespace_end.h"
+
 
 extern stringID_table_t animTable[MAX_ANIMATIONS+1];
 //[RACC] - Determines the deflection animation for an attacking player.  Returns true if it 
@@ -3377,6 +3377,15 @@ int OJP_SaberBlockCost(gentity_t *defender, gentity_t *attacker, vec3_t hitLoc)
 	{//standard bolt block!
 			//[BlasterDP]
 		saberBlockCost=DODGE_BOLTBLOCK;
+		if(attacker && attacker->activator && attacker->activator->s.weapon == WP_BRYAR_PISTOL)
+		{
+			if(attacker->client->skillLevel[SK_PISTOL] == FORCE_LEVEL_1)
+				saberBlockCost = 4;
+			else if(attacker->client->skillLevel[SK_PISTOL] == FORCE_LEVEL_2)
+				saberBlockCost = 6;
+			else if(attacker->client->skillLevel[SK_PISTOL] == FORCE_LEVEL_3)
+				saberBlockCost = 8;
+		}
 		if(attacker->client && attacker->client->ps.weapon != WP_FLECHETTE)
 			saberBlockCost += 2;
 
@@ -3418,15 +3427,11 @@ int OJP_SaberBlockCost(gentity_t *defender, gentity_t *attacker, vec3_t hitLoc)
 
 				if(attacker->activator->s.weapon == WP_REPEATER)
 					saberBlockCost /=2;
-				if(attacker->activator->s.weapon == WP_BRYAR_PISTOL)
-				{
-					saberBlockCost=2;
-				}
 
 			}
 			else if(attacker->activator->s.weapon == WP_DISRUPTOR)
 			{
-				switch(attacker->s.generic1)
+				switch(attacker->genericValue6)
 				{
 				case 5:
 					saberBlockCost=200;
@@ -5627,9 +5632,9 @@ void WP_SaberBounceSound( gentity_t *ent, int saberNum, int bladeNum )
 //This is a large function. I feel sort of bad inlining it. But it does get called tons of times per frame.
 //[SaberSys] moved this prototype up for ojp_SaberCanBlock
 /*
-#include "../namespace_begin.h"
+
 qboolean BG_SuperBreakWinAnim( int anim );
-#include "../namespace_end.h"
+
 */
 //[/SaberSys]
 
@@ -6627,6 +6632,8 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 		self->s.number, trMask, rSaberNum, rBladeNum);
 
 
+	//G_Printf("%i\n", realTraceResult);
+
 	if ( tr.fraction == 1 && !tr.startsolid )
 	{
 		return qfalse;
@@ -7170,211 +7177,9 @@ GAME_INLINE int VectorCompare2( const vec3_t v1, const vec3_t v2 )
 
 #define MAX_SABER_SWING_INC 0.33f
 
-//[SaberSys]
-//Not Used Anymore.
-/*
-void G_SPSaberDamageTraceLerped( gentity_t *self, int saberNum, int bladeNum, vec3_t baseNew, vec3_t endNew, int clipmask )
-{
-	vec3_t baseOld, endOld;
-	vec3_t mp1, mp2;
-	vec3_t md1, md2;
 
-	if ( (level.time-self->client->saber[saberNum].blade[bladeNum].trail.lastTime) > 100 )
-	{//no valid last pos, use current
-		VectorCopy(baseNew, baseOld);
-		VectorCopy(endNew, endOld);
-	}
-	else
-	{//trace from last pos
-		VectorCopy( self->client->saber[saberNum].blade[bladeNum].trail.base, baseOld );
-		VectorCopy( self->client->saber[saberNum].blade[bladeNum].trail.tip, endOld );
-	}
-
-	VectorCopy( baseOld, mp1 );
-	VectorCopy( baseNew, mp2 );
-	VectorSubtract( endOld, baseOld, md1 );
-	VectorNormalize( md1 );
-	VectorSubtract( endNew, baseNew, md2 );
-	VectorNormalize( md2 );
-
-	saberHitWall = qfalse;
-	saberHitSaber = qfalse;
-	saberHitFraction = 1.0f;
-	if ( VectorCompare2( baseOld, baseNew ) && VectorCompare2( endOld, endNew ) )
-	{//no diff
-		CheckSaberDamage( self, saberNum, bladeNum, baseNew, endNew, qfalse, clipmask, qfalse );
-	}
-	else
-	{//saber moved, lerp
-		float step = 8, stepsize = 8;//aveLength, 
-		vec3_t	ma1, ma2, md2ang, curBase1, curBase2;
-		int	xx;
-		vec3_t curMD1, curMD2;//, mdDiff, dirDiff;
-		float dirInc, curDirFrac;
-		vec3_t baseDiff, bladePointOld, bladePointNew;
-		qboolean extrapolate = qtrue;
-
-		//do the trace at the base first
-		VectorCopy( baseOld, bladePointOld );
-		VectorCopy( baseNew, bladePointNew );
-		CheckSaberDamage( self, saberNum, bladeNum, bladePointOld, bladePointNew, qfalse, clipmask, qtrue );
-
-		//if hit a saber, shorten rest of traces to match
-		if ( saberHitFraction < 1.0f )
-		{
-			//adjust muzzleDir...
-			vec3_t ma1, ma2;
-			vectoangles( md1, ma1 );
-			vectoangles( md2, ma2 );
-			for ( xx = 0; xx < 3; xx++ )
-			{
-				md2ang[xx] = LerpAngle( ma1[xx], ma2[xx], saberHitFraction );
-			}
-			AngleVectors( md2ang, md2, NULL, NULL );
-			//shorten the base pos
-			VectorSubtract( mp2, mp1, baseDiff );
-			VectorMA( mp1, saberHitFraction, baseDiff, baseNew );
-			VectorMA( baseNew, self->client->saber[saberNum].blade[bladeNum].lengthMax, md2, endNew );
-		}
-
-		//If the angle diff in the blade is high, need to do it in chunks of 33 to avoid flattening of the arc
-		if ( BG_SaberInAttack( self->client->ps.saberMove ) 
-			|| BG_SaberInSpecialAttack( self->client->ps.torsoAnim ) 
-			|| BG_SpinningSaberAnim( self->client->ps.torsoAnim ) 
-			|| BG_InSpecialJump( self->client->ps.torsoAnim ) )
-			//|| (g_timescale->value<1.0f&&BG_SaberInTransitionAny( ent->client->ps.saberMove )) )
-		{
-			curDirFrac = DotProduct( md1, md2 );
-		}
-		else
-		{
-			curDirFrac = 1.0f;
-		}
-		//NOTE: if saber spun at least 180 degrees since last damage trace, this is not reliable...!
-		if ( fabs(curDirFrac) < 1.0f - MAX_SABER_SWING_INC )
-		{//the saber blade spun more than 33 degrees since the last damage trace
-			curDirFrac = dirInc = 1.0f/((1.0f - curDirFrac)/MAX_SABER_SWING_INC);
-		}
-		else
-		{
-			curDirFrac = 1.0f;
-			dirInc = 0.0f;
-		}
-		//qboolean hit_saber = qfalse;
-
-		vectoangles( md1, ma1 );
-		vectoangles( md2, ma2 );
-
-		//VectorSubtract( md2, md1, mdDiff );
-		VectorCopy( md1, curMD2 );
-		VectorCopy( baseOld, curBase2 );
-
-		while ( 1 )
-		{
-			VectorCopy( curMD2, curMD1 );
-			VectorCopy( curBase2, curBase1 );
-			if ( curDirFrac >= 1.0f )
-			{
-				VectorCopy( md2, curMD2 );
-				VectorCopy( baseNew, curBase2 );
-			}
-			else
-			{
-				for ( xx = 0; xx < 3; xx++ )
-				{
-					md2ang[xx] = LerpAngle( ma1[xx], ma2[xx], curDirFrac );
-				}
-				AngleVectors( md2ang, curMD2, NULL, NULL );
-				//VectorMA( md1, curDirFrac, mdDiff, curMD2 );
-				VectorSubtract( baseNew, baseOld, baseDiff );
-				VectorMA( baseOld, curDirFrac, baseDiff, curBase2 );
-			}
-			// Move up the blade in intervals of stepsize
-			for ( step = stepsize; step <= self->client->saber[saberNum].blade[bladeNum].lengthMax /*&& step < self->client->saber[saberNum].blade[bladeNum].lengthOld*//*; step += stepsize )
-			{
-				VectorMA( curBase1, step, curMD1, bladePointOld );
-				VectorMA( curBase2, step, curMD2, bladePointNew );
-				
-				if ( step+stepsize >= self->client->saber[saberNum].blade[bladeNum].lengthMax )
-				{
-					extrapolate = qfalse;
-				}
-				//do the damage trace
-				CheckSaberDamage( self, saberNum, bladeNum, bladePointOld, bladePointNew, qfalse, clipmask, extrapolate );
-				/*
-				if ( WP_SaberDamageForTrace( ent->s.number, bladePointOld, bladePointNew, baseDamage, curMD2, 
-					qfalse, entPowerLevel, ent->client->ps.saber[saberNum].type, qtrue,
-					saberNum, bladeNum ) )
-				{
-					hit_wall = qtrue;
-				}
-				*/
-/*
-				//if hit a saber, shorten rest of traces to match
-				if ( saberHitFraction < 1.0f )
-				{
-					vec3_t curMA1, curMA2;
-					//adjust muzzle endpoint
-					VectorSubtract( mp2, mp1, baseDiff );
-					VectorMA( mp1, saberHitFraction, baseDiff, baseNew );
-					VectorMA( baseNew, self->client->saber[saberNum].blade[bladeNum].lengthMax, curMD2, endNew );
-					//adjust muzzleDir...
-					vectoangles( curMD1, curMA1 );
-					vectoangles( curMD2, curMA2 );
-					for ( xx = 0; xx < 3; xx++ )
-					{
-						md2ang[xx] = LerpAngle( curMA1[xx], curMA2[xx], saberHitFraction );
-					}
-					AngleVectors( md2ang, curMD2, NULL, NULL );
-					saberHitSaber = qtrue;
-				}
-				if (saberHitWall)
-				{
-					break;
-				}
-			}
-			if ( saberHitWall || saberHitSaber )
-			{
-				break;
-			}
-			if ( curDirFrac >= 1.0f )
-			{
-				break;
-			}
-			else
-			{
-				curDirFrac += dirInc;
-				if ( curDirFrac >= 1.0f )
-				{
-					curDirFrac = 1.0f;
-				}
-			}
-		}
-
-		//do the trace at the end last
-		//Special check- adjust for length of blade not being a multiple of 12
-		/*
-		aveLength = (ent->client->ps.saber[saberNum].blade[bladeNum].lengthOld + ent->client->ps.saber[saberNum].blade[bladeNum].length)/2;
-		if ( step > aveLength )
-		{//less dmg if the last interval was not stepsize
-			tipDmgMod = (stepsize-(step-aveLength))/stepsize;
-		}
-		//NOTE: since this is the tip, we do not extrapolate the extra 16
-		if ( WP_SaberDamageForTrace( ent->s.number, endOld, endNew, tipDmgMod*baseDamage, md2, 
-			qfalse, entPowerLevel, ent->client->ps.saber[saberNum].type, qfalse,
-			saberNum, bladeNum ) )
-		{
-			hit_wall = qtrue;
-		}
-		*//*
-	}
-}
-*/
-//[/SaberSys]
-
-#include "../namespace_begin.h"
 qboolean BG_SaberInTransitionAny( int move );
-#include "../namespace_end.h"
+
 
 qboolean WP_ForcePowerUsable( gentity_t *self, forcePowers_t forcePower );
 qboolean InFOV3( vec3_t spot, vec3_t from, vec3_t fromAngles, int hFOV, int vFOV );
@@ -9203,9 +9008,9 @@ qboolean saberCheckKnockdown_BrokenParry(gentity_t *saberent, gentity_t *saberOw
 	return qfalse;
 }
 
-#include "../namespace_begin.h"
+
 qboolean BG_InExtraDefenseSaberMove( int move );
-#include "../namespace_end.h"
+
 
 //Called upon an enemy actually slashing into a thrown saber
 qboolean saberCheckKnockdown_Smashed(gentity_t *saberent, gentity_t *saberOwner, gentity_t *other, int damage)
@@ -12150,14 +11955,6 @@ nextStep:
 					}
 				}
 				//[SaberSys]
-				//Not Used Anymore.  Removing to prevent problems.
-				/*
-				else if ( d_saberSPStyleDamage.integer )
-				{
-					G_SPSaberDamageTraceLerped( self, rSaberNum, rBladeNum, boltOrigin, end, (MASK_PLAYERSOLID|CONTENTS_LIGHTSABER|MASK_SHOT) );
-				}
-				*/
-
 				else if(self->client->hasCurrentPosition && d_saberInterpolate.integer == 2)
 				{//Super duper interplotation system
 					if ( (level.time-self->client->saber[rSaberNum].blade[rBladeNum].trail.lastTime) < 100 && BG_SaberInFullDamageMove(&self->client->ps, self->localAnimIndex) )

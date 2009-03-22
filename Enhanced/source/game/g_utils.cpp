@@ -340,7 +340,7 @@ void G_Throw( gentity_t *targ, vec3_t newDir, float push )
 		VectorScale( newDir, g_knockback.value * (float)push / mass, kvel );
 	}
 
-	kvel[2]*=2;
+	//kvel[2]*=2;
 
 	if ( targ->client )
 	{
@@ -475,9 +475,9 @@ Finally reworked PM_SetAnim to allow non-pmove calls, so we take our
 local anim index into account and make the call -rww
 =============
 */
-#include "../namespace_begin.h"
+
 void BG_SetAnim(playerState_t *ps, animation_t *animations, int setAnimParts,int anim,int setAnimFlags, int blendTime);
-#include "../namespace_end.h"
+
 
 void G_SetAnim(gentity_t *ent, usercmd_t *ucmd, int setAnimParts, int anim, int setAnimFlags, int blendTime)
 {

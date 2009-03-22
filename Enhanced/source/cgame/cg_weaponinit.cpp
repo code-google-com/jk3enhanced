@@ -191,9 +191,12 @@ void CG_RegisterWeapon( int weaponNum) {
 		//weaponInfo->muzzleEffect		= trap_FX_RegisterEffect( "blaster/muzzle_flash" );
 		//weaponInfo->flashSound[0]		= trap_S_RegisterSound( "sound/weapons/blaster/fire.wav");
 
+		weaponInfo->selectSound			= trap_S_RegisterSound("sound/weapons/blaster/select.wav");
+
+		weaponInfo->flashSound[0]		= trap_S_RegisterSound( "sound/weapons/blaster/fire.wav");
 		weaponInfo->firingSound			= NULL_SOUND;
 		weaponInfo->chargeSound			= NULL_SOUND;
-		
+		weaponInfo->muzzleEffect		= trap_FX_RegisterEffect( "blaster/muzzle_flash" );
 		weaponInfo->missileModel		= NULL_HANDLE;
 		weaponInfo->missileSound		= NULL_SOUND;
 		weaponInfo->missileDlight		= 0;
@@ -215,12 +218,13 @@ void CG_RegisterWeapon( int weaponNum) {
 		cgs.effects.blasterWallImpactEffect		= trap_FX_RegisterEffect( "blaster/wall_impact" );
 		cgs.effects.blasterFleshImpactEffect	= trap_FX_RegisterEffect( "blaster/flesh_impact" );
 		cgs.effects.blasterDroidImpactEffect	= trap_FX_RegisterEffect( "blaster/droid_impact" );
+		/*
 		if(!didItAlready)
 		{
 			RunScript("E11.nut");
 			RunFunction("LoadE11Effects");
 			didItAlready = qtrue;
-		}
+		}*/
 
 		break;
 
@@ -425,7 +429,8 @@ void CG_RegisterWeapon( int weaponNum) {
 
 		cgs.effects.flechetteShotEffect			= trap_FX_RegisterEffect( "flechette/shot" );
 		cgs.effects.flechetteAltShotEffect		= trap_FX_RegisterEffect( "flechette/alt_shot" );
-		cgs.effects.flechetteWallImpactEffect	= trap_FX_RegisterEffect( "flechette/alt_blow" );
+		cgs.effects.flechetteWallImpactEffect	= trap_FX_RegisterEffect( "flechette/wall_impact" );
+		cgs.effects.flechetteAltWallImpactEffect= trap_FX_RegisterEffect( "flechette/alt_blow" );
 		cgs.effects.flechetteFleshImpactEffect	= trap_FX_RegisterEffect( "flechette/alt_blow" );
 		break;
 

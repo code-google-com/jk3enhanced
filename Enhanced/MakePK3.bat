@@ -4,10 +4,9 @@ rem ****************
 rem VARIABLE DEFINES
 rem ****************
 
-set PK3DLL=kotolddlls
-set PK3ASSETS=kotoldstuff
-set ASSETSFOLDER=kotold
-
+set PK3DLL=jkedlls
+set PK3ASSETS=jkestuff
+set ASSETSFOLDER=jke
 
 rem ***************
 rem START OF SCRIPT 

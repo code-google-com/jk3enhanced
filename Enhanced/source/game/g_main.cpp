@@ -56,7 +56,7 @@ This is the only way control passes into the module.
 This must be the very first function compiled into the .q3vm file
 ================
 */
-#include "../namespace_begin.h"
+
 //[Linux]
 /*
 #ifdef __linux__
@@ -259,7 +259,7 @@ int vmMain( int command, int arg0, int arg1, int arg2, int arg3, int arg4, int a
 #endif
 */
 //[/Linux]
-#include "../namespace_end.h"
+
 
 
 void QDECL G_Printf( const char *fmt, ... ) {
@@ -523,10 +523,10 @@ vmCvar_t	g_debugRight;
 vmCvar_t	g_debugUp;
 vmCvar_t	g_smoothClients;
 
-#include "../namespace_begin.h"
+
 vmCvar_t	pmove_fixed;
 vmCvar_t	pmove_msec;
-#include "../namespace_end.h"
+
 
 vmCvar_t	g_listEntity;
 //vmCvar_t	g_redteam;
@@ -774,7 +774,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_slowmoDuelEnd, "g_slowmoDuelEnd", "0", CVAR_ARCHIVE, 0, qtrue  },
 
 	//[VARIOUSSERVERTWEAKS]
-	{ &g_saberDamageScale, "g_saberDamageScale", "3.2", CVAR_SERVERINFO | CVAR_ARCHIVE, 0, qtrue  },
+	{ &g_saberDamageScale, "g_saberDamageScale", "2", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_CHEAT, 0, qtrue  },
 	//{ &g_saberDamageScale, "g_saberDamageScale", "1", CVAR_ARCHIVE, 0, qtrue  },
 	//[/VARIOUSSERVERTWEAKS]
 
@@ -1169,10 +1169,10 @@ void G_UpdateCvars( void ) {
 
 char gSharedBuffer[MAX_G_SHARED_BUFFER_SIZE];
 
-#include "../namespace_begin.h"
+
 void WP_SaberLoadParms( void );
 void BG_VehicleLoadParms( void );
-#include "../namespace_end.h"
+
 
 /*
 ============
@@ -3894,12 +3894,12 @@ void NAV_CheckCalcPaths( void )
 }
 
 //so shared code can get the local time depending on the side it's executed on
-#include "../namespace_begin.h"
+
 int BG_GetTime(void)
 {
 	return level.time;
 }
-#include "../namespace_end.h"
+
 
 /*
 ================

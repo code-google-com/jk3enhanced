@@ -30,6 +30,11 @@ void FX_FlechetteWeaponHitWall( vec3_t origin, vec3_t normal )
 	trap_FX_PlayEffectID( cgs.effects.flechetteWallImpactEffect, origin, normal, -1, -1 );
 }
 
+void FX_FlechetteWeaponHitWallAlt( vec3_t origin, vec3_t normal )
+{
+	trap_FX_PlayEffectID( cgs.effects.flechetteAltWallImpactEffect, origin, normal, -1, -1 );
+}
+
 /*
 -------------------------
 FX_FlechetteWeaponHitPlayer

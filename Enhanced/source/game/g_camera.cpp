@@ -351,7 +351,7 @@ void GCam_Enable( void )
 	client_camera.bar_alpha_dest = 1.0f;
 	
 	client_camera.bar_height_source = 0.0f;
-	client_camera.bar_height_dest = 480/10;
+	client_camera.bar_height_dest = SCREEN_HEIGHT/10;
 	client_camera.bar_height = 0.0f;
 
 	client_camera.info_state |= CAMERA_BAR_FADING;
@@ -376,7 +376,7 @@ void GCam_Disable( void )
 	client_camera.bar_alpha_source = 1.0f;
 	client_camera.bar_alpha_dest = 0.0f;
 	
-	client_camera.bar_height_source = 480/10;
+	client_camera.bar_height_source = SCREEN_HEIGHT/10;
 	client_camera.bar_height_dest = 0.0f;
 
 	client_camera.info_state |= CAMERA_BAR_FADING;

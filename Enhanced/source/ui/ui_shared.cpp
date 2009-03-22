@@ -46,7 +46,7 @@ extern void UI_CacheSaberGlowGraphics( void );
 
 #endif //
 
-#include "../namespace_begin.h"
+
 
 #ifdef CGAME
 
@@ -945,8 +945,8 @@ void Menu_PostParse(menuDef_t *menu) {
 	if (menu->fullScreen) {
 		menu->window.rect.x = 0;
 		menu->window.rect.y = 0;
-		menu->window.rect.w = 640;
-		menu->window.rect.h = 480;
+		menu->window.rect.w = SCREEN_HEIGHT;
+		menu->window.rect.h = SCREEN_WIDTH;
 	}
 	Menu_UpdatePosition(menu);
 }
@@ -5455,9 +5455,9 @@ void UI_ScaleModelAxis(refEntity_t	*ent)
 }
 
 #ifndef CGAME
-#include "../namespace_end.h"	// Yes, these are inverted. The whole file is in the namespace.
+	// Yes, these are inverted. The whole file is in the namespace.
 extern void UI_SaberAttachToChar( itemDef_t *item );
-#include "../namespace_begin.h"
+
 #endif
 
 void Item_Model_Paint(itemDef_t *item) 
@@ -5592,10 +5592,10 @@ void Item_Model_Paint(itemDef_t *item)
 	{
 		origin[0] = item->textscale;
 	}
-	refdef.fov_x = (modelPtr->fov_x) ? modelPtr->fov_x : (int)((float)refdef.width / 640.0f * 90.0f);
+	refdef.fov_x = (modelPtr->fov_x) ? modelPtr->fov_x : (int)((float)refdef.width / SCREEN_WIDTH * SCREEN_HEIGHT);
 	refdef.fov_y = (modelPtr->fov_y) ? modelPtr->fov_y : atan2( refdef.height, refdef.width / tan( refdef.fov_x / 360 * M_PI ) ) * ( 360 / M_PI );
 	
-	//refdef.fov_x = (int)((float)refdef.width / 640.0f * 90.0f);
+	//refdef.fov_x = (int)((float)refdef.width / SCREEN_WIDTH * 90.0f);
 	//refdef.fov_y = atan2( refdef.height, refdef.width / tan( refdef.fov_x / 360 * M_PI ) ) * ( 360 / M_PI );
 
 	DC->clearScene();
@@ -9819,10 +9819,11 @@ uiRank_t uiRank[NUM_TOTAL_SKILLS] =
 	{1,UI_FORCE_RANK_SMOKEGRENADE,NUM_FORCE_POWERS+SK_SMOKEGRENADE,0,qfalse,0},
 	{1,UI_FORCE_RANK_FLASHGRENADE,NUM_FORCE_POWERS+SK_FLASHGRENADE,0,qfalse,0},
 	{1,UI_FORCE_RANK_CRYOBAN,NUM_FORCE_POWERS+SK_CRYOBAN,0,qfalse,0},
-	{1,UI_FORCE_RANK_EMP,NUM_FORCE_POWERS+SK_EMP,0,qfalse,0}
+	{1,UI_FORCE_RANK_EMP,NUM_FORCE_POWERS+SK_EMP,0,qfalse,0},
+	{1, UI_FORCE_RANK_ACROBATICS, NUM_FORCE_POWERS + SK_ACROBATICS, 0, qfalse, 0}
 	//[/Grenade]
 	//Add new skills here
 };
 
 
-#include "../namespace_end.h"
+

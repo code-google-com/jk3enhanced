@@ -311,8 +311,11 @@ void CancelReload(gentity_t *ent)
 {
 	ent->reloadTime = -1;
 	ent->reloadCooldown = level.time + 3000;
+	ent->client->ps.hackingBaseTime = 0;
+	ent->client->ps.hackingTime = 0;
 	ent->client->isHacking = 0;
 	ent->client->ps.weaponTime = 0;
 	ent->client->ps.torsoTimer = 0;
+	ent->client->ps.legsTimer = 0;
 }
 //[/Reload]
