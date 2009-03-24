@@ -6,13 +6,11 @@ Line
 
 	flags				useAlpha
 
-	count				2
-
 	life				30
 
 	origin				8 0 0
 
-	origin2				-34 0 0
+	origin2				-35 0 0
 
 	rgb
 	{
@@ -21,7 +19,7 @@ Line
 
 	alpha
 	{
-		start			0.8 0.9
+		start			1 0.9
 	}
 
 	size
@@ -39,11 +37,13 @@ Line
 {
 	name				Glow
 
+	count				0
+
 	life				30
 
 	origin				16 0 0
 
-	origin2				-20 0 0
+	origin2				-23 0 0
 
 	rgb
 	{
@@ -57,7 +57,7 @@ Line
 
 	size
 	{
-		start			4 3
+		start			3
 	}
 
 	shaders

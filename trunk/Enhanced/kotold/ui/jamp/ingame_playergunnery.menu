@@ -1640,6 +1640,105 @@
 			}
 		}
 		
+		itemDef 
+		{
+			name				forceranktitle
+			group				"playersettingforcegroup"
+			style				0	
+			text				"Attribute Upgrades"
+			rect				270 240 0 0
+			//rect				100 100 0 0
+			textalign			ITEM_ALIGN_LEFT		
+			textalignx			0
+			textaligny			0
+			outlinecolor		1 .5 .5 .5
+			backcolor			0.3 0.3 0.3 1
+			font				4
+			textscale		   	1 
+			forecolor			0 0.8 0.4 1
+			border				0
+			bordercolor			0 0 0 0
+			visible				1 
+			decoration
+		}
+
+		itemDef 
+		{
+			name				forceranktitle2
+			group				"playersettingforcegroup"
+			style				0	
+			text				@MENUS_1_2_3
+			rect				270 240 0 0
+			textalign			ITEM_ALIGN_LEFT
+			textalignx			115
+			textaligny			0
+			outlinecolor		1 .5 .5 .5
+			backcolor			0.3 0.3 0.3 1
+			font				4
+			textscale		    1
+			forecolor			0 0.8 0.4 1
+			border				0
+			bordercolor			0 0 0 0
+			visible				1 
+			decoration
+		}
+		
+		// acrobatics title
+		itemDef 
+		{
+			name					setsk_acrobatics
+			group					attributeupgrades
+			style					0	
+			text					"Acrobatics:"
+			rect					270 255 110 15
+			textalign				ITEM_ALIGN_LEFT												
+			textalignx				0
+			textaligny				0
+			font					4
+			textscale				1
+			forecolor				.2 1 .2 1
+			outlinecolor			1 .5 .5 .5
+			backcolor				0 0 0 0
+			border					0
+			bordercolor				0 0 0 0
+			visible					1 
+			decoration
+		}
+	
+		// shield assign
+		itemDef 
+		{
+			name					setsk_acrobatics
+			group					attributeupgrades
+			style					0	
+			ownerdraw				UI_FORCE_RANK_ACROBATICS
+			rect					270 255 175 15
+			textalign				ITEM_ALIGN_LEFT		
+			textalignx				115
+			textaligny				-5
+			textscale				.25        
+			forecolor				.2 1 .2 1
+			backcolor				0 0 0 0
+			forecolor				1 0.2 0.2 1
+			border					0
+			bordercolor				0 0 0 0
+			descText				"Allows the player to jump a little bit higher"
+			visible					1 
+			action 
+			{ 
+				play			"sound/interface/button1.wav" ;
+			}
+
+			mouseenter 
+			{ 
+				setitemcolor	setsk_acrobatics forecolor .7 1 2. 1
+			}
+			mouseexit 
+			{ 
+				setitemcolor	setsk_acrobatics forecolor .2 1 .2 1
+			}
+		}
+		
 	}
 }
 //[/NewMenus]

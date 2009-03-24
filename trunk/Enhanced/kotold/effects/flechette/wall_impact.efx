@@ -8,13 +8,13 @@ Tail
 
 	count				6 2
 
-	life				300 400
+	life				100
 
 	intensity			0.25 0.4
 
-	velocity			120 -120 -120 250 120 120
+	velocity			420 -420 -420 450 420 420
 
-	gravity				-450 -550
+	gravity				-750
 
 	rgb
 	{
@@ -23,13 +23,13 @@ Tail
 
 	size
 	{
-		start			0.3 0.45
+		start			0.3
 	}
 
 	length
 	{
-		start			4 10
-		end				0.1 1
+		start			13
+		end				4 1
 		flags			linear
 	}
 
