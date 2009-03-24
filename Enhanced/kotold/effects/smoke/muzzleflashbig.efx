@@ -10,7 +10,7 @@ Particle
 
 	count				7 6
 
-	life				100
+	life				35
 
 	delay				0 100
 
@@ -75,7 +75,7 @@ Particle
 
 	count				6 7
 
-	life				200 100
+	life				35
 
 	radius				2 1
 

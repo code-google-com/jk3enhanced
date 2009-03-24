@@ -379,6 +379,7 @@
 #define UI_FORCE_RANK_FLASHGRENADE  327
 #define UI_FORCE_RANK_CRYOBAN	    328
 #define UI_FORCE_RANK_EMP			329
+#define UI_FORCE_RANK_ACROBATICS	330
 //[/StanceSelection]
 //[/ExpSys]
 

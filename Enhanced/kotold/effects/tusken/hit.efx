@@ -1,78 +1,42 @@
 repeatDelay				300
 
-Particle
+FxRunner
 {
-	count				8 12
+	name				smoke
 
-	life				800 1200
+	playfx
+	[
+		smoke/fleshhitsmokebig
+	]
+}
 
-	intensity			0.3 0.5
+Light
+{
+	spawnFlags			rgbComponentInterpolation
 
-	origin				2 -3 -3 2 3 3
-
-	velocity			40 -48 -48 100 48 48
-
-	gravity				-100 -300
+	life				300 400
 
 	rgb
 	{
-		start			1 0.4 0 1 1 0.2
-		end				1 0.4 0
-		flags			linear
+		start			0.9922 0.1098 0.007843
+		flags			random nonlinear
 	}
+}
 
-	size
-	{
-		start			0.3 1
-		end				0
-		parm			80 90
-		flags			nonlinear
-	}
-
-	shaders
+FxRunner
+{
+	playfx
 	[
-		gfx/effects/whiteGlow
+		sparks/hit_spark_blue
 	]
 }
 
-Particle
+FxRunner
 {
-	flags				useAlpha
+	count				2 1
 
-	count				4 5
-
-	life				800 1200
-
-	origin				2 -3 -3 2 3 3
-
-	velocity			15 -12 -12 20 12 12
-
-	gravity				32 80
-
-	alpha
-	{
-		end				0
-		parm			60 75
-		flags			nonlinear
-	}
-
-	size
-	{
-		start			2 6
-		end				6 10
-		flags			linear
-	}
-
-	shaders
+	playfx
 	[
-		gfx/misc/black_smoke
-	]
-}
-
-Sound
-{
-	sounds
-	[
-		sound/weapons/tusken_rifle/hit_body.mp3
+		sparks/bluesparks
 	]
 }

@@ -12,8 +12,6 @@ Tail
 
 	life				600 500
 
-	cullrange			300
-
 	bounce				0.25 0.3
 
 	velocity			150 -180 -180 230 150 180
@@ -38,19 +36,6 @@ Tail
 	]
 }
 
-Sound
-{
-	cullrange			1200
-
-	sounds
-	[
-		sound/ambience/spark1.mp3
-		sound/ambience/spark2.mp3
-		sound/ambience/spark3.mp3
-		sound/ambience/spark4.mp3
-	]
-}
-
 Tail
 {
 	name				sparksstart
@@ -59,9 +44,9 @@ Tail
 
 	spawnFlags			orgOnCylinder
 
-	count				7 8
+	count				17 14
 
-	life				400 300
+	life				150
 
 	bounce				0.25 0.3
 

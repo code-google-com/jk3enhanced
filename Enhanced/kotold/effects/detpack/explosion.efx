@@ -47,25 +47,11 @@ FxRunner
 {
 	name				chunks
 
-	count				2 1
-
 	delay				75 86
 
 	playfx
 	[
 		chunks/chunks4
-	]
-}
-
-FxRunner
-{
-	name				smokepuff
-
-	count				0
-
-	playfx
-	[
-		smoke/smokepuffbig
 	]
 }
 
@@ -104,18 +90,6 @@ Flash
 	shaders
 	[
 		gfx/effects/whiteFlash
-	]
-}
-
-FxRunner
-{
-	name				lingeringsmoke
-
-	delay				200 300
-
-	playfx
-	[
-		smoke/lingeringsmokesmall
 	]
 }
 

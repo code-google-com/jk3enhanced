@@ -1,4 +1,4 @@
-repeatDelay				250
+repeatDelay				300
 
 FxRunner
 {
@@ -27,30 +27,16 @@ FxRunner
 {
 	playfx
 	[
-		sparks/radiusspark
-	]
-}
-
-Sound
-{
-	sounds
-	[
-		sound/effects/wall_smash.mp3
+		sparks/hit_spark_blue
 	]
 }
 
 FxRunner
 {
-	playfx
-	[
-		explosions/tuskenblow
-	]
-}
+	count				2 1
 
-FxRunner
-{
 	playfx
 	[
-		sparks/hit_sparkviolent
+		sparks/bluesparks
 	]
 }
