@@ -49,7 +49,8 @@ void CancelReload(gentity_t *ent);
 #define	START_TIME_LINK_ENTS		FRAMETIME*1 // time-delay after map start at which all ents have been spawned, so can link them
 #define	START_TIME_FIND_LINKS		FRAMETIME*2 // time-delay after map start at which you can find linked entities
 #define	START_TIME_MOVERS_SPAWNED	FRAMETIME*2 // time-delay after map start at which all movers should be spawned
-#define	START_TIME_REMOVE_ENTS		FRAMETIME*3 // time-delay after map start to remove temporary ents
+//#define	START_TIME_REMOVE_ENTS		FRAMETIME*3 // time-delay after map start to remove temporary ents
+#define	START_TIME_REMOVE_ENTS		FRAMETIME*1
 #define	START_TIME_NAV_CALC			FRAMETIME*4 // time-delay after map start to connect waypoints and calc routes
 #define	START_TIME_FIND_WAYPOINT	FRAMETIME*5 // time-delay after map start after which it's okay to try to find your best waypoint
 
@@ -1132,8 +1133,6 @@ struct gclient_s {
 	int			siegeEDataSend;
 
 	int			ewebIndex; //index of e-web gun if spawned
-	int			ewebTime; //e-web use debounce
-	int			ewebHealth; //health of e-web (to keep track between deployments)
 
 	int			inSpaceIndex; //ent index of space trigger if inside one
 	int			inSpaceSuffocation; //suffocation timer

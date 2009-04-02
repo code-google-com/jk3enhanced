@@ -1814,11 +1814,11 @@ void EWebDisattach(gentity_t *owner, gentity_t *eweb)
 	owner->client->ps.emplacedIndex = 0;
 	if (owner->health > 0)
 	{
-		owner->client->ps.stats[STAT_WEAPONS] = eweb->genericValue11;
+		//owner->client->ps.stats[STAT_WEAPONS] = eweb->genericValue11;
 	}
 	else
 	{
-		owner->client->ps.stats[STAT_WEAPONS] = 0;
+		//owner->client->ps.stats[STAT_WEAPONS] = 0;
 	}
 	eweb->think = G_FreeEntity;
 	eweb->nextthink = level.time;
@@ -1835,7 +1835,6 @@ void EWebPrecache(void)
 //e-web death
 #define EWEB_DEATH_RADIUS		128
 #define EWEB_DEATH_DMG			90
-
 
 extern void BG_CycleInven(playerState_t *ps, int direction); //bg_misc.c
 
@@ -1857,12 +1856,6 @@ void EWebDie(gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int dam
 		{
 			EWebDisattach(owner, self);
 
-			//make sure it resets next time we spawn one in case we someone obtain one before death
-			owner->client->ewebHealth = -1;
-
-			//take it away from him, it is gone forever.
-			owner->client->ps.stats[STAT_HOLDABLE_ITEMS] &= ~(1<<HI_EWEB);
-
 			if (owner->client->ps.stats[STAT_HOLDABLE_ITEM] > 0 &&
 				bg_itemlist[owner->client->ps.stats[STAT_HOLDABLE_ITEM]].giType == IT_HOLDABLE &&
 				bg_itemlist[owner->client->ps.stats[STAT_HOLDABLE_ITEM]].giTag == HI_EWEB)
@@ -1872,20 +1865,10 @@ void EWebDie(gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int dam
 			}
 		}
 	}
-}
-
-//e-web pain
-void EWebPain(gentity_t *self, gentity_t *attacker, int damage)
-{
-	//update the owner's health status of me
-	if (self->r.ownerNum != ENTITYNUM_NONE)
+	else
 	{
-		gentity_t *owner = &g_entities[self->r.ownerNum];
-
-		if (owner->inuse && owner->client)
-		{
-			owner->client->ewebHealth = self->health;
-		}
+		self->think = G_FreeEntity;
+		self->nextthink = level.time;
 	}
 }
 
@@ -2009,7 +1992,9 @@ void EWeb_SetBoneAnim(gentity_t *eweb, int startFrame, int endFrame)
 }
 
 //fire a shot off
-#define EWEB_MISSILE_DAMAGE			20
+const int EWEB_MISSILE_DAMAGE = 30;
+const float EWEB_MISSILE_VELOCITY = 1200.0f;
+
 void EWebFire(gentity_t *owner, gentity_t *eweb)
 {
 	mdxaBone_t boltMatrix;
@@ -2031,7 +2016,7 @@ void EWebFire(gentity_t *owner, gentity_t *eweb)
 	VectorMA(p, -16.0f, d, bPoint);
 
 	//create the missile
-	missile = CreateMissile( bPoint, d, 1200.0f, 10000, owner, qfalse );
+	missile = CreateMissile( bPoint, d, EWEB_MISSILE_VELOCITY, 10000, owner, qfalse );
 
 	missile->classname = "generic_proj";
 	missile->s.weapon = WP_TURRET;
@@ -2116,7 +2101,7 @@ void EWebPositionUser(gentity_t *owner, gentity_t *eweb)
 	}
 	else
 	{ //can't move here.. stop using the thing I guess
-		EWebDisattach(owner, eweb);
+		//EWebDisattach(owner, eweb);
 	}
 }
 
@@ -2161,79 +2146,59 @@ void EWebUpdateBoneAngles(gentity_t *owner, gentity_t *eweb)
 
 extern int BG_EmplacedView(vec3_t baseAngles, vec3_t angles, float *newYaw, float constraint); //bg_misc.c
 
-
 void EWebThink(gentity_t *self)
 {
-	qboolean killMe = qfalse;
 	const float gravity = 3.0f;
 	const float mass = 0.09f;
 	const float bounce = 1.1f;
 
 	if (self->r.ownerNum == ENTITYNUM_NONE)
 	{
-		killMe = qtrue;
-	}
-	else
-	{
-		gentity_t *owner = &g_entities[self->r.ownerNum];
-
-		if (!owner->inuse || !owner->client || owner->client->pers.connected != CON_CONNECTED ||
-			owner->client->ewebIndex != self->s.number || owner->health < 1)
-		{
-			killMe = qtrue;
-		}
-		else if (owner->client->ps.emplacedIndex != self->s.number)
-		{ //just go back to the inventory then
-			EWebDisattach(owner, self);
-			return;
-		}
-
-		if (!killMe)
-		{
-			float yaw;
-
-			if (BG_EmplacedView(owner->client->ps.viewangles, self->s.angles, &yaw, self->s.origin2[0]))
-			{
-				owner->client->ps.viewangles[YAW] = yaw;
-			}
-			owner->client->ps.weapon = WP_EMPLACED_GUN;
-			owner->client->ps.stats[STAT_WEAPONS] = WP_EMPLACED_GUN;
-
-			if (self->genericValue8 < level.time)
-			{ //make sure the anim timer is done
-				EWebUpdateBoneAngles(owner, self);
-				if (!owner->client->ewebIndex)
-				{ //was removed during position function
-					return;
-				}
-
-				if (owner->client->pers.cmd.buttons & BUTTON_ATTACK)
-				{
-					if (self->genericValue5 < level.time)
-					{ //we can fire another shot off
-						EWebFire(owner, self);
-
-						//cheap firing anim
-						EWeb_SetBoneAnim(self, 2, 4);
-						self->genericValue3 = 1;
-
-						//set fire debounce time
-						self->genericValue5 = level.time + 100;
-					}
-				}
-				else if (self->genericValue5 < level.time && self->genericValue3)
-				{ //reset the anim back to non-firing
-					EWeb_SetBoneAnim(self, 0, 1);
-					self->genericValue3 = 0;
-				}
-			}
-		}
-	}
-
-	if (killMe)
-	{ //something happened to the owner, let's explode
-		EWebDie(self, self, self, 999, MOD_SUICIDE);
+		self->nextthink = level.time + 500;
 		return;
+	}
+
+	gentity_t *owner = &g_entities[self->r.ownerNum];
+
+	if (owner)
+	{
+		float yaw;
+
+		if (BG_EmplacedView(owner->client->ps.viewangles, self->s.angles, &yaw, self->s.origin2[0]))
+		{
+			owner->client->ps.viewangles[YAW] = yaw;
+		}
+		owner->client->ps.weapon = WP_EMPLACED_GUN;
+		//owner->client->ps.stats[STAT_WEAPONS] = WP_EMPLACED_GUN;
+
+		if (self->genericValue8 < level.time)
+		{ //make sure the anim timer is done
+			EWebUpdateBoneAngles(owner, self);
+			if (!owner->client->ewebIndex)
+			{ //was removed during position function
+				return;
+			}
+
+			if (owner->client->pers.cmd.buttons & BUTTON_ATTACK)
+			{
+				if (self->genericValue5 < level.time)
+				{ //we can fire another shot off
+					EWebFire(owner, self);
+
+					//cheap firing anim
+					//EWeb_SetBoneAnim(self, 2, 4);
+					self->genericValue3 = 1;
+
+					//set fire debounce time
+					self->genericValue5 = level.time + 100;
+				}
+			}
+			else if (self->genericValue5 < level.time && self->genericValue3)
+			{ //reset the anim back to non-firing
+				EWeb_SetBoneAnim(self, 2, 4);
+				self->genericValue3 = 0;
+			}
+		}
 	}
 
 	//run some physics on it real quick so it falls and stuff properly
@@ -2242,7 +2207,24 @@ void EWebThink(gentity_t *self)
 	self->nextthink = level.time;
 }
 
-#define EWEB_HEALTH			200
+void EWebTouch( gentity_t *self, gentity_t *other, trace_t* trace)
+{
+	if(!other || !other->client) return;
+
+	if(self->r.ownerNum != ENTITYNUM_NONE || self->s.owner != ENTITYNUM_NONE)
+		return;
+
+	if(other->client->pers.cmd.buttons & BUTTON_USE)
+	{
+		other->client->ps.weapon = WP_MELEE;
+		other->client->ewebIndex = self->s.number;
+		other->client->ps.emplacedIndex = self->s.number;
+		self->r.ownerNum = other->s.number;
+		self->s.owner = other->s.number;
+	}
+}
+
+const int EWEB_HEALTH = 800;
 
 //spawn and set up an e-web ent
 gentity_t *EWeb_Create(gentity_t *spawner)
@@ -2277,7 +2259,7 @@ gentity_t *EWeb_Create(gentity_t *spawner)
 	ent = G_Spawn();
 
 	ent->clipmask = MASK_PLAYERSOLID;
-	ent->r.contents = MASK_PLAYERSOLID;
+	ent->r.contents = CONTENTS_TRIGGER | MASK_PLAYERSOLID;
 
 	ent->physicsObject = qtrue;
 
@@ -2302,23 +2284,19 @@ gentity_t *EWeb_Create(gentity_t *spawner)
 	VectorCopy(fAng, ent->s.apos.trBase);
 	VectorCopy(fAng, ent->r.currentAngles);
 
-	ent->s.owner = spawner->s.number;
+	//ent->s.owner = spawner->s.number; [PlaceableEweb]
+	ent->s.owner = ENTITYNUM_NONE;
 	ent->s.teamowner = spawner->client->sess.sessionTeam;
 
 	ent->takedamage = qtrue;
 
-	if (spawner->client->ewebHealth <= 0)
-	{ //refresh the owner's e-web health if its last e-web did not exist or was killed
-		spawner->client->ewebHealth = EWEB_HEALTH;
-	}
-
 	//resume health of last deployment
 	ent->maxHealth = EWEB_HEALTH;
-	ent->health = spawner->client->ewebHealth;
+	ent->health = EWEB_HEALTH;
 	G_ScaleNetHealth(ent);
 
 	ent->die = EWebDie;
-	ent->pain = EWebPain;
+	ent->touch = EWebTouch;
 
 	ent->think = EWebThink;
 	ent->nextthink = level.time;
@@ -2351,7 +2329,8 @@ gentity_t *EWeb_Create(gentity_t *spawner)
 	//angle of y rot bone
 	ent->angle = 0.0f;
 
-	ent->r.ownerNum = spawner->s.number;
+	//ent->r.ownerNum = spawner->s.number; [PlaceableEweb]
+	ent->r.ownerNum = ENTITYNUM_NONE;
 	trap_LinkEntity(ent);
 
 	//store off the owner's current weapons, we will be forcing him to use the "emplaced" weapon
@@ -2365,6 +2344,8 @@ gentity_t *EWeb_Create(gentity_t *spawner)
 	VectorCopy(mins, ent->r.mins);
 	VectorCopy(maxs, ent->r.maxs);
 
+	spawner->client->ps.stats[STAT_HOLDABLE_ITEMS] &= ~(1<<HI_EWEB);
+
 	return ent;
 }
 
@@ -2372,38 +2353,14 @@ gentity_t *EWeb_Create(gentity_t *spawner)
 //use the e-web
 void ItemUse_UseEWeb(gentity_t *ent)
 {
-	if (ent->client->ewebTime > level.time)
-	{ //can't use again yet
-		return;
-	}
-
 	if (ent->client->ps.weaponTime > 0 ||
 		ent->client->ps.forceHandExtend != HANDEXTEND_NONE)
 	{ //busy doing something else
 		return;
 	}
 
-	if (ent->client->ps.emplacedIndex && !ent->client->ewebIndex)
-	{ //using an emplaced gun already that isn't our own e-web
-		return;
-	}
-
-	if (ent->client->ewebIndex)
-	{ //put it away
-		EWebDisattach(ent, &g_entities[ent->client->ewebIndex]);
-	}
-	else
-	{ //create it
-		gentity_t *eweb = EWeb_Create(ent);
-
-		if (eweb)
-		{ //if it's null the thing couldn't spawn (probably no room)
-			ent->client->ewebIndex = eweb->s.number;
-			ent->client->ps.emplacedIndex = eweb->s.number;
-		}
-	}
-
-	ent->client->ewebTime = level.time + EWEB_USE_DEBOUNCE;
+	if (!ent->client->ewebIndex)
+		EWeb_Create(ent);
 }
 //===============================================
 //End E-Web

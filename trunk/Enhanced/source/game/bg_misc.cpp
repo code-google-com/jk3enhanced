@@ -689,9 +689,6 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 		int powerCycle = 2;
 		int minPow = 0;
 		
-#ifdef QAGAME
-		G_Printf("OH NOEZ, we overspent our points! We are now unspending some points!\n");
-#endif
 		if (freeSaber)
 		{
 			minPow = 1;
@@ -843,10 +840,6 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 		{ //Still? Fine then.. we will kill all of your powers, except the freebies.
 			i = 0;
 
-#ifdef QAGAME
-			G_Printf("OH NOEZ, killing all force powers!\n");
-#endif 
-
 			//[ExpSys]
 			while (i < NUM_TOTAL_SKILLS)
 			//while (i < NUM_FORCE_POWERS)
@@ -973,13 +966,6 @@ qboolean BG_LegalizedForcePowers(char *powerOut, int maxRank, qboolean freeSaber
 
 	if(!c)
 		maintainsValidity=qfalse;
-
-#ifdef QAGAME
-	if(!maintainsValidity)
-	{
-		G_Printf("Uh oh, invalid force power/weapon/item string :C\n");
-	}
-#endif
 
 	return maintainsValidity;
 }
@@ -2024,7 +2010,7 @@ Only in One Flag CTF games
 		100,
 		IT_WEAPON,
 		WP_TUSKEN_RIFLE,
-		"Tusk een Rye full"					// description
+		"Tusken Rifle"					// description
 	},
 	// end of list marker
 	{NULL}
