@@ -2,8 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="JK2game"
+	Name="Game"
 	ProjectGUID="{5B587283-8429-4F8B-AECA-C09BF364B617}"
+	RootNamespace="Game"
 	>
 	<Platforms>
 		<Platform
@@ -119,8 +120,8 @@
 		</Configuration>
 		<Configuration
 			Name="Final|Win32"
-			OutputDirectory=".\../Debug/base"
-			IntermediateDirectory=".\../Debug/JK2game"
+			OutputDirectory=".\../Final/base"
+			IntermediateDirectory=".\../Final/JK2game"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -148,6 +149,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D &quot;_CRT_SECURE_NO_DEPRECATE&quot;"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
@@ -179,12 +181,12 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="winmm.lib"
-				OutputFile="..\..\ojpenhanced\jampgamex86.dll"
+				OutputFile="..\..\jke\jampgamex86.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\JK2_game.def"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\ojpenhanced\jampgamex86.pdb"
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile=""
 				GenerateMapFile="true"
 				MapFileName=".\../Final/jampgamex86.map"
 				SubSystem="2"

@@ -11,12 +11,14 @@
 // by the server in the server stored userinfos, or stashed in a cvar.
 #define SQUIRREL
 
+/*
 #ifdef SQUIRREL  
     extern void LoadSquirrel(void);  
     extern void CloseSquirrel(void);  
     extern void RunScript(const char* file);  
     extern void RunFunction(const char* func);  
 #endif  
+*/
 
 #ifndef __LCC__
 #define CGAME_INLINE ID_INLINE
@@ -2136,6 +2138,10 @@ const char *CG_GameTypeString(void);
 qboolean CG_YourTeamHasFlag(void);
 qboolean CG_OtherTeamHasFlag(void);
 qhandle_t CG_StatusHandle(int task);
+//[JKEHud]
+//Raz - lol this is teh new function! =D
+void JKEHUD(centity_t *cent);
+//[/JKEHud]
 
 
 

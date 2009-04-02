@@ -2,10 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="JK2cgame"
+	Name="Client Game"
 	ProjectGUID="{4DC69D68-9DB8-4DEB-AC63-481153B1F41D}"
 	RootNamespace="JK2cgame"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -94,8 +93,6 @@
 				EnableCOMDATFolding="2"
 				SetChecksum="true"
 				BaseAddress="0x30000000"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary=".\../Release/cgamex86.lib"
 			/>
 			<Tool
@@ -115,6 +112,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -151,6 +151,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D &quot;_CRT_SECURE_NO_DEPRECATE&quot;"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
@@ -184,7 +185,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="../../ojpenhanced/cgamex86.dll"
+				OutputFile="../../jke/cgamex86.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\JK2_cgame.def"
@@ -196,8 +197,6 @@
 				EnableCOMDATFolding="2"
 				SetChecksum="true"
 				BaseAddress="0x30000000"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary=".\../Final/cgamex86.lib"
 			/>
 			<Tool
@@ -217,6 +216,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -294,8 +296,6 @@
 				MapFileName=".\../Debug/cgamex86.map"
 				SubSystem="2"
 				BaseAddress="0x30000000"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary=".\../Debug/cgamex86.lib"
 			/>
 			<Tool
@@ -315,6 +315,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -392,8 +395,6 @@
 				MapFileName=".\../Debug/JK2cgame/cgamex86.map"
 				SubSystem="2"
 				BaseAddress="0x30000000"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				ImportLibrary=".\../Debug/cgamex86.lib"
 			/>
 			<Tool
@@ -415,6 +416,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -426,254 +430,6 @@
 			Name="Source Files"
 			Filter="c"
 			>
-			<File
-				RelativePath="..\game\AnimalNPC.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_g2_utils.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_lib.c"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Final|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug(Final)|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\game\bg_misc.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_panimate.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_pmove.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_saber.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_saberLoad.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_saga.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_slidemove.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_vehicleLoad.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\bg_weapons.c"
-				>
-			</File>
-			<File
-				RelativePath="cg_camera.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_consolecmds.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_draw.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_drawtools.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_effects.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_ents.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_event.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_holster.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_info.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_light.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_localents.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_main.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_marks.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_newDraw.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_players.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_playerstate.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_predict.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_saga.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_scoreboard.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_servercmds.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_snapshot.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_strap.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_syscalls.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_turret.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_view.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_weaponinit.c"
-				>
-			</File>
-			<File
-				RelativePath=".\cg_weapons.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\FighterNPC.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fx_blaster.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fx_bowcaster.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fx_bryarpistol.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fx_demp2.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fx_disruptor.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fx_flechette.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fx_force.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fx_heavyrepeater.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fx_rocketlauncher.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\q_math.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\q_shared.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\SpeederNPC.c"
-				>
-			</File>
-			<File
-				RelativePath="..\ui\ui_shared.c"
-				>
-			</File>
-			<File
-				RelativePath="..\game\WalkerNPC.c"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -780,6 +536,258 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\game\AnimalNPC.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_g2_utils.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_misc.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_panimate.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_pmove.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_saber.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_saberLoad.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_saga.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_slidemove.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_vehicleLoad.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\bg_weapons.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_camera.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_consolecmds.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_draw.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_drawtools.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_effects.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_ents.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_event.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_holster.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_info.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_jkehud.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_light.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_localents.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_main.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_marks.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_newDraw.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_players.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_playerstate.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_predict.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_saga.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_scoreboard.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_servercmds.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_snapshot.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_strap.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_syscalls.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_turret.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_view.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_weaponinit.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\cg_weapons.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\FighterNPC.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fx_blaster.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fx_bowcaster.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fx_bryarpistol.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fx_demp2.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fx_disruptor.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fx_flechette.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fx_force.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fx_heavyrepeater.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\fx_rocketlauncher.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\q_math.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\q_shared.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\SpeederNPC.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\ui\ui_shared.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\game\WalkerNPC.cpp"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\$(InputName)1.obj"
+					XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Final|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\$(InputName)1.obj"
+					XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\$(InputName)1.obj"
+					XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug(Final)|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\$(InputName)1.obj"
+					XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+				/>
+			</FileConfiguration>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

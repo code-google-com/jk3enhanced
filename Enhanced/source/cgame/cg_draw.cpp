@@ -28,9 +28,14 @@ void CG_DrawDuelistHealth ( float x, float y, float w, float h, int duelist );
 // used for scoreboard
 extern displayContextDef_t cgDC;
 menuDef_t *menuScoreboard = NULL;
+//[JKEHud]
+//Raz - we don't want tinting, ever.
+/*
 vec4_t	bluehudtint = {0.5, 0.5, 1.0, 1.0};
 vec4_t	redhudtint = {1.0, 0.5, 0.5, 1.0};
 float	*hudTintColor;
+*/
+//[/JKEHud]
 
 int sortedTeamPlayers[TEAM_MAXOVERLAY];
 int	numSortedTeamPlayers;
@@ -46,6 +51,9 @@ char teamChat2[256];
 // The time at which you died and the time it will take for you to rejoin game.
 int cg_siegeDeathTime = 0;
 
+//[JKEHud]
+//Raz - moved to cg_jkehud.cpp
+/*
 //[NewHud]
 #define MAX_OJPHUD_TICS 8
 //#define MAX_HUD_TICS 4
@@ -132,6 +140,8 @@ const char *mishapTicName[] =
 "mishap_tic15",
 //[/NewHud]
 };
+*/
+//[/JKEHud]
 
 char *showPowersName[] = 
 {
@@ -596,6 +606,9 @@ void DrawAmmo()
 CG_DrawHealth
 ================
 */
+//[JKEHud]
+//Raz - moved to cg_jkehud.cpp
+/*
 void CG_DrawHealth( menuDef_t *menuHUD )
 {
 	vec4_t			calcColor;
@@ -673,12 +686,17 @@ void CG_DrawHealth( menuDef_t *menuHUD )
 	}
 
 }
+*/
+//[/JKEHud]
 
 /*
 ================
 CG_DrawArmor
 ================
 */
+//[JKEHud]
+//Raz - moved to cg_jkehud.cpp
+/*
 void CG_DrawArmor( menuDef_t *menuHUD )
 {
 	vec4_t			calcColor;
@@ -836,6 +854,8 @@ void CG_DrawArmor( menuDef_t *menuHUD )
 	}
 
 }
+*/
+//[/JKEHud]
 
 /*
 ================
@@ -845,6 +865,9 @@ If the weapon is a light saber (which needs no ammo) then draw a graphic showing
 the saber style (fast, medium, strong)
 ================
 */
+//[JKEHud]
+//Raz - moved to cg_jkehud.cpp
+/*
 static void CG_DrawSaberStyle( centity_t *cent, menuDef_t *menuHUD)
 {
 	itemDef_t		*focusItem;
@@ -879,8 +902,6 @@ static void CG_DrawSaberStyle( centity_t *cent, menuDef_t *menuHUD)
 
 		if (focusItem)
 		{
-			trap_R_SetColor( hudTintColor );
-
 			CG_DrawPic( 
 				focusItem->window.rect.x,
 				focusItem->window.rect.y,
@@ -999,8 +1020,12 @@ static void CG_DrawSaberStyle( centity_t *cent, menuDef_t *menuHUD)
 	}
 
 }
+*/
+//[/JKEHud]
 
-
+//[JKEHud]
+//Raz - moved to cg_jkehud.cpp
+/*
 //[SaberSys]
 static void CG_DrawBalance( centity_t *cent, menuDef_t *menuHUD)
 {//render the balance/mishap meter.
@@ -1033,13 +1058,17 @@ static void CG_DrawBalance( centity_t *cent, menuDef_t *menuHUD)
 	}
 }
 //[/SaberSys]
-
+*/
+//[/JKEHud]
 
 /*
 ================
 CG_DrawAmmo
 ================
 */
+//[JKEHud]
+//Raz - moved to cg_jkehud.cpp
+/*
 static void CG_DrawAmmo( centity_t	*cent,menuDef_t *menuHUD)
 {
 	playerState_t	*ps;
@@ -1161,7 +1190,8 @@ static void CG_DrawAmmo( centity_t	*cent,menuDef_t *menuHUD)
 	}
 
 }
-
+*/
+//[/JKEHud]
 
 //[DodgeSys]
 /*
@@ -1169,6 +1199,9 @@ static void CG_DrawAmmo( centity_t	*cent,menuDef_t *menuHUD)
 CG_DrawForcePower
 ================
 */
+//[JKEHud]
+//Raz - moved to cg_jkehud.cpp
+/*
 //[NewHud]
 #define DPBAR_H			65.0f
 #define DPBAR_W			13.0f
@@ -1241,6 +1274,8 @@ void CG_DrawDodge( menuDef_t *menuHUD )
 			qfalse);
 	}
 }
+*/
+//[/JKEHud]
 //[/DodgeSys]
 
 
@@ -1249,6 +1284,9 @@ void CG_DrawDodge( menuDef_t *menuHUD )
 CG_DrawForcePower
 ================
 */
+//[JKEHud]
+//Raz - moved to cg_jkehud.cpp
+/*
 //[NewHud]
 #define FPBAR_H			65.0f
 #define FPBAR_W			13.0f
@@ -1321,6 +1359,8 @@ void CG_DrawForcePower( menuDef_t *menuHUD )
 			qfalse);
 	}
 }
+*/
+//[/JKEHud]
 
 //[AddText]
 void CG_AddToAddText(char *text)
@@ -1397,6 +1437,9 @@ float CG_DrawAddText(float y)
 CG_DrawHUD
 ================
 */
+//[JKEHud]
+//Raz - moved to cg_jkehud.cpp
+/*
 void CG_DrawHUD(centity_t	*cent)
 {
 	menuDef_t	*menuHUD = NULL;
@@ -1617,6 +1660,8 @@ void CG_DrawHUD(centity_t	*cent)
 		//CG_Error("CG_ChatBox_ArrayInsert: unable to locate HUD menu file ");
 	}
 }
+*/
+//[/JKEHud]
 
 #define MAX_SHOWPOWERS NUM_FORCE_POWERS
 
@@ -2919,7 +2964,11 @@ static void CG_DrawStats( void )
 
 	if (drawHUD)
 	{
-		CG_DrawHUD(cent);
+		//[JKEHud]
+		//Raz - use teh new function! =D
+		//CG_DrawHUD(cent);
+		JKEHUD(cent);
+		//[/JKEHud]
 	}
 }
 
@@ -4346,7 +4395,10 @@ static void CG_DrawLagometer( void ) {
 	// draw the graph
 	//
 	x = SCREEN_WIDTH - 48;
-	y = SCREEN_HEIGHT - 144;
+	//[JKEHud]
+	//Raz - moved the lagometer up a tad, it was overlapping our HUD
+	y = SCREEN_HEIGHT - 192;//144;
+	//[/JKEHud]
 
 	trap_R_SetColor( NULL );
 	CG_DrawPic( x, y, 48, 48, cgs.media.lagometerShader );

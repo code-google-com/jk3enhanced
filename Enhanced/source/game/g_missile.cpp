@@ -1081,7 +1081,7 @@ void OJP_HandleBoltBlock(gentity_t *bolt, gentity_t *player, trace_t *trace)
 	vec3_t fwd;
 	gentity_t *saberBoltEffect;
 	int otherDefLevel=ReflectionLevel(player);
-	int randMax;
+	int randMax = 0;
 	gentity_t *prevOwner = &g_entities[bolt->r.ownerNum]; //previous owner of the bolt.  Used for awarding experience to attacker.
 	qboolean manualDeflect = ((player->client->pers.cmd.buttons & BUTTON_ATTACK) ? qtrue : qfalse);
 	//create the bolt saber block effect
