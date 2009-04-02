@@ -37,18 +37,7 @@ LIGHT - If this info_null is only targeted by a non-switchable light (a light wi
 */
 void SP_info_null( gentity_t *self ) 
 {
-	if ( (self->spawnflags&1) )
-	{//only used as a light target, so bugger off
 	G_FreeEntity( self );
-	return;
-	}
-	//FIXME: store targetname and vector (origin) in a list for further reference... remove after 1st second of game?
-	G_SetOrigin( self, self->s.origin );
-	self->think = G_FreeEntity; //this is different from SP I guess
-	//self->e_ThinkFunc = thinkF_G_FreeEntity; 
-
-	//Give other ents time to link
-	self->nextthink = level.time + START_TIME_REMOVE_ENTS;
 }
 //[/basejkasp]
 //[/CoOp]
@@ -1996,6 +1985,7 @@ void SP_misc_shield_floor_unit( gentity_t *ent )
 	vec3_t dest;
 	trace_t tr;
 
+	/*
 	if (g_gametype.integer != GT_CTF &&
 		g_gametype.integer != GT_CTY &&
 		//[CoOp]
@@ -2006,7 +1996,7 @@ void SP_misc_shield_floor_unit( gentity_t *ent )
 	{
 		G_FreeEntity( ent );
 		return;
-	}
+	}*/
 
 	VectorSet( ent->r.mins, -16, -16, 0 );
 	VectorSet( ent->r.maxs, 16, 16, 40 );
@@ -2333,6 +2323,18 @@ void health_power_converter_use( gentity_t *self, gentity_t *other, gentity_t *a
 	}
 }
 
+void HealthPowerConverterDie(gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod)
+{
+	vec3_t fxDir;
+
+	G_RadiusDamage(self->r.currentOrigin, self, 90, 128, self, self, MOD_SUICIDE);
+
+	VectorSet(fxDir, 1.0f, 0.0f, 0.0f);
+	G_PlayEffect(EFFECT_EXPLOSION_DETPACK, self->r.currentOrigin, fxDir);
+
+	self->think = G_FreeEntity;
+	self->nextthink = level.time;
+}
 
 /*QUAKED misc_model_health_power_converter (1 0 0) (-16 -16 -16) (16 16 16)
 model="models/items/power_converter.md3"
@@ -2357,8 +2359,10 @@ void SP_misc_model_health_power_converter( gentity_t *ent )
 	ent->r.svFlags |= SVF_PLAYER_USABLE;
 	ent->r.contents = CONTENTS_SOLID;
 	ent->clipmask = MASK_SOLID;
+	ent->takedamage = qtrue;
 
 	ent->use = health_power_converter_use;
+	ent->die = HealthPowerConverterDie;
 
 	EnergyHealthStationSettings(ent);
 
@@ -2366,6 +2370,7 @@ void SP_misc_model_health_power_converter( gentity_t *ent )
 	ent->think = check_recharge;
 
 	//ent->s.maxhealth = ent->s.health = ent->count;
+	ent->s.maxhealth = ent->s.health;
 	ent->s.shouldtarget = qtrue;
 	ent->s.teamowner = 0;
 	ent->s.owner = ENTITYNUM_NONE;

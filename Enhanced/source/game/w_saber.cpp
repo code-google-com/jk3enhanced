@@ -3377,7 +3377,7 @@ int OJP_SaberBlockCost(gentity_t *defender, gentity_t *attacker, vec3_t hitLoc)
 	{//standard bolt block!
 			//[BlasterDP]
 		saberBlockCost=DODGE_BOLTBLOCK;
-		if(attacker && attacker->activator && attacker->activator->s.weapon == WP_BRYAR_PISTOL)
+		if(attacker && attacker->client && attacker->activator && attacker->activator->s.weapon == WP_BRYAR_PISTOL)
 		{
 			if(attacker->client->skillLevel[SK_PISTOL] == FORCE_LEVEL_1)
 				saberBlockCost = 4;

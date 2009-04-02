@@ -782,9 +782,10 @@ gentity_t *FindRemoveAbleGent(void)
 	for( i=MAX_CLIENTS; i <level.num_entities;i++)
 	{
 		if(!stricmp(e->classname,"item_shield") || !stricmp(e->classname,"item_seeker") 
-			|| !stricmp(e->classname,"item_binoculars"))
+			|| !stricmp(e->classname,"item_binoculars") || !stricmp(e->classname, "item_shield_lrg_instant")
+			|| !stricmp(e->classname, "item_medpak_instant"))
 		{
-			G_Printf("Warning, removing instant medpack to prevent entity overflow.\n");
+			G_Printf("Warning: removing instant medpack/shield/seeker/binoculars to prevent entity overflow.\n");
 			return e;
 		}
 	}

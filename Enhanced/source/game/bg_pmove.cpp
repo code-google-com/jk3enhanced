@@ -8741,12 +8741,26 @@ static void PM_Weapon( void )
 
 	if (pm->ps->isJediMaster && pm->ps->emplacedIndex)
 	{
+		//[PlaceableEweb]
+		#ifdef QAGAME
+			g_entities[pm->ps->emplacedIndex].r.ownerNum = ENTITYNUM_NONE;
+			g_entities[pm->ps->emplacedIndex].s.owner = ENTITYNUM_NONE;
+			g_entities[pm->ps->clientNum].client->ewebIndex = 0;
+		#endif
+		//[/PlaceableEweb]
 		pm->ps->emplacedIndex = 0;
 		pm->ps->saberHolstered = 0;
 	}
 
 	if (pm->ps->duelInProgress && pm->ps->emplacedIndex)
 	{
+		//[PlaceableEweb]
+		#ifdef QAGAME
+			g_entities[pm->ps->emplacedIndex].r.ownerNum = ENTITYNUM_NONE;
+			g_entities[pm->ps->emplacedIndex].s.owner = ENTITYNUM_NONE;
+			g_entities[pm->ps->clientNum].client->ewebIndex = 0;
+		#endif
+		//[/PlaceableEweb]
 		pm->ps->emplacedIndex = 0;
 		pm->ps->saberHolstered = 0;
 	}
@@ -12792,6 +12806,13 @@ void PmoveSingle (pmove_t *pmove) {
 	{
 		if (pm->cmd.forwardmove < 0 || PM_GroundDistance() > 32.0f)
 		{
+			//[PlaceableEweb]
+			#ifdef QAGAME
+				g_entities[pm->ps->emplacedIndex].r.ownerNum = ENTITYNUM_NONE;
+				g_entities[pm->ps->emplacedIndex].s.owner = ENTITYNUM_NONE;
+				g_entities[pm->ps->clientNum].client->ewebIndex = 0;
+			#endif
+			//[/PlaceableEweb]
 			pm->ps->emplacedIndex = 0;
 			pm->ps->saberHolstered = 0;
 		}

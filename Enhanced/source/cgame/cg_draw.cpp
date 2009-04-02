@@ -1298,7 +1298,7 @@ void CG_DrawForcePower( menuDef_t *menuHUD )
 	//[NewHud]
 	vec4_t			aColor;
 	itemDef_t		*focusItem;
-	float			percent = ((float)cg.snap->ps.fd.forcePower/115.0f)*FPBAR_H;
+	float			percent = ((float)cg.snap->ps.fd.forcePower/(float)cg.snap->ps.fd.forcePowerMax)*FPBAR_H;
 
 	//color of the bar
 	aColor[0] = 0.503f;

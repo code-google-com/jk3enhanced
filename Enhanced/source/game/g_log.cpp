@@ -81,7 +81,7 @@ int weaponFromMOD[MOD_MAX] =
 char *weaponNameFromIndex[WP_NUM_WEAPONS] = 
 {
 	"No Weapon",
-	"Stun Baton",				
+	"Tusken Rifle",				
 	"Saber",	
 	"Bryar Pistol",				
 	"Blaster",		

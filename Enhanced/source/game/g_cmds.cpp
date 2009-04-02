@@ -3853,6 +3853,7 @@ extern void Delete_Autosaves(gentity_t* ent);
 extern void G_Knockdown( gentity_t *self, gentity_t *attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock );
 //[/KnockdownSys]
 extern void SetupReload(gentity_t *ent);
+extern void SP_misc_model_health_power_converter( gentity_t *ent );
 
 void ClientCommand( int clientNum ) {
 	gentity_t *ent;
@@ -3900,6 +3901,18 @@ void ClientCommand( int clientNum ) {
 		//ent->client->ps.viewheight *= 0.1f;
 		//ent->client->ps.stats[STAT_MAX_DODGE] = ((100-size)*(ent->client->ps.stats[STAT_DODGE]/100))/2;
  
+		return;
+	}
+
+	if(Q_stricmp(cmd, "healthregen") == 0)
+	{
+		gentity_t *hl = G_Spawn();
+		VectorCopy(ent->client->ps.origin, hl->s.origin);
+		hl->model = "models/items/power_converter.md3";
+		//Q_strncpyz(hl->model, , sizeof("models/items/power_converter.md3"));
+		hl->s.modelindex = G_ModelIndex( hl->model );
+		hl->health = 500;
+		SP_misc_model_health_power_converter(hl);
 		return;
 	}
 
@@ -4187,6 +4200,11 @@ void ClientCommand( int clientNum ) {
 		if(tr.fraction < 1.0f)
 		{
 			G_Printf("%i", tr.entityNum);
+			gentity_t*ent = &g_entities[tr.entityNum];
+			if(!ent)
+			{
+				ent->healingclass;
+			}
 		}
 	}
 #endif

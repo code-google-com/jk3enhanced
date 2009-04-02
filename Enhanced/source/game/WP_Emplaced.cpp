@@ -319,6 +319,11 @@ void emplaced_gun_update(gentity_t *self)
 
 		if ((self->activator->client->pers.cmd.buttons & BUTTON_USE) && !self->genericValue1)
 		{//RACC - trigger start to get off the emplaced turret
+			//[PlaceableEweb]
+			self->r.ownerNum = ENTITYNUM_NONE;
+			self->s.owner = ENTITYNUM_NONE;
+			self->activator->client->ewebIndex = 0;
+			//[/PlaceableEweb]
 			self->activator->client->ps.emplacedIndex = 0;
 			self->activator->client->ps.saberHolstered = 0;
 			self->nextthink = level.time + 50;
@@ -327,7 +332,7 @@ void emplaced_gun_update(gentity_t *self)
 	}
 
 	if ((self->activator && self->activator->client) &&
-		(!self->activator->inuse || self->activator->client->ps.emplacedIndex != self->s.number || self->genericValue4 || ownLen > 64))
+		(!self->activator->inuse /*|| self->activator->client->ps.emplacedIndex != self->s.number*/ || self->genericValue4 || ownLen > 64))
 	{ //get the user off of me then
 		self->activator->client->ps.stats[STAT_WEAPONS] &= ~(1<<WP_EMPLACED_GUN);
 		//[CoOp]
@@ -343,6 +348,12 @@ void emplaced_gun_update(gentity_t *self)
 		self->activator->client->ps.emplacedIndex = 0;
 		self->activator->client->ps.saberHolstered = 0;
 		self->activator = NULL;
+
+		//[PlaceableEweb]
+		self->r.ownerNum = ENTITYNUM_NONE;
+		self->s.owner = ENTITYNUM_NONE;
+		self->activator->client->ewebIndex = 0;
+		//[/PlaceableEweb]
 
 		self->s.activeForcePass = 0;
 	}
