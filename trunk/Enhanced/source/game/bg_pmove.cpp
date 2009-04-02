@@ -3348,7 +3348,6 @@ static qboolean PM_CheckJump( void )
 	return qtrue;
 }
 
-
 //[LedgeGrab]
 qboolean LedgeTrace( trace_t *trace, vec3_t dir, float *lerpup, float *lerpfwd, float *lerpyaw)
 {//scan for for a ledge in the given direction
@@ -3360,6 +3359,12 @@ qboolean LedgeTrace( trace_t *trace, vec3_t dir, float *lerpup, float *lerpfwd, 
 	traceTo[2] += LEDGEGRABMINHEIGHT;
 
 	pm->trace( trace, traceFrom, NULL, NULL, traceTo, pm->ps->clientNum, pm->tracemask );
+
+	//Raz - IMPORTANT - must be holding use
+	if (!(pm->cmd.buttons & BUTTON_USE))
+	{
+		return qfalse;
+	}
 
 	if(trace->fraction < 1 && LedgeGrabableEntity(trace->entityNum))
 	{//hit a wall, pop into the wall and fire down to find top of wall
@@ -3375,7 +3380,6 @@ qboolean LedgeTrace( trace_t *trace, vec3_t dir, float *lerpup, float *lerpfwd, 
 		{
 			return qfalse;
 		}
-
 	}
 
 	//check to make sure we found a good top surface and go from there

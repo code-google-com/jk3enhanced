@@ -3946,9 +3946,11 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum )
 	const char	*s;
 	int i = 0;
 
+	/*
 	#ifdef SQUIRREL
 		LoadSquirrel();
 	#endif
+	*/
 
 	BG_InitAnimsets(); //clear it out
 
@@ -4282,9 +4284,11 @@ void CG_Shutdown( void )
 	// some mods may need to do cleanup work here,
 	// like closing files or archiving session data
 
+/*
 #ifdef SQUIRREL
 	CloseSquirrel();
 #endif
+*/
 }
 
 /*
