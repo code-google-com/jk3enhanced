@@ -50,11 +50,8 @@ void thermalDetonatorExplode( gentity_t *ent )
 		G_AddEvent( ent, EV_MISSILE_MISS, DirToByte( dir ) );
 		ent->freeAfterEvent = qtrue;
 
-		if (G_RadiusDamage( ent->r.currentOrigin, ent->parent,  ent->splashDamage, ent->splashRadius, 
-			ent, ent, ent->splashMethodOfDeath))
-		{
-			g_entities[ent->r.ownerNum].client->accuracy_hits++;
-		}
+		G_RadiusDamage( ent->r.currentOrigin, ent->parent,  ent->splashDamage, ent->splashRadius, 
+			ent, ent, ent->splashMethodOfDeath);
 
 		trap_LinkEntity( ent );
 	}

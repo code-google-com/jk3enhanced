@@ -219,18 +219,17 @@ static void UI_CalcPostGameStats() {
 		trap_FS_FCloseFile(f);
 	}					 
 
-	newInfo.accuracy = atoi(UI_Argv(3));
-	newInfo.impressives = atoi(UI_Argv(4));
-	newInfo.excellents = atoi(UI_Argv(5));
-	newInfo.defends = atoi(UI_Argv(6));
-	newInfo.assists = atoi(UI_Argv(7));
-	newInfo.gauntlets = atoi(UI_Argv(8));
-	newInfo.baseScore = atoi(UI_Argv(9));
-	newInfo.perfects = atoi(UI_Argv(10));
-	newInfo.redScore = atoi(UI_Argv(11));
-	newInfo.blueScore = atoi(UI_Argv(12));
-	time = atoi(UI_Argv(13));
-	newInfo.captures = atoi(UI_Argv(14));
+	newInfo.impressives = atoi(UI_Argv(3));
+	newInfo.excellents = atoi(UI_Argv(4));
+	newInfo.defends = atoi(UI_Argv(5));
+	newInfo.assists = atoi(UI_Argv(6));
+	newInfo.gauntlets = atoi(UI_Argv(7));
+	newInfo.baseScore = atoi(UI_Argv(8));
+	newInfo.perfects = atoi(UI_Argv(9));
+	newInfo.redScore = atoi(UI_Argv(10));
+	newInfo.blueScore = atoi(UI_Argv(11));
+	time = atoi(UI_Argv(12));
+	newInfo.captures = atoi(UI_Argv(13));
 
 	newInfo.time = (time - trap_Cvar_VariableValue("ui_matchStartTime")) / 1000;
 	adjustedTime = uiInfo.mapList[ui_currentMap.integer].timeToBeat[game];

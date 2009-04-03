@@ -3754,7 +3754,6 @@ void ClientSpawn(gentity_t *ent) {
 	gentity_t			*spawnPoint;
 	int					flags, gameFlags;
 	int					savedPing;
-	int					accuracy_hits, accuracy_shots;
 	int					eventSequence;
 	char				userinfo[MAX_INFO_STRING];
 	forcedata_t			savedForce;
@@ -4090,8 +4089,7 @@ void ClientSpawn(gentity_t *ent) {
 	savedSess = client->sess;
 	savedPing = client->ps.ping;
 //	savedAreaBits = client->areabits;
-	accuracy_hits = client->accuracy_hits;
-	accuracy_shots = client->accuracy_shots;
+
 	for ( i = 0 ; i < MAX_PERSISTANT ; i++ ) {
 		persistant[i] = client->ps.persistant[i];
 	}
@@ -4233,9 +4231,6 @@ void ClientSpawn(gentity_t *ent) {
 	client->pers = saved;
 	client->sess = savedSess;
 	client->ps.ping = savedPing;
-//	client->areabits = savedAreaBits;
-	client->accuracy_hits = accuracy_hits;
-	client->accuracy_shots = accuracy_shots;
 	client->lastkilled_client = -1;
 
 	for ( i = 0 ; i < MAX_PERSISTANT ; i++ ) {

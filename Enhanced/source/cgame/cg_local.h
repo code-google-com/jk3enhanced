@@ -974,13 +974,6 @@ typedef struct {
 	int			attackerTime;
 	int			voiceTime;
 
-	// reward medals
-	int			rewardStack;
-	int			rewardTime;
-	int			rewardCount[MAX_REWARDSTACK];
-	qhandle_t	rewardShader[MAX_REWARDSTACK];
-	qhandle_t	rewardSound[MAX_REWARDSTACK];
-
 	// sound buffer mainly for announcer sounds
 	int			soundBufferIn;
 	int			soundBufferOut;
@@ -1374,16 +1367,6 @@ typedef struct {
 	qhandle_t	enlightenmentShader;
 	qhandle_t	invulnerabilityShader;
 
-#ifdef JK2AWARDS
-	// medals shown during gameplay
-	qhandle_t	medalImpressive;
-	qhandle_t	medalExcellent;
-	qhandle_t	medalGauntlet;
-	qhandle_t	medalDefend;
-	qhandle_t	medalAssist;
-	qhandle_t	medalCapture;
-#endif
-
 	// sounds
 	sfxHandle_t	selectSound;
 	sfxHandle_t	footsteps[FOOTSTEP_TOTAL][4];
@@ -1413,20 +1396,6 @@ typedef struct {
 	sfxHandle_t twoFragSound;
 	sfxHandle_t oneFragSound;
 
-#ifdef JK2AWARDS
-	sfxHandle_t impressiveSound;
-	sfxHandle_t excellentSound;
-	sfxHandle_t deniedSound;
-	sfxHandle_t humiliationSound;
-	sfxHandle_t defendSound;
-#endif
-
-	/*
-	sfxHandle_t takenLeadSound;
-	sfxHandle_t tiedLeadSound;
-	sfxHandle_t lostLeadSound;
-	*/
-
 	sfxHandle_t rollSound;
 
 	sfxHandle_t watrInSound;
@@ -1439,9 +1408,6 @@ typedef struct {
 	sfxHandle_t medkitSound;
 
 	// teamplay sounds
-#ifdef JK2AWARDS
-	sfxHandle_t captureAwardSound;
-#endif
 	sfxHandle_t redScoredSound;
 	sfxHandle_t blueScoredSound;
 	sfxHandle_t redLeadsSound;

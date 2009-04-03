@@ -1782,10 +1782,6 @@ static void CG_RegisterSounds( void ) {
 	trap_S_RegisterSound("sound/weapons/force/grip.mp3"); //PDSOUND_FORCEGRIP
 
 	if ( cgs.gametype >= GT_TEAM || cg_buildScript.integer ) {
-
-#ifdef JK2AWARDS
-		cgs.media.captureAwardSound = trap_S_RegisterSound( "sound/teamplay/flagcapture_yourteam.wav" );
-#endif
 		cgs.media.redLeadsSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM046");
 		cgs.media.blueLeadsSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM045");
 		cgs.media.teamsTiedSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM032" );
@@ -1833,19 +1829,6 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.fallSound = trap_S_RegisterSound( "sound/player/fallsplat.wav");
 
 	cgs.media.crackleSound = trap_S_RegisterSound( "sound/effects/energy_crackle.wav" );
-#ifdef JK2AWARDS
-	cgs.media.impressiveSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM025" );
-	cgs.media.excellentSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM053" );
-	cgs.media.deniedSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM017" );
-	cgs.media.humiliationSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM019" );
-	cgs.media.defendSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM024" );
-#endif
-
-	/*
-	cgs.media.takenLeadSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM051");
-	cgs.media.tiedLeadSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM032");
-	cgs.media.lostLeadSound = trap_S_RegisterSound( "sound/chars/protocol/misc/40MOM052");
-	*/
 
 	cgs.media.rollSound					= trap_S_RegisterSound( "sound/player/roll1.wav");
 
@@ -2350,15 +2333,6 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.endarkenmentShader	= trap_R_RegisterShader( "powerups/endarkenmentshell");
 	cgs.media.enlightenmentShader	= trap_R_RegisterShader( "powerups/enlightenmentshell");
 	cgs.media.invulnerabilityShader = trap_R_RegisterShader( "powerups/invulnerabilityshell");
-
-#ifdef JK2AWARDS
-	cgs.media.medalImpressive		= trap_R_RegisterShaderNoMip( "medal_impressive" );
-	cgs.media.medalExcellent		= trap_R_RegisterShaderNoMip( "medal_excellent" );
-	cgs.media.medalGauntlet			= trap_R_RegisterShaderNoMip( "medal_gauntlet" );
-	cgs.media.medalDefend			= trap_R_RegisterShaderNoMip( "medal_defend" );
-	cgs.media.medalAssist			= trap_R_RegisterShaderNoMip( "medal_assist" );
-	cgs.media.medalCapture			= trap_R_RegisterShaderNoMip( "medal_capture" );
-#endif
 
 	// Binocular interface
 	cgs.media.binocularCircle		= trap_R_RegisterShader( "gfx/2d/binCircle" );

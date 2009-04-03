@@ -1291,12 +1291,6 @@ void FireWeapon( gentity_t *ent, qboolean altFire )
 	float alert = 256;  //alert level for weapon alter events
 	//[/CoOp]
 
-	// track shots taken for accuracy tracking.  Grapple is not a weapon and gauntet is just not tracked
-	if( ent->s.weapon != WP_SABER&& ent->s.weapon != WP_MELEE ) 
-	{
-		ent->client->accuracy_shots++;
-	}
-
 	if ( ent && ent->client && ent->client->NPC_class == CLASS_VEHICLE )
 	{
 		FireVehicleWeapon( ent, altFire );

@@ -6533,6 +6533,9 @@ qboolean G_RadiusDamage ( vec3_t origin, gentity_t *attacker, float damage, floa
 			continue;
 		}
 
+		if(ent->health <= 0)
+			continue;
+
 		points = damage * ( 1.0 - dist / radius );
 
 		//[DodgeSys]
@@ -6561,7 +6564,6 @@ qboolean G_RadiusDamage ( vec3_t origin, gentity_t *attacker, float damage, floa
 			else
 			{
 				G_Damage (ent, missile, attacker, dir, origin, (int)points, DAMAGE_RADIUS, mod);
-				//G_Damage (ent, NULL, attacker, dir, origin, (int)points, DAMAGE_RADIUS, mod);
 				//[/Asteroids]
 			}
 
@@ -6667,14 +6669,14 @@ void G_DodgeDrain(gentity_t *victim, gentity_t *attacker, int amount)
 		return;
 	}
 
-	if(victim->flags &FL_GODMODE)
+	if(victim->flags & FL_GODMODE)
 		return;
 
 	if(victim->client && victim->client->ps.fd.forcePowersActive & (1 << FP_MANIPULATE))
 	{
 		amount /= 2;
 		if(amount < 1)
-			amount=1;
+			amount = 1;
 	}
 
 	victim->client->ps.stats[STAT_DODGE] -= amount;
@@ -6692,11 +6694,7 @@ void G_DodgeDrain(gentity_t *victim, gentity_t *attacker, int amount)
 
 	if(attacker && attacker->client)
 	{//attacker gets experience for causing damage.
-			
-		//don't want a divide by zero errors
-		//Bug fix: double negitive here, was firing only if skillPoints is NOT equal to zero.
 		assert(attacker->client->sess.skillPoints);
-		//assert(!attacker->client->sess.skillPoints);
 
 		//scale skill points based on the ratio between skills
 		AddSkill(attacker, 
