@@ -129,11 +129,6 @@ void WP_FireConcussionAlt( gentity_t *ent )
 					//G_PlayEffectID( G_EffectIndex( "concussion/alt_hit" ), tr.endpos, tr.plane.normal );
 					//no no no
 
-					if ( traceEnt->client && LogAccuracyHit( traceEnt, ent )) 
-					{//NOTE: hitting multiple ents can still get you over 100% accuracy
-						ent->client->accuracy_hits++;
-					} 
-
 					noKnockBack = (qboolean)(traceEnt->flags&FL_NO_KNOCKBACK);//will be set if they die, I want to know if it was on *before* they died
 					if ( traceEnt && traceEnt->client && traceEnt->client->NPC_class == CLASS_GALAKMECH )
 					{//hehe

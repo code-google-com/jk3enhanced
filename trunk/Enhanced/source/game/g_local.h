@@ -997,11 +997,6 @@ struct gclient_s {
 	int			damageBoxHandle_RLeg; //entity number of right leg damage box
 	int			damageBoxHandle_LLeg; //entity number of left leg damage box
 
-	int			accurateCount;		// for "impressive" reward sound
-
-	int			accuracy_shots;		// total number of shots
-	int			accuracy_hits;		// total number of hits
-
 	//
 	int			lastkilled_client;	// last client that this client killed
 	int			lasthurt_client;	// last client that damaged this client

@@ -261,18 +261,8 @@ void G_ExplodeMissile( gentity_t *ent ) {
 			ent->parent = &g_entities[ent->r.ownerNum];
 		}
 		//[/Asteroids]
-		if( G_RadiusDamage( ent->r.currentOrigin, ent->parent, ent->splashDamage, ent->splashRadius, ent, 
-				ent, ent->splashMethodOfDeath ) ) 
-		{
-			if (ent->parent)
-			{
-				g_entities[ent->parent->s.number].client->accuracy_hits++;
-			}
-			else if (ent->activator)
-			{
-				g_entities[ent->activator->s.number].client->accuracy_hits++;
-			}
-		}
+		G_RadiusDamage( ent->r.currentOrigin, ent->parent, ent->splashDamage, ent->splashRadius, ent, 
+				ent, ent->splashMethodOfDeath );
 	}
 
 	trap_LinkEntity( ent );
@@ -394,7 +384,6 @@ qboolean G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 //void G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 //[/DodgeSys]
 	gentity_t		*other;
-	qboolean		hitClient = qfalse;
 	qboolean		isKnockedSaber = qfalse;
 	//[DodgeSys]
 	int missileDmg;
@@ -446,19 +435,6 @@ qboolean G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 		//return;
 		//[/DodgeSys]
 	}
-
-	/*
-	if ( !other->takedamage && ent->s.weapon == WP_THERMAL && !ent->alt_fire )
-	{//rolling thermal det - FIXME: make this an eFlag like bounce & stick!!!
-		//G_BounceRollMissile( ent, trace );
-		if ( ent->owner && ent->owner->s.number == 0 ) 
-		{
-			G_MissileAddAlerts( ent );
-		}
-		//gi.linkentity( ent );
-		return;
-	}
-	*/
 
 	if ((other->r.contents & CONTENTS_LIGHTSABER) && !isKnockedSaber)
 	{ //hit this person's saber, so..
@@ -654,10 +630,6 @@ qboolean G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 			vec3_t	velocity;
 			qboolean didDmg = qfalse;
 
-			if( LogAccuracyHit( other, &g_entities[ent->r.ownerNum] ) ) {
-				g_entities[ent->r.ownerNum].client->accuracy_hits++;
-				hitClient = qtrue;
-			}
 			BG_EvaluateTrajectoryDelta( &ent->s.pos, level.time, velocity );
 			if ( VectorLength( velocity ) == 0 ) {
 				velocity[2] = 1;	// stepped on a grenade
@@ -674,63 +646,43 @@ qboolean G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 				{
 					G_Damage (other, ent, &g_entities[ent->r.ownerNum], velocity,
 						//[DodgeSys]
-						/*ent->s.origin*/ent->r.currentOrigin, missileDmg, 
-						/*ent->s.origin*///ent->r.currentOrigin, ent->damage, 
+						ent->r.currentOrigin, missileDmg, 
 						//[/DodgeSys]
 						DAMAGE_HALF_ABSORB, ent->methodOfDeath);
 					didDmg = qtrue;
 				}
 			}
 			else
-			//if(ent->s.weapon == WP_BLASTER || ent->s.weapon == WP_REPEATER
-			//|| ent->s.weapon == WP_BOWCASTER || ent->s.weapon == WP_BRYAR_PISTOL)
 				{
 					gentity_t *owner = &g_entities[ent->r.ownerNum];
 				float distance = VectorDistance(owner->r.currentOrigin,other->r.currentOrigin);
-				//G_Printf("Distance: %f\n",distance);
+
 				if(distance <= 100.0f)
 				{
 						G_Damage (other, ent, owner, velocity,
 						//[DodgeSys]
-						/*ent->s.origin*/ent->r.currentOrigin, missileDmg * 2,
-						/*ent->s.origin*///ent->r.currentOrigin, ent->damage, 
+						ent->r.currentOrigin, missileDmg * 2, 
 						//[/DodgeSys]
 						0, ent->methodOfDeath);
-//G_Printf("Damage: %i\n",missileDmg * 2);
 				}
 				else if (distance <= 300.0f)
 				{
 						G_Damage (other, ent, owner, velocity,
 						//[DodgeSys]
-						/*ent->s.origin*/ent->r.currentOrigin, missileDmg * 1.5,
-						/*ent->s.origin*///ent->r.currentOrigin, ent->damage, 
+						ent->r.currentOrigin, missileDmg * 1.5,
 						//[/DodgeSys]
 						0, ent->methodOfDeath);
-//G_Printf("Damage: %f\n",missileDmg * 1.5);
 				}
 				else
 				{
 				G_Damage (other, ent, &g_entities[ent->r.ownerNum], velocity,
 					//[DodgeSys]
-					/*ent->s.origin*/ent->r.currentOrigin, missileDmg,
-					/*ent->s.origin*///ent->r.currentOrigin, ent->damage, 
+					ent->r.currentOrigin, missileDmg,
 					//[/DodgeSys]
 					0, ent->methodOfDeath);
 				}
 				didDmg = qtrue;
 			}
-			//else
-			//{
-				
-				//G_Damage (other, ent, &g_entities[ent->r.ownerNum], velocity, //previous code
-					//[DodgeSys]
-					/*ent->s.origin*///ent->r.currentOrigin, missileDmg,
-					/*ent->s.origin*///ent->r.currentOrigin, ent->damage, 
-					//[/DodgeSys]
-					//0, ent->methodOfDeath);
-				//didDmg = qtrue;
-				
-			//}
 
 
 			if (didDmg && other && other->client)
@@ -824,13 +776,8 @@ killProj:
 	ent->takedamage = qfalse;
 	// splash damage (doesn't apply to person directly hit)
 	if ( ent->splashDamage ) {
-		if( G_RadiusDamage( trace->endpos, ent->parent, ent->splashDamage, ent->splashRadius, 
-			other, ent, ent->splashMethodOfDeath ) ) {
-			if( !hitClient 
-				&& g_entities[ent->r.ownerNum].client ) {
-				g_entities[ent->r.ownerNum].client->accuracy_hits++;
-			}
-		}
+		G_RadiusDamage( trace->endpos, ent->parent, ent->splashDamage, ent->splashRadius, 
+			other, ent, ent->splashMethodOfDeath );
 	}
 
 	if (ent->s.weapon == G2_MODEL_PART)
@@ -869,7 +816,6 @@ void G_RunMissile( gentity_t *ent ) {
 		{//only go into gravity mode if we're not stuck to something
 			ent->s.pos.trType = TR_GRAVITY;
 		}
-		//ent->s.pos.trType = TR_GRAVITY;
 		//[/SaberThrowSys]
 	}
 
@@ -898,16 +844,8 @@ void G_RunMissile( gentity_t *ent ) {
 	G_RealTrace( ent, &tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, origin, passent, ent->clipmask, -1, -1 );
 	//[/RealTrace]
 
-	if ( tr.startsolid || tr.allsolid ) {
-		// make sure the tr.entityNum is set to the entity we're stuck in
-		//[RealTrace]
-		//trap_Trace( &tr, ent->r.currentOrigin, ent->r.mins, ent->r.maxs, ent->r.currentOrigin, passent, ent->clipmask );
-		//tr.fraction = 0;
-		//[/RealTrace]
-	}
-	else {
+	if ( !tr.startsolid && !tr.allsolid ) 
 		VectorCopy( tr.endpos, ent->r.currentOrigin );
-	}
 
 	if (ent->passThroughNum && tr.entityNum == (ent->passThroughNum-1))
 	{

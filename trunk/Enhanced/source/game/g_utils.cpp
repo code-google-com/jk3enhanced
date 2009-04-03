@@ -1999,7 +1999,6 @@ void G_SetOrigin( gentity_t *ent, vec3_t origin ) {
 	{
 		ent->s.pos.trType = TR_STATIONARY;
 	}
-	//ent->s.pos.trType = TR_STATIONARY;
 	//[/CoOp]
 	ent->s.pos.trTime = 0;
 	ent->s.pos.trDuration = 0;
@@ -2015,14 +2014,6 @@ void G_SetOrigin( gentity_t *ent, vec3_t origin ) {
 		//racc - the SP code shows the waypoints as being this.  However the rest of the code uses WAYPOINT_NONE, so I'm trying that.
 		ent->waypoint = WAYPOINT_NONE;
 		ent->lastWaypoint = WAYPOINT_NONE;
-		//ent->waypoint = 0;
-		//ent->lastWaypoint = 0;
-		/* COOPFIXME RAFIXME - Impliment this nav code stuff?
-		if( NAV::HasPath( ent ) )
-		{
-			NAV::ClearPath( ent );
-		}
-		*/
 	}
 	//[/CoOp]
 }

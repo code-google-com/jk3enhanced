@@ -1972,6 +1972,77 @@ void SP_misc_ammo_floor_unit(gentity_t *ent)
 	//[CoOp]
 }
 
+/*
+================
+health_power_converter_use
+================
+*/
+void health_power_converter_use( gentity_t *self, gentity_t *other, gentity_t *activator)
+{
+	int dif,add;
+	int stop = 1;
+
+	if (!activator || !activator->client)
+	{
+		return;
+	}
+
+	if (self->setTime < level.time)
+	{
+		if (!self->s.loopSound)
+		{
+			self->s.loopSound = G_SoundIndex("sound/player/pickuphealth.wav");
+		}
+		self->setTime = level.time + 100;
+
+		dif = activator->client->ps.stats[STAT_MAX_HEALTH] - activator->health;
+
+		if (dif > 0)					// Already at full armor?
+		{
+			if (dif >/*MAX_AMMO_GIVE*/5)
+			{
+				add = 5;//MAX_AMMO_GIVE;
+			}
+			else
+			{
+				add = dif;
+			}
+
+			if (self->count<add)
+			{
+				add = self->count;
+			}
+
+			//self->count -= add;
+			stop = 0;
+
+			self->fly_sound_debounce_time = level.time + 500;
+			self->activator = activator;
+
+			activator->health += add;
+		}
+	}
+
+	if (stop)
+	{
+		self->s.loopSound = 0;
+		self->s.loopIsSoundset = qfalse;
+	}
+}
+
+void health_power_converter_die(gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod)
+{
+	vec3_t fxDir;
+
+	G_RadiusDamage(self->r.currentOrigin, self, 90, 128, self, self, MOD_SUICIDE);
+
+	VectorSet(fxDir, 1.0f, 0.0f, 0.0f);
+	G_PlayEffect(EFFECT_EXPLOSION_DETPACK, self->r.currentOrigin, fxDir);
+
+	self->think = G_FreeEntity;
+	self->nextthink = level.time;
+}
+
 /*QUAKED misc_shield_floor_unit (1 0 0) (-16 -16 0) (16 16 40)
 model="/models/items/a_shield_converter.md3"
 Gives shield energy when used.
@@ -1980,23 +2051,10 @@ Gives shield energy when used.
 "chargerate" - rechage 1 point every this many milliseconds (default 3000)
 "nodrain" - don't drain power from me
 */
-void SP_misc_shield_floor_unit( gentity_t *ent )
+void SP_misc_health_floor_unit( gentity_t *ent )
 {
 	vec3_t dest;
 	trace_t tr;
-
-	/*
-	if (g_gametype.integer != GT_CTF &&
-		g_gametype.integer != GT_CTY &&
-		//[CoOp]
-		g_gametype.integer != GT_SIEGE &&
-		g_gametype.integer != GT_SINGLE_PLAYER)
-		//g_gametype.intger != GT_SIEGE)
-		//[/CoOp]
-	{
-		G_FreeEntity( ent );
-		return;
-	}*/
 
 	VectorSet( ent->r.mins, -16, -16, 0 );
 	VectorSet( ent->r.maxs, 16, 16, 40 );
@@ -2008,7 +2066,7 @@ void SP_misc_shield_floor_unit( gentity_t *ent )
 	trap_Trace( &tr, ent->s.origin, ent->r.mins, ent->r.maxs, dest, ent->s.number, MASK_SOLID );
 	if ( tr.startsolid )
 	{
-		G_Printf ("SP_misc_shield_floor_unit: misc_shield_floor_unit startsolid at %s\n", vtos(ent->s.origin));
+		G_Printf ("SP_misc_health_floor_unit: misc_shield_floor_unit startsolid at %s\n", vtos(ent->s.origin));
 		G_FreeEntity( ent );
 		return;
 	}
@@ -2055,7 +2113,8 @@ void SP_misc_shield_floor_unit( gentity_t *ent )
 
 	ent->nextthink = level.time + 200;// + STATION_RECHARGE_TIME;
 
-	ent->use = shield_power_converter_use;
+	ent->use = health_power_converter_use;
+	ent->die = health_power_converter_die;
 
 	VectorCopy( ent->s.angles, ent->s.apos.trBase );
 	trap_LinkEntity (ent);
@@ -2263,64 +2322,6 @@ EnergyHealthStationSettings
 void EnergyHealthStationSettings(gentity_t *ent)
 {
 	G_SpawnInt( "count", "200", &ent->count );
-}
-
-/*
-================
-health_power_converter_use
-================
-*/
-void health_power_converter_use( gentity_t *self, gentity_t *other, gentity_t *activator)
-{
-	int dif,add;
-	int stop = 1;
-
-	if (!activator || !activator->client)
-	{
-		return;
-	}
-
-	if (self->setTime < level.time)
-	{
-		if (!self->s.loopSound)
-		{
-			self->s.loopSound = G_SoundIndex("sound/player/pickuphealth.wav");
-		}
-		self->setTime = level.time + 100;
-
-		dif = activator->client->ps.stats[STAT_MAX_HEALTH] - activator->health;
-
-		if (dif > 0)					// Already at full armor?
-		{
-			if (dif >/*MAX_AMMO_GIVE*/5)
-			{
-				add = 5;//MAX_AMMO_GIVE;
-			}
-			else
-			{
-				add = dif;
-			}
-
-			if (self->count<add)
-			{
-				add = self->count;
-			}
-
-			//self->count -= add;
-			stop = 0;
-
-			self->fly_sound_debounce_time = level.time + 500;
-			self->activator = activator;
-
-			activator->health += add;
-		}
-	}
-
-	if (stop)
-	{
-		self->s.loopSound = 0;
-		self->s.loopIsSoundset = qfalse;
-	}
 }
 
 void HealthPowerConverterDie(gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int mod)

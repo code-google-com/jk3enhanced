@@ -280,7 +280,7 @@ static void CG_RunFunction()
 		static char	buffer[MAX_STRING_CHARS];
 		trap_Argv(1,buffer,sizeof(buffer));
 
-		RunFunction(buffer);
+		//RunFunction(buffer);
 	}
 }
 #endif

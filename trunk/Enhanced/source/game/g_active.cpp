@@ -7,13 +7,9 @@
 extern void Jedi_Cloak( gentity_t *self );
 extern void Jedi_Decloak( gentity_t *self );
 
-
 qboolean PM_SaberInTransition( int move );
 qboolean PM_SaberInStart( int move );
 qboolean PM_SaberInReturn( int move );
-//[StanceSelection]
-//qboolean WP_SaberStyleValidForSaber( saberInfo_t *saber1, saberInfo_t *saber2, int saberHolstered, int saberAnimLevel );
-//[/StanceSelection]
 
 qboolean saberCheckKnockdown_DuelLoss(gentity_t *saberent, gentity_t *saberOwner, gentity_t *other);
 
@@ -257,20 +253,10 @@ void DoImpact( gentity_t *self, gentity_t *other, qboolean damageSelf )
 
 	magnitude = VectorLength( velocity ) * my_mass / 10;
 
-	/*
-	if(pointcontents(self.absmax)==CONTENT_WATER)//FIXME: or other watertypes
-		magnitude/=3;							//water absorbs 2/3 velocity
-
-	if(self.classname=="barrel"&&self.aflag)//rolling barrels are made for impacts!
-		magnitude*=3;
-
-	if(self.frozen>0&&magnitude<300&&self.flags&FL_ONGROUND&&loser==world&&self.velocity_z<-20&&self.last_onground+0.3<time)
-		magnitude=300;
-	*/
 	if ( other->material == MAT_GLASS 
 		|| other->material == MAT_GLASS_METAL 
 		|| other->material == MAT_GRATE1
-		|| ((other->flags&FL_BBRUSH)&&(other->spawnflags&8/*THIN*/))
+		|| ((other->flags&FL_BBRUSH)&&(other->spawnflags&8))
 		|| (other->r.svFlags&SVF_GLASS_BRUSH) )
 	{
 		easyBreakBrush = qtrue;
@@ -318,20 +304,8 @@ void DoImpact( gentity_t *self, gentity_t *other, qboolean damageSelf )
 				force /= 3;							//water absorbs 2/3 velocity
 			}
 
-			/*
-			if(self.frozen>0&&force>10)
-				force=10;
-			*/
-
 			if( ( force >= 1 && other->s.number != 0 ) || force >= 10)
 			{
-	/*			
-				dprint("Damage other (");
-				dprint(loser.classname);
-				dprint("): ");
-				dprint(ftos(force));
-				dprint("\n");
-	*/
 				if ( other->r.svFlags & SVF_GLASS_BRUSH )
 				{
 					other->splashRadius = (float)(self->r.maxs[0] - self->r.mins[0])/4.0f;
@@ -366,62 +340,23 @@ void DoImpact( gentity_t *self, gentity_t *other, qboolean damageSelf )
 					magnitude = (self->client->ps.fd.forceJumpZStart-self->r.currentOrigin[2])/3;
 				}
 			}
-			//if(self.classname!="monster_mezzoman"&&self.netname!="spider")//Cats always land on their feet
-			//[BugFix3]
-			//I'm pretty sure that this is something left over from SP.  ClientNum shouldn't have any relevence here.
-				if( ( magnitude >= 100 + self->health && self->s.weapon != WP_SABER ) || ( magnitude >= 700 ) )//&& self.safe_time < level.time ))//health here is used to simulate structural integrity
+
+			if( ( magnitude >= 100 + self->health && self->s.weapon != WP_SABER ) || ( magnitude >= 700 ) )
+			{
+				if ( (self->s.weapon == WP_SABER) && self->client && self->client->ps.groundEntityNum < ENTITYNUM_NONE && magnitude < 1000 )
+					magnitude /= 2;
+				magnitude /= 40;
+				magnitude = magnitude - force / 2;//If damage other, subtract half of that damage off of own injury
+				if ( magnitude >= 1 )
 				{
-					if ( (self->s.weapon == WP_SABER) && self->client && self->client->ps.groundEntityNum < ENTITYNUM_NONE && magnitude < 1000 )
-				/*
-				if( ( magnitude >= 100 + self->health && self->s.number != 0 && self->s.weapon != WP_SABER ) || ( magnitude >= 700 ) )//&& self.safe_time < level.time ))//health here is used to simulate structural integrity
-				{
-					if ( (self->s.weapon == WP_SABER || self->s.number == 0) && self->client && self->client->ps.groundEntityNum < ENTITYNUM_NONE && magnitude < 1000 )
-				*/
-			//[/BugFix3]
-					{//players and jedi take less impact damage
-						//allow for some lenience on high falls
-						magnitude /= 2;
-						/*
-						if ( self.absorb_time >= time )//crouching on impact absorbs 1/2 the damage
-						{
-							magnitude/=2;
-						}
-						*/
-					}
-					magnitude /= 40;
-					magnitude = magnitude - force/2;//If damage other, subtract half of that damage off of own injury
-					if ( magnitude >= 1 )
-					{
-		//FIXME: Put in a thingtype impact sound function
-		/*					
-						dprint("Damage self (");
-						dprint(self.classname);
-						dprint("): ");
-						dprint(ftos(magnitude));
-						dprint("\n");
-		*/
-						/*
-						if ( self.classname=="player_sheep "&& self.flags&FL_ONGROUND && self.velocity_z > -50 )
-							return;
-						*/
-						//[CoOp]
-						//[SuperDindon]
-						if (!self->noFallDamage)
-							G_Damage( self, NULL, NULL, NULL, self->r.currentOrigin, magnitude/2, DAMAGE_NO_ARMOR, MOD_FALLING );//FIXME: MOD_IMPACT
-						//[/CoOp]
-					}
+					//[CoOp]
+					//[SuperDindon]
+					if (!self->noFallDamage)
+						G_Damage( self, NULL, NULL, NULL, self->r.currentOrigin, magnitude/2, DAMAGE_NO_ARMOR, MOD_FALLING );//FIXME: MOD_IMPACT
+					//[/CoOp]
 				}
+			}
 		}
-
-		//FIXME: slow my velocity some?
-
-		// NOTENOTE We don't use lastimpact as of yet
-//		self->lastImpact = level.time;
-
-		/*
-		if(self.flags&FL_ONGROUND)
-			self.last_onground=time;
-		*/
 	}
 }
 
@@ -437,13 +372,6 @@ void Client_CheckImpactBBrush( gentity_t *self, gentity_t *other )
 	{ //hmm.. let's not let spectators ram into breakables.
 		return;
 	}
-
-	/*
-	if (BG_InSpecialJump(self->client->ps.legsAnim))
-	{ //don't do this either, qa says it creates "balance issues"
-		return;
-	}
-	*/
 
 	if ( other->material == MAT_GLASS 
 		|| other->material == MAT_GLASS_METAL 
@@ -660,33 +588,18 @@ void G_MoverTouchPushTriggers( gentity_t *ent, vec3_t oldOrg )
 		{
 			hit = &g_entities[touch[i]];
 
-			if ( hit->s.eType != ET_PUSH_TRIGGER )
-			{
-				continue;
-			}
-
-			if ( hit->touch == NULL ) 
-			{
-				continue;
-			}
-
-			if ( !( hit->r.contents & CONTENTS_TRIGGER ) ) 
-			{
-				continue;
-			}
-
-
-			if ( !trap_EntityContact( mins, maxs, hit ) ) 
+			if ( hit->s.eType != ET_PUSH_TRIGGER 
+				|| hit->touch == NULL 
+				|| !( hit->r.contents & CONTENTS_TRIGGER ) 
+				|| !trap_EntityContact( mins, maxs, hit ))
 			{
 				continue;
 			}
 
 			memset( &trace, 0, sizeof(trace) );
 
-			if ( hit->touch != NULL ) 
-			{
+			if ( hit->touch) 
 				hit->touch(hit, ent, &trace);
-			}
 		}
 	}
 }
@@ -815,16 +728,6 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 		if ( ent->health > client->ps.stats[STAT_MAX_HEALTH] ) {
 			ent->health--;
 		}
-
-		//[ExpSys]
-		/*
-		// count down armor when over max
-		if ( client->ps.stats[STAT_ARMOR] > client->ps.stats[STAT_MAX_HEALTH] ) {
-			client->ps.stats[STAT_ARMOR]--;
-		}
-		*/
-		//[/ExpSys]
-
 	}
 }
 
@@ -905,7 +808,6 @@ void G_CheapWeaponFire(int entNum, int ev)
                     if (rider->client->ps.weapon != WP_MELEE &&
 						//[BugFix42]
 						(rider->client->ps.weapon != WP_SABER || !BG_SabersOff(&rider->client->ps)))
-						//(rider->client->ps.weapon != WP_SABER || !rider->client->ps.saberHolstered))
 						//[/BugFix42]
 					{ //can only attack on speeder when using melee or when saber is holstered
 						break;

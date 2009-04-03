@@ -153,6 +153,10 @@ void CG_DrawArmorTicMethod(menuDef_t *menuHUD)
 	float			percent,quarterArmor;
 	int				i,currValue,inc;
 
+	calcColor[0] = 0;
+	calcColor[1] = 0;
+	calcColor[2] = 0;
+	calcColor[3] = 0;
 	ps = &cg.predictedPlayerState;
 
 	if (!menuHUD)

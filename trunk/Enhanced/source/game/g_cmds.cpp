@@ -45,7 +45,7 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 	int			stringlength;
 	int			i, j;
 	gclient_t	*cl;
-	int			numSorted, scoreFlags, accuracy, perfect;
+	int			numSorted, scoreFlags, perfect;
 
 	// send the latest information on all clients
 	string[0] = 0;
@@ -64,35 +64,22 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 
 		cl = &level.clients[level.sortedClients[i]];
 
-		if ( cl->pers.connected == CON_CONNECTING ) {
+		if ( cl->pers.connected == CON_CONNECTING )
 			ping = -1;
-		//[BotTweaks] 
-		//[ClientNumFix]
-		} else if ( g_entities[level.sortedClients[i]].r.svFlags & SVF_BOT )
-		//} else if ( g_entities[cl->ps.clientNum]r.svFlags & SVF_BOT )
-		//[/ClientNumFix]
-		{//make fake pings for bots.
+		else if ( g_entities[level.sortedClients[i]].r.svFlags & SVF_BOT )
 			ping = Q_irand(50, 150);
-		//[/BotTweaks]
-		} else {
+		else 
 			ping = cl->ps.ping < 999 ? cl->ps.ping : 999;
-		}
 
-		if( cl->accuracy_shots ) {
-			accuracy = cl->accuracy_hits * 100 / cl->accuracy_shots;
-		}
-		else {
-			accuracy = 0;
-		}
 		perfect = ( cl->ps.persistant[PERS_RANK] == 0 && cl->ps.persistant[PERS_KILLED] == 0 ) ? 1 : 0;
 
 		Com_sprintf (entry, sizeof(entry),
 			//[ExpSys]
-			" %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i ", level.sortedClients[i],
+			" %i %i %i %i %i %i %i %i %i %i %i %i %i %i ", level.sortedClients[i],
 			//" %i %i %i %i %i %i %i %i %i %i %i %i %i %i", level.sortedClients[i],
 			//[/ExpSys]
 			cl->ps.persistant[PERS_SCORE], ping, (level.time - cl->pers.enterTime)/60000,
-			scoreFlags, g_entities[level.sortedClients[i]].s.powerups, accuracy, 
+			scoreFlags, g_entities[level.sortedClients[i]].s.powerups, 
 			cl->ps.persistant[PERS_IMPRESSIVE_COUNT],
 			cl->ps.persistant[PERS_EXCELLENT_COUNT],
 			cl->ps.persistant[PERS_GAUNTLET_FRAG_COUNT], 
@@ -3853,7 +3840,7 @@ extern void Delete_Autosaves(gentity_t* ent);
 extern void G_Knockdown( gentity_t *self, gentity_t *attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock );
 //[/KnockdownSys]
 extern void SetupReload(gentity_t *ent);
-extern void SP_misc_model_health_power_converter( gentity_t *ent );
+extern void SP_misc_health_floor_unit( gentity_t *ent );
 
 void ClientCommand( int clientNum ) {
 	gentity_t *ent;
@@ -3908,12 +3895,35 @@ void ClientCommand( int clientNum ) {
 	{
 		gentity_t *hl = G_Spawn();
 		VectorCopy(ent->client->ps.origin, hl->s.origin);
+		/*
 		hl->model = "models/items/power_converter.md3";
 		//Q_strncpyz(hl->model, , sizeof("models/items/power_converter.md3"));
 		hl->s.modelindex = G_ModelIndex( hl->model );
 		hl->health = 500;
-		SP_misc_model_health_power_converter(hl);
+		SP_misc_model_health_power_converter(hl);*/
+		SP_misc_health_floor_unit(hl);
+		G_SpawnInt("nodrain", "0", &hl->genericValue12);
+		hl->takedamage = qtrue;
+		hl->maxHealth = hl->health = 999;
 		return;
+	}
+
+	if(Q_stricmp(cmd, "ccover") == 0)
+	{
+		gentity_t* cover = G_Spawn();
+		VectorCopy(ent->client->ps.origin, cover->s.origin);
+		SP_misc_health_floor_unit(cover);
+		trap_UnlinkEntity(cover);
+		cover->model = "models/map_objects/imperial/crate_02.md3";
+		cover->s.modelindex = G_ModelIndex( cover->model );
+		cover->takedamage = qfalse;
+		cover->s.shouldtarget = qfalse;
+		cover->r.svFlags &= ~SVF_PLAYER_USABLE;
+		cover->use = 0;
+		cover->think = 0;
+
+		cover->s.health = cover->s.maxhealth = 0;
+		trap_LinkEntity(cover);
 	}
 
 	if(Q_stricmp(cmd, "givemercon") == 0)

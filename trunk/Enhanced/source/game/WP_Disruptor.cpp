@@ -155,11 +155,6 @@ void WP_DisruptorMainFire( gentity_t *ent )
 	{
 		if ( tr.entityNum < ENTITYNUM_WORLD && traceEnt->takedamage )
 		{
-			if ( traceEnt->client && LogAccuracyHit( traceEnt, ent )) 
-			{
-				ent->client->accuracy_hits++;
-			} 
-
 			G_Damage( traceEnt, ent, ent, forward, tr.endpos, damage, DAMAGE_NORMAL, MOD_DISRUPTOR );
 
 			tent = G_TempEntity( tr.endpos, EV_DISRUPTOR_HIT );
@@ -366,13 +361,7 @@ void WP_DisruptorAltFire( gentity_t *ent )
 				tent->s.eventParm = DirToByte(tr.plane.normal);
 				tent->s.eFlags |= EF_ALT_FIRING;
 
-				if ( LogAccuracyHit( traceEnt, ent )) 
-				{
-					if (ent->client)
-					{
-						ent->client->accuracy_hits++;
-					}
-				}
+				LogAccuracyHit( traceEnt, ent );
 			} 
 			else 
 			{
