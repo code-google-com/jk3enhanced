@@ -1670,9 +1670,9 @@ void ItemUse_UseCloak( gentity_t *ent )
 
 void SpecialItemThink(gentity_t *ent)
 {
-	float gravity = 3.0f;
+	float gravity = 1.0f;
 	float mass = 0.09f;
-	float bounce = 1.1f;
+	float bounce = 2.1f;
 
 	if (ent->genericValue5 < level.time)
 	{
@@ -3751,7 +3751,7 @@ void G_RunItem( gentity_t *ent ) {
 	// check think function
 	G_RunThink( ent );
 
-	if ( tr.fraction == 1 ) {
+	if ( tr.fraction == 1) {
 		return;
 	}
 

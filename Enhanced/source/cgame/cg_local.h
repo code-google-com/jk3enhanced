@@ -711,7 +711,6 @@ typedef struct {
 	int				time;
 	int				scoreFlags;
 	int				powerUps;
-	int				accuracy;
 	int				impressiveCount;
 	int				excellentCount;
 	int				guantletCount;

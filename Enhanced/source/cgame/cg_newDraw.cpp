@@ -497,9 +497,6 @@ void CG_DrawMedal(int ownerDraw, rectDef_t *rect, float scale, vec4_t color, qha
 	color[3] = 0.25;
 
 	switch (ownerDraw) {
-		case CG_ACCURACY:
-			value = score->accuracy;
-			break;
 		case CG_ASSISTS:
 			value = score->assistCount;
 			break;
@@ -525,19 +522,13 @@ void CG_DrawMedal(int ownerDraw, rectDef_t *rect, float scale, vec4_t color, qha
 
 	if (value > 0) {
 		if (ownerDraw != CG_PERFECT) {
-			if (ownerDraw == CG_ACCURACY) {
-				text = va("%i%%", (int)value);
-				if (value > 50) {
-					color[3] = 1.0;
-				}
-			} else {
-				text = va("%i", (int)value);
+			text = va("%i", (int)value);
+			color[3] = 1.0;
+		} 
+		else 
+		{
+			if (value) 
 				color[3] = 1.0;
-			}
-		} else {
-			if (value) {
-				color[3] = 1.0;
-			}
 			text = "Wow";
 		}
 	}

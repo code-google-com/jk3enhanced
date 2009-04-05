@@ -3176,7 +3176,7 @@ void player_touch(gentity_t *self, gentity_t *other, trace_t *trace )
 		float speed = (vec_t)sqrt (other->client->ps.velocity[0]*
 			other->client->ps.velocity[0] + other->client->ps.velocity[1]*
 			other->client->ps.velocity[1])/2;
-		G_Printf("Speed %f\n",speed);
+
 		if(speed > 50)
 		{
 			int damage = (speed >= 100 ? 35 : 10);

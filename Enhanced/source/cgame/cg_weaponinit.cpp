@@ -120,7 +120,7 @@ void CG_RegisterWeapon( int weaponNum) {
 		weaponInfo->missileModel		= NULL_HANDLE;
 		weaponInfo->missileSound		= NULL_SOUND;
 		weaponInfo->missileDlight		= 0;
-		//weaponInfo->missileDlightColor= {0,0,0};
+
 		weaponInfo->missileHitSound		= NULL_SOUND;
 		weaponInfo->missileTrailFunc	= FX_ConcussionProjectileThink;
 
@@ -131,7 +131,7 @@ void CG_RegisterWeapon( int weaponNum) {
 		weaponInfo->altMissileModel		= NULL_HANDLE;
 		weaponInfo->altMissileSound		= NULL_SOUND;
 		weaponInfo->altMissileDlight	= 0;
-		//weaponInfo->altMissileDlightColor= {0,0,0};
+
 		weaponInfo->altMissileHitSound	= NULL_SOUND;
 		weaponInfo->altMissileTrailFunc = FX_ConcussionProjectileThink;
 
@@ -187,18 +187,16 @@ void CG_RegisterWeapon( int weaponNum) {
 
 	case WP_BLASTER:
 	case WP_EMPLACED_GUN: //rww - just use the same as this for now..
+		//Handles by scripting:
 		//weaponInfo->selectSound			= trap_S_RegisterSound("sound/weapons/blaster/select.wav");
-		//weaponInfo->muzzleEffect		= trap_FX_RegisterEffect( "blaster/muzzle_flash" );
 		//weaponInfo->flashSound[0]		= trap_S_RegisterSound( "sound/weapons/blaster/fire.wav");
-
-		weaponInfo->selectSound			= trap_S_RegisterSound("sound/weapons/blaster/select.wav");
-
-		weaponInfo->flashSound[0]		= trap_S_RegisterSound( "sound/weapons/blaster/fire.wav");
-		weaponInfo->firingSound			= NULL_SOUND;
-		weaponInfo->chargeSound			= NULL_SOUND;
-		weaponInfo->muzzleEffect		= trap_FX_RegisterEffect( "blaster/muzzle_flash" );
+		//weaponInfo->firingSound			= NULL_SOUND;
+		//weaponInfo->muzzleEffect		= trap_FX_RegisterEffect( "blaster/muzzle_flash" );
+		//weaponInfo->chargeSound			= NULL_SOUND;
+		//weaponInfo->missileSound		= NULL_SOUND;
+		
 		weaponInfo->missileModel		= NULL_HANDLE;
-		weaponInfo->missileSound		= NULL_SOUND;
+		
 		weaponInfo->missileDlight		= 0;
 		weaponInfo->missileHitSound		= NULL_SOUND;
 		weaponInfo->missileTrailFunc	= FX_BlasterProjectileThink;
@@ -218,13 +216,8 @@ void CG_RegisterWeapon( int weaponNum) {
 		cgs.effects.blasterWallImpactEffect		= trap_FX_RegisterEffect( "blaster/wall_impact" );
 		cgs.effects.blasterFleshImpactEffect	= trap_FX_RegisterEffect( "blaster/flesh_impact" );
 		cgs.effects.blasterDroidImpactEffect	= trap_FX_RegisterEffect( "blaster/droid_impact" );
-		/*
-		if(!didItAlready)
-		{
-			RunScript("E11.nut");
-			RunFunction("LoadE11Effects");
-			didItAlready = qtrue;
-		}*/
+		RunScript("E11.nut");
+		RunFunction("LoadE11Effects");
 
 		break;
 
