@@ -49,6 +49,16 @@ public:
 		cg_weapons[WP_BLASTER].firingSound = sfx;
 	}
 
+	static void SetChargeSound(sfxHandle_t sfx)
+	{
+		cg_weapons[WP_BLASTER].chargeSound = sfx;
+	}
+
+	static void SetMissileSound(sfxHandle_t sfx)
+	{
+		cg_weapons[WP_BLASTER].missileSound = sfx;
+	}
+
 	E11Test() {}
 };
 
@@ -74,11 +84,13 @@ void LoadSquirrel(void)
 	BindConstant<int>(NULL_SOUND,"NULL_SOUND");
 	BindConstant<int>(NULL_HANDLE,"NULL_HANDLE");
 
-	SQClassDef<E11Test>("E11").
-		staticFunc(&E11Test::SetMuzzleEffect,"SetMuzzleEffect").
-		staticFunc(&E11Test::SetFlashSound,"SetFlashSound").
-		staticFunc(&E11Test::SetSelectSound,"SetSelectSound").
-		staticFunc(&E11Test::SetFiringSound,"SetFiringSound");
+	SQClassDef<E11Test>("E11")
+		.staticFunc(&E11Test::SetMuzzleEffect,"SetMuzzleEffect")
+		.staticFunc(&E11Test::SetFlashSound,"SetFlashSound")
+		.staticFunc(&E11Test::SetSelectSound,"SetSelectSound")
+		.staticFunc(&E11Test::SetFiringSound,"SetFiringSound")
+		.staticFunc(&E11Test::SetChargeSound,"SetChargeSound")
+		.staticFunc(&E11Test::SetMissileSound,"SetMissileSound");
 
 }
 

@@ -3758,10 +3758,11 @@ static int G_ClientNumFromNetname(char *name)
 	{
 		ent = &g_entities[i];
 
-		if (ent->inuse && ent->client &&
-			!Q_stricmp(ent->client->pers.netname, name))
+		if (ent->inuse && ent->client)
 		{
-			return ent->s.number;
+			char* oname = ent->client->pers.netname;
+			if(!Q_stricmp(Q_CleanStr(oname), Q_CleanStr(name)))
+				return ent->s.number;
 		}
 		i++;
 	}
@@ -3847,8 +3848,6 @@ void ClientCommand( int clientNum ) {
 //	gentity_t *targetplayer;
 	char	cmd[MAX_TOKEN_CHARS];
 	char	cmd2[MAX_TOKEN_CHARS];
-	//char	cmd3[MAX_TOKEN_CHARS];
-//	float		bounty;
 
 	ent = g_entities + clientNum;
 	if ( !ent->client ) {
@@ -3921,8 +3920,17 @@ void ClientCommand( int clientNum ) {
 		cover->r.svFlags &= ~SVF_PLAYER_USABLE;
 		cover->use = 0;
 		cover->think = 0;
-
+		cover->classname = "ccover";
+		cover->physicsObject = qtrue;
 		cover->s.health = cover->s.maxhealth = 0;
+
+		cover->s.pos.trType = TR_GRAVITY;
+		cover->s.pos.trTime = level.time;
+		VectorCopy( cover->s.origin, cover->s.pos.trBase );
+
+		//VectorCopy( velocity, le->pos.trDelta );
+		//VectorSet(le->angles.trBase, 20, 20, 20);
+
 		trap_LinkEntity(cover);
 	}
 

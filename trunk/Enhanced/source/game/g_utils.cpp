@@ -1886,8 +1886,7 @@ tryJetPack:
 		}
 	}
 
-	if ( (ent->client->ps.stats[STAT_HOLDABLE_ITEMS] & (1 << HI_AMMODISP)) /*&&
-		G_ItemUsable(&ent->client->ps, HI_AMMODISP)*/ )
+	if (ent->client->ps.stats[STAT_HOLDABLE_ITEMS] & (1 << HI_AMMODISP))
 	{ //if you used nothing, then try spewing out some ammo
 		trace_t trToss;
 		vec3_t fAng;
