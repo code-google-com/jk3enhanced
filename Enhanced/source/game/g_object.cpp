@@ -183,15 +183,6 @@ void G_RunObject( gentity_t *ent )
 	traceEnt = &g_entities[tr.entityNum];
 	if ( tr.fraction || (traceEnt && traceEnt->takedamage) )
 	{
-		if ( !VectorCompare( ent->r.currentOrigin, oldOrg ) )
-		{//moved and impacted
-			if ( (traceEnt && traceEnt->takedamage) )
-			{//hurt someone
-//				G_Sound( ent, G_SoundIndex( "sound/movers/objects/objectHurt.wav" ) );
-			}
-//			G_Sound( ent, G_SoundIndex( "sound/movers/objects/objectHit.wav" ) );
-		}
-
 		if (ent->s.weapon != WP_SABER)
 		{
 			DoImpact( ent, traceEnt, qtrue );
@@ -200,8 +191,6 @@ void G_RunObject( gentity_t *ent )
 
 	if ( !ent || (ent->takedamage&&ent->health <= 0) )
 	{//been destroyed by impact
-		//chunks?
-//		G_Sound( ent, G_SoundIndex( "sound/movers/objects/objectBreak.wav" ) );
 		return;
 	}
 
@@ -246,8 +235,6 @@ void G_RunObject( gentity_t *ent )
 	{
 		ent->s.apos.trType = TR_STATIONARY;
 		pitch_roll_for_slope( ent, tr.plane.normal );
-		//ent->r.currentAngles[0] = 0;//FIXME: match to slope
-		//ent->r.currentAngles[2] = 0;//FIXME: match to slope
 		VectorCopy( ent->r.currentAngles, ent->s.apos.trBase );
 	}
 

@@ -2097,6 +2097,7 @@ extern void BubbleShield_TurnOff(gentity_t *self);
 //[SaberSys]
 void AddFatigueKillBonus( gentity_t *attacker, gentity_t *victim );
 //[/SaberSys]
+extern void survivor_npc_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int meansOfDeath );
 void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int meansOfDeath ) {
 
 	int			anim;
@@ -2113,6 +2114,10 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	qboolean	tempInflictor = qfalse;
 	int			actualMOD = meansOfDeath;
 	//[/Asteroids]
+
+	if(self->genericValue10)
+		survivor_npc_die(self, inflictor, attacker, damage, meansOfDeath);
+
 	if(MOD==MOD_THERMAL_SPLASH||MOD==MOD_THERMAL)
 	{
 		self->s.eFlags|=EF_DISINTEGRATION;

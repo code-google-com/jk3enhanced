@@ -1543,7 +1543,6 @@ Don't place this
 		0, 0, 0},
 /* view */		"models/weapons2/disruptor/disruptor.md3", 
 /* icon */		"gfx/hud/w_icon_disruptor",
-/* pickup *///	"Tenloss Disruptor Rifle",
 		100,
 		IT_WEAPON,
 		WP_DISRUPTOR,

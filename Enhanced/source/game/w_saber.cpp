@@ -3482,7 +3482,7 @@ int OJP_SaberBlockCost(gentity_t *defender, gentity_t *attacker, vec3_t hitLoc)
 					saberBlockCost=temp1*temp2;
 				}
 			}
-			if(defender->client->ps.weapon == WP_SABER &&
+			if(attacker->activator && attacker->activator->client && defender->client->ps.weapon == WP_SABER &&
 				defender->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_3 && attacker->activator->client->ps.weapon != WP_BRYAR_PISTOL)
 				saberBlockCost--;//Manually deflecting
 

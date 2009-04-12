@@ -3901,6 +3901,8 @@ void CG_PmoveClientPointerUpdate();
 void WP_SaberLoadParms( void );
 void BG_VehicleLoadParms( void );
 
+void LoadSquirrel(void);
+void CloseSquirrel(void);
 
 //[WEAPONSDAT]
 extern void BG_LoadWeaponsData();
@@ -3920,11 +3922,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum )
 	const char	*s;
 	int i = 0;
 
-	/*
-	#ifdef SQUIRREL
-		LoadSquirrel();
-	#endif
-	*/
+	LoadSquirrel();
 
 	BG_InitAnimsets(); //clear it out
 
@@ -4165,6 +4163,22 @@ Ghoul2 Insert End
 	//now get all the cgame only cents
 	CG_SpawnCGameOnlyEnts();
 
+	cvar_t *cvar = Cvar_FindVar("r_dynamicglowheight");
+	cvar->flags &= ~CVAR_CHEAT;
+	cvar->flags &= ~CVAR_LATCH;
+	cvar = Cvar_FindVar("r_dynamicglowwidth");
+	cvar->flags &= ~CVAR_CHEAT;
+	cvar->flags &= ~CVAR_LATCH;
+	cvar = Cvar_FindVar("r_dynamicglowdelta");
+	cvar->flags &= ~CVAR_CHEAT;
+	cvar->flags &= ~CVAR_LATCH;
+	cvar = Cvar_FindVar("r_dynamicglowpasses");
+	cvar->flags &= ~CVAR_CHEAT;
+	cvar->flags &= ~CVAR_LATCH;
+	cvar = Cvar_FindVar("r_dynamicglowintensity");
+	cvar->flags &= ~CVAR_CHEAT;
+	cvar->flags &= ~CVAR_LATCH;
+
 }
 
 //makes sure returned string is in localized format
@@ -4258,11 +4272,7 @@ void CG_Shutdown( void )
 	// some mods may need to do cleanup work here,
 	// like closing files or archiving session data
 
-/*
-#ifdef SQUIRREL
 	CloseSquirrel();
-#endif
-*/
 }
 
 /*

@@ -4691,11 +4691,6 @@ gentity_t *NPC_SpawnType( gentity_t *ent, char *npc_type, char *targetname, qboo
 	NPCspawner->count = 1;
 
 	NPCspawner->delay = 0;
-
-	//NPCspawner->spawnflags |= SFB_NOTSOLID;
-
-	//NPCspawner->playerTeam = TEAM_FREE;
-	//NPCspawner->behaviorSet[BSET_SPAWN] = "common/guard";
 	
 	if ( isVehicle )
 	{
@@ -4705,82 +4700,76 @@ gentity_t *NPC_SpawnType( gentity_t *ent, char *npc_type, char *targetname, qboo
 	//[CoOp]
 	//converted this stuff into a special function.
 	NPC_PrecacheByClassName(NPCspawner->NPC_type);
+	//[/CoOp]
 
+	return (NPC_Spawn_Do( NPCspawner ));
+}
+
+gentity_t *NPC_SpawnType( vec3_t loc, char *npc_type, char *targetname, qboolean isVehicle ) 
+{
+	gentity_t		*NPCspawner = G_Spawn();
+	//vec3_t			forward, end;
+	//trace_t			trace;
+
+	if(!NPCspawner)
+	{
+		Com_Printf( S_COLOR_RED"NPC_Spawn Error: Out of entities!\n" );
+		return NULL;
+	}
+
+	NPCspawner->think = G_FreeEntity;
+	NPCspawner->nextthink = level.time + FRAMETIME;
+	
+	if ( !npc_type )
+	{
+		return NULL;
+	}
+
+	if (!npc_type[0])
+	{
+		Com_Printf( S_COLOR_RED"Error, expected one of:\n"S_COLOR_WHITE" NPC spawn [NPC type (from ext_data/NPCs)]\n NPC spawn vehicle [VEH type (from ext_data/vehicles)]\n" );
+		return NULL;
+	}
+
+	//rwwFIXMEFIXME: Care about who is issuing this command/other clients besides 0?
+	//Spawn it at spot of first player
+	//FIXME: will gib them!
 	/*
-	//call precache funcs for James' builds
-	if ( !Q_stricmp( "gonk", NPCspawner->NPC_type))
+	AngleVectors(ent->client->ps.viewangles, forward, NULL, NULL);
+	VectorNormalize(forward);
+	VectorMA(ent->r.currentOrigin, 64, forward, end);
+	trap_Trace(&trace, ent->r.currentOrigin, NULL, NULL, end, 0, MASK_SOLID);
+	VectorCopy(trace.endpos, end);
+	end[2] -= 24;
+	trap_Trace(&trace, trace.endpos, NULL, NULL, end, 0, MASK_SOLID);
+	VectorCopy(trace.endpos, end);
+	end[2] += 24;*/
+	G_SetOrigin(NPCspawner, loc);
+	VectorCopy(NPCspawner->r.currentOrigin, NPCspawner->s.origin);
+	//set the yaw so that they face away from player
+	//NPCspawner->s.angles[1] = ent->client->ps.viewangles[1];
+
+	trap_LinkEntity(NPCspawner);
+
+	NPCspawner->NPC_type = G_NewString( npc_type );
+
+	if ( targetname )
 	{
-		NPC_Gonk_Precache();
+		NPCspawner->NPC_targetname = G_NewString(targetname);
 	}
-	else if ( !Q_stricmp( "mouse", NPCspawner->NPC_type))
+
+	NPCspawner->count = 1;
+
+	NPCspawner->delay = 0;
+	
+	if ( isVehicle )
 	{
-		NPC_Mouse_Precache();
+		NPCspawner->classname = "NPC_Vehicle";
 	}
-	else if ( !Q_strncmp( "r2d2", NPCspawner->NPC_type, 4))
-	{
-		NPC_R2D2_Precache();
-	}
-	else if ( !Q_stricmp( "atst", NPCspawner->NPC_type))
-	{
-		NPC_ATST_Precache();
-	}
-	else if ( !Q_strncmp( "r5d2", NPCspawner->NPC_type, 4))
-	{
-		NPC_R5D2_Precache();
-	}
-	else if ( !Q_stricmp( "mark1", NPCspawner->NPC_type))
-	{
-		NPC_Mark1_Precache();
-	}
-	else if ( !Q_stricmp( "mark2", NPCspawner->NPC_type))
-	{
-		NPC_Mark2_Precache();
-	}
-	else if ( !Q_stricmp( "interrogator", NPCspawner->NPC_type))
-	{
-		NPC_Interrogator_Precache(NULL);
-	}
-	else if ( !Q_stricmp( "probe", NPCspawner->NPC_type))
-	{
-		NPC_Probe_Precache();
-	}
-	else if ( !Q_stricmp( "seeker", NPCspawner->NPC_type))
-	{
-		NPC_Seeker_Precache();
-	}
-	else if ( !Q_stricmp( "remote", NPCspawner->NPC_type))
-	{
-		NPC_Remote_Precache();
-	}
-	else if ( !Q_strncmp( "shadowtrooper", NPCspawner->NPC_type, 13 ) )
-	{
-		NPC_ShadowTrooper_Precache();
-	}
-	else if ( !Q_stricmp( "minemonster", NPCspawner->NPC_type ))
-	{
-		NPC_MineMonster_Precache();
-	}
-	else if ( !Q_stricmp( "howler", NPCspawner->NPC_type ))
-	{
-		NPC_Howler_Precache();
-	}
-	else if ( !Q_stricmp( "sentry", NPCspawner->NPC_type ))
-	{
-		NPC_Sentry_Precache();
-	}
-	else if ( !Q_stricmp( "protocol", NPCspawner->NPC_type ))
-	{
-		NPC_Protocol_Precache();
-	}
-	else if ( !Q_stricmp( "galak_mech", NPCspawner->NPC_type ))
-	{
-		NPC_GalakMech_Precache();
-	}
-	else if ( !Q_stricmp( "wampa", NPCspawner->NPC_type ))
-	{
-		NPC_Wampa_Precache();
-	}
-	*/
+
+	//[CoOp]
+	//converted this stuff into a special function.
+	NPC_PrecacheByClassName(NPCspawner->NPC_type);
 	//[/CoOp]
 
 	return (NPC_Spawn_Do( NPCspawner ));

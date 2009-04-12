@@ -749,7 +749,7 @@ typedef struct weaponInfo_s {
 
 	qhandle_t		ammoModel;
 
-	sfxHandle_t		flashSound[4];		// fast firing weapons randomly choose
+	sfxHandle_t		flashSound;		// fast firing weapons randomly choose
 	sfxHandle_t		firingSound;
 	sfxHandle_t		chargeSound;
 	fxHandle_t		muzzleEffect;
@@ -761,7 +761,7 @@ typedef struct weaponInfo_s {
 	int				missileRenderfx;
 	sfxHandle_t		missileHitSound;
 
-	sfxHandle_t		altFlashSound[4];
+	sfxHandle_t		altFlashSound;
 	sfxHandle_t		altFiringSound;
 	sfxHandle_t		altChargeSound;
 	fxHandle_t		altMuzzleEffect;
@@ -2786,6 +2786,9 @@ void *CG_G2WeaponInstance(centity_t *cent, int weapon);
 void CG_CheckPlayerG2Weapons(playerState_t *ps, centity_t *cent);
 
 void CG_SetSiegeTimerCvar( int msec );
+
+//g_engine.cpp
+cvar_t *Cvar_FindVar(const char *cvarname);
 
 /*
 Ghoul2 Insert End

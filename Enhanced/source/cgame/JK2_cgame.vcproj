@@ -628,6 +628,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\g_engine.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\game\q_math.cpp"
 				>
 			</File>

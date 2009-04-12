@@ -1623,7 +1623,7 @@
 			forecolor				1 0.2 0.2 1
 			border					0
 			bordercolor				0 0 0 0
-			descText				"SHIELDZ LOL"
+			descText				"Gives the user shields, which help protect the user from damage"
 			visible					1 
 			action 
 			{ 
