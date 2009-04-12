@@ -809,6 +809,11 @@ trap_FS_FCloseFile(f);//[TicketFix143]
 	}
 	//[/ExpSys]
 
+	if(bs->saberSpecialist)
+	{
+		bs->forceinfo[FP_SABER_DEFENSE + 4] = '3';
+	}
+
 	//[StanceSelection]
 	//add stance skills for Bots
 	if(bs->forceinfo[FP_SABER_OFFENSE + 4] > 0)

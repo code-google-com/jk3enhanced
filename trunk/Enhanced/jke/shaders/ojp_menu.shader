@@ -88,15 +88,13 @@ ojp/menu/metalpipe3
 	}
 }
 
-
 ojp/menu/mainvideo
 {
-    {
-        videoMap ojp/menu/mainvideo
-    }
+   {
+        //videoMap ojp/menu/mainvideo
+		videoMap jkemainvideo
+   }
 }
-
-
 
 menu/obiwan
 {

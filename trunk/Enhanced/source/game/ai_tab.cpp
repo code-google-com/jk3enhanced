@@ -6015,11 +6015,11 @@ int OJP_PassStandardEnemyChecks(bot_state_t *bs, gentity_t *en)
 		return 0;
 	}
 
-	if(g_entities[bs->client].client->sess.sessionTeam == en->s.teamowner)
-		return 0;
-
 	if(en->client)
 	{//client based checks.
+
+		if(en->client->ps.powerups[PW_CLOAKED])
+			return 0;
 
 		if (en->client->ps.pm_type == PM_INTERMISSION ||
 			en->client->ps.pm_type == PM_SPECTATOR ||

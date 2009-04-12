@@ -1633,7 +1633,7 @@
 			forecolor				1 0.2 0.2 1
 			border					0
 			bordercolor				0 0 0 0
-			descText				"Manipulate people, duh."
+			descText				"Allows the user to manipulate their surroundings"
 			visible					1 
 			action 
 			{ 

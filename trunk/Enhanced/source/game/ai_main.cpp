@@ -1050,65 +1050,9 @@ int BotAISetupClient(int client, struct bot_settings_s *settings, qboolean resta
 	bs->botWeaponWeights[WP_FLECHETTE] = 17;
 	bs->botWeaponWeights[WP_ROCKET_LAUNCHER] = 18;
 	bs->botWeaponWeights[WP_THERMAL] = 14;
-	//[BotTweaks] UNIQUEFIXME - wha?
-//	bs->botWeaponWeights[WP_GRENADE] = 3;
 	bs->botWeaponWeights[WP_GRENADE] = 0;
-	//[/BotTweaks]UNIQUEFIXME - wha?
 	bs->botWeaponWeights[WP_DET_PACK] = 0;
 	bs->botWeaponWeights[WP_MELEE] = 1;
-	//[NewWeapons][EnhancedImpliment]
-	/*
-	bs->botWeaponWeights[WP_BRYAR_OLD] = 1;
-	bs->botWeaponWeights[WP_ZAM_BLASTER] = 2;
-	bs->botWeaponWeights[WP_NABOO_BLASTER] = 2;
-	bs->botWeaponWeights[WP_NONE2] = 0;
-	bs->botWeaponWeights[WP_FLAMETHROWER] = 17;
-	bs->botWeaponWeights[WP_FREE2] = 0;
-	bs->botWeaponWeights[WP_FREE3] = 0;
-	bs->botWeaponWeights[WP_FREE4] = 0;
-	bs->botWeaponWeights[WP_FREE5] = 0;
-	bs->botWeaponWeights[WP_FREE6] = 0;
-	bs->botWeaponWeights[WP_FREE7] = 0;
-	bs->botWeaponWeights[WP_FREE8] = 0;
-	bs->botWeaponWeights[WP_DKA_ARM] = 0;
-	bs->botWeaponWeights[WP_SBD_ARM] = 20;
-	bs->botWeaponWeights[WP_ADV_DISRUPTOR] = 14;
-	bs->botWeaponWeights[WP_ADV_ROCKET] = 19;
-	bs->botWeaponWeights[WP_GRAPPLE_HOOK] = 0;
-	bs->botWeaponWeights[WP_GRENADE_2] = 5;
-	bs->botWeaponWeights[WP_NONE3] = 0;
-	bs->botWeaponWeights[WP_WESTAR] = 3;
-	bs->botWeaponWeights[WP_FETT_BLASTER] = 4;
-	bs->botWeaponWeights[WP_ZAM_RIFLE] = 7;
-	bs->botWeaponWeights[WP_TUSKEN_RIFLE] = 7;
-	bs->botWeaponWeights[WP_CLONE_LIGHT_RIFLE] = 7;
-	bs->botWeaponWeights[WP_SEP_ROCKET] = 19;
-	bs->botWeaponWeights[WP_MP_BLASTER] = 8;
-	bs->botWeaponWeights[WP_OFFICER_PISTOL] = 9;
-	bs->botWeaponWeights[WP_NABOO_S5] = 8;
-	bs->botWeaponWeights[WP_CLONE_BLASTER] = 8;
-	bs->botWeaponWeights[WP_DROID_BLASTER] = 8;
-	bs->botWeaponWeights[WP_TUSKEN_RIFLE2] = 8;
-	bs->botWeaponWeights[WP_NABOO_SEC_PISTOL] = 7;
-	bs->botWeaponWeights[WP_SITH_SCEPTER] = 20;
-	bs->botWeaponWeights[WP_NONE4] = 0;
-	bs->botWeaponWeights[WP_VIBROBLADE2] = 13; // For enhancing lightsaber... But if we need more weapons, these can be used! - uq1
-	bs->botWeaponWeights[WP_FORCE_PIKE] = 11; // For enhancing lightsaber...
-	bs->botWeaponWeights[WP_AMPHI_STAFF] = 12; // For enhancing lightsaber...
-	bs->botWeaponWeights[WP_VIBROAXE2] = 11; // For enhancing lightsaber...
-	bs->botWeaponWeights[WP_SABER6] = 0; // For enhancing lightsaber...
-	bs->botWeaponWeights[WP_VIBROAXE] = 10;
-	bs->botWeaponWeights[WP_VIBRODAGGER] = 9;
-	bs->botWeaponWeights[WP_VIBROBLADE] = 10;
-	bs->botWeaponWeights[WP_SITH_SWORD] = 14;
-	bs->botWeaponWeights[WP_STAFF1] = 15;
-	bs->botWeaponWeights[WP_TUSKEN_STAFF] = 11;
-	bs->botWeaponWeights[WP_NOGHRI_STICK] = 10;
-
-//	WP_EMPLACED_GUN, // Always at the end...
-//	WP_TURRET, // Always at the end...
-	*/
-	//[/NewWeapons]
 
 	BotUtilizePersonality(bs);
 

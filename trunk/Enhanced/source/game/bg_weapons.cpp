@@ -190,7 +190,6 @@ weaponData_t weaponData[WP_NUM_WEAPONS] =
 		0						//	int		altMaxCharge;		// above for secondary
 	},
 	{	// WP_DISRUPTOR
-//		"Tenloss Disruptor Rifle",//	char	classname[32];		// Spawning name
 		AMMO_POWERCELL,			//	int		ammoIndex;			// Index to proper ammo slot
 		5,						//	int		ammoLow;			// Count when ammo is low
 		//[WeaponSys]

@@ -273,6 +273,10 @@ static void CG_ReloadMenu(void)
 }
 
 #ifdef _DEBUG
+
+extern void RunFunction(const char* func); 
+extern void RunScript(const char* file);
+
 static void CG_RunFunction()
 {
 	if(trap_Argc() == 2)
@@ -280,9 +284,21 @@ static void CG_RunFunction()
 		static char	buffer[MAX_STRING_CHARS];
 		trap_Argv(1,buffer,sizeof(buffer));
 
-		//RunFunction(buffer);
+		RunFunction(buffer);
 	}
 }
+
+static void CG_ReloadFile()
+{
+	if(trap_Argc() == 2)
+	{
+		static char	buffer[MAX_STRING_CHARS];
+		trap_Argv(1,buffer,sizeof(buffer));
+
+		RunScript(buffer);
+	}
+}
+
 #endif
 
 typedef struct {
@@ -297,6 +313,7 @@ extern void siegecvarlist(void);
 static consoleCommand_t	commands[] = {
 	#ifdef _DEBUG
 	{ "RunFunction", CG_RunFunction },
+	{ "LoadFile", CG_ReloadFile },
 	#endif
 	{ "addText", CG_AddText },
 	{ "testgun", CG_TestGun_f },
