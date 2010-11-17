@@ -85,6 +85,7 @@ static int lastListBoxClickTime = 0;
 
 void Item_RunScript(itemDef_t *item, const char *s);
 void Item_SetupKeywordHash(void);
+void Layout_SetupKeywordHash(void);
 void Menu_SetupKeywordHash(void);
 int BindingIDFromName(const char *name);
 qboolean Item_Bind_HandleKey(itemDef_t *item, int key, qboolean down);
@@ -323,17 +324,20 @@ String_Init
 =================
 */
 void String_Init() {
-	int i;
-	for (i = 0; i < HASH_TABLE_SIZE; i++) {
+	for (int i = 0; i < HASH_TABLE_SIZE; i++) {
 		strHandle[i] = 0;
 	}
+
 	strHandleCount = 0;
 	strPoolIndex = 0;
 	menuCount = 0;
 	openMenuCount = 0;
+
 	UI_InitMemory();
 	Item_SetupKeywordHash();
 	Menu_SetupKeywordHash();
+	Layout_SetupKeywordHash();
+
 	if (DC && DC->getBindingBuf) {
 		Controls_GetConfig();
 	}
@@ -7037,6 +7041,53 @@ void Item_ValidateTypeData(itemDef_t *item)
 	}
 }
 
+const int LAYOUTHASH_SIZE = 512;
+
+typedef struct layoutKeywordHash_s {
+	char *keyword;
+	qboolean (*func)(itemDef_t *item, int handle);
+	struct layoutKeywordHash_s *next;
+} layoutKeywordHash_t;
+
+int LayoutHash_Key(char *keyword) {
+	int register hash = 0;
+
+	for (int i = 0; keyword[i] != '\0'; i++) {
+		if (keyword[i] >= 'A' && keyword[i] <= 'Z') {
+			hash += (keyword[i] + ('a' - 'A')) * (119 + i);
+		}
+		else {
+			hash += keyword[i] * (119 + i);
+		}
+	}
+
+	hash = (hash ^ (hash >> 10) ^ (hash >> 20)) & (LAYOUTHASH_SIZE-1);
+	return hash;
+}
+
+void LayoutHash_Add(layoutKeywordHash_t *table[], layoutKeywordHash_t *key) {
+	int hash = LayoutHash_Key(key->keyword);
+
+	key->next = table[hash];
+	table[hash] = key;
+}
+
+layoutKeywordHash_t *LayoutHash_Find(layoutKeywordHash_t *table[], char *keyword)
+{
+	int hash = LayoutHash_Key(keyword);
+	for (layoutKeywordHash_t *key = table[hash]; key; key = key->next) {
+		if (!Q_stricmp(key->keyword, keyword)) {
+			return key;
+		}
+	}
+
+	return NULL;
+}
+
+qboolean LayoutParse_StackPanel(itemDef_t *item, int handle) {
+	return qtrue;
+}
+
 /*
 ===============
 Keyword Hash
@@ -8746,7 +8797,13 @@ keywordHash_t itemParseKeywords[] = {
 	{0,					0,							0		}
 };
 
+layoutKeywordHash_t layoutParseKeywords[] = {
+	{"stackPanel",		LayoutParse_StackPanel,		NULL	},
+	{0,					0,							0		}
+};
+
 keywordHash_t *itemParseKeywordHash[KEYWORDHASH_SIZE];
+layoutKeywordHash_t *layoutParseKeywordHash[LAYOUTHASH_SIZE];
 
 /*
 ===============
@@ -8754,11 +8811,18 @@ Item_SetupKeywordHash
 ===============
 */
 void Item_SetupKeywordHash(void) {
-	int i;
-
 	memset(itemParseKeywordHash, 0, sizeof(itemParseKeywordHash));
-	for (i = 0; itemParseKeywords[i].keyword; i++) {
+
+	for (int i = 0; itemParseKeywords[i].keyword; i++) {
 		KeywordHash_Add(itemParseKeywordHash, &itemParseKeywords[i]);
+	}
+}
+
+void Layout_SetupKeywordHash(void) {
+	memset(layoutParseKeywordHash, 0, sizeof(layoutParseKeywordHash));
+
+	for(int i = 0; layoutParseKeywords[i].keyword; i++) {
+		LayoutHash_Add(layoutParseKeywordHash, &layoutParseKeywords[i]);
 	}
 }
 
@@ -8769,14 +8833,15 @@ Item_Parse
 */
 qboolean Item_Parse(int handle, itemDef_t *item) {
 	pc_token_t token;
-	keywordHash_t *key;
 
-
-	if (!trap_PC_ReadToken(handle, &token))
+	if (!trap_PC_ReadToken(handle, &token)) {
 		return qfalse;
+	}
+
 	if (*token.string != '{') {
 		return qfalse;
 	}
+
 	while ( 1 ) {
 		if (!trap_PC_ReadToken(handle, &token)) {
 			PC_SourceError(handle, "end of file inside menu item\n");
@@ -8787,17 +8852,20 @@ qboolean Item_Parse(int handle, itemDef_t *item) {
 			return qtrue;
 		}
 
-		key = KeywordHash_Find(itemParseKeywordHash, token.string);
-		if (!key) {
+		keywordHash_t *key = KeywordHash_Find(itemParseKeywordHash, token.string);
+		if(key) {
+			if (!key->func(item, handle)) {
+				PC_SourceError(handle, "couldn't parse menu item keyword %s", token.string);
+				return qfalse;
+			}
+		}
+		else {
 			PC_SourceError(handle, "unknown menu item keyword %s", token.string);
 			continue;
 		}
-		if ( !key->func(item, handle) ) {
-			PC_SourceError(handle, "couldn't parse menu item keyword %s", token.string);
-			return qfalse;
-		}
 	}
-	return qfalse; 	// bk001205 - LCC missing return value
+
+	return qfalse;
 }
 
 static void Item_TextScroll_BuildLines ( itemDef_t* item )
@@ -9457,6 +9525,16 @@ qboolean MenuParse_fadeCycle( itemDef_t *item, int handle ) {
 	return qtrue;
 }
 
+qboolean MenuParse_appearanceIncrement( itemDef_t *item, int handle ) 
+{
+	menuDef_t *menu = (menuDef_t*)item;
+
+	if (!PC_Float_Parse(handle, &menu->appearanceIncrement))
+	{
+		return qfalse;
+	}
+	return qtrue;
+}
 
 qboolean MenuParse_itemDef( itemDef_t *item, int handle ) {
 	menuDef_t *menu = (menuDef_t*)item;
@@ -9471,19 +9549,13 @@ qboolean MenuParse_itemDef( itemDef_t *item, int handle ) {
 	}
 	return qtrue;
 }
-/*
-=================
-MenuParse_focuscolor
-=================
-*/
-qboolean MenuParse_appearanceIncrement( itemDef_t *item, int handle ) 
-{
+
+qboolean MenuParse_stackPanel(itemDef_t *item, int handle) {
 	menuDef_t *menu = (menuDef_t*)item;
 
-	if (!PC_Float_Parse(handle, &menu->appearanceIncrement))
-	{
-		return qfalse;
+	if(menu->itemCount < MAX_MENUITEMS) {
 	}
+
 	return qtrue;
 }
 
@@ -9525,6 +9597,7 @@ keywordHash_t menuParseKeywords[] = {
 	{"soundLoop",			MenuParse_soundLoop,	NULL	},
 	{"style",				MenuParse_style,		NULL	},
 	{"visible",				MenuParse_visible,		NULL	},
+	{"stackPanel",			MenuParse_stackPanel,	NULL	},
 	{0,						0,						0		}
 };
 
@@ -9536,10 +9609,9 @@ Menu_SetupKeywordHash
 ===============
 */
 void Menu_SetupKeywordHash(void) {
-	int i;
-
 	memset(menuParseKeywordHash, 0, sizeof(menuParseKeywordHash));
-	for (i = 0; menuParseKeywords[i].keyword; i++) {
+
+	for (int i = 0; menuParseKeywords[i].keyword; i++) {
 		KeywordHash_Add(menuParseKeywordHash, &menuParseKeywords[i]);
 	}
 }
@@ -9551,10 +9623,11 @@ Menu_Parse
 */
 qboolean Menu_Parse(int handle, menuDef_t *menu) {
 	pc_token_t token;
-	keywordHash_t *key;
 
-	if (!trap_PC_ReadToken(handle, &token))
+	if (!trap_PC_ReadToken(handle, &token)) {
 		return qfalse;
+	}
+
 	if (*token.string != '{') {
 		return qfalse;
 	}
@@ -9569,11 +9642,12 @@ qboolean Menu_Parse(int handle, menuDef_t *menu) {
 			return qtrue;
 		}
 
-		key = KeywordHash_Find(menuParseKeywordHash, token.string);
+		keywordHash_t *key = KeywordHash_Find(menuParseKeywordHash, token.string);
 		if (!key) {
 			PC_SourceError(handle, "unknown menu keyword %s", token.string);
 			continue;
 		}
+
 		if ( !key->func((itemDef_t*)menu, handle) ) {
 			PC_SourceError(handle, "couldn't parse menu keyword %s", token.string);
 			return qfalse;
