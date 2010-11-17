@@ -630,7 +630,6 @@ typedef enum {
 	STAT_MAX_DODGE,		//maximum number of dodge points allowed.
 	//STAT_MAX_HEALTH					// health / armor limit, changable by handicap
 	//[/DodgeSys]
-	STAT_AMMOPOOL//[Reload]
 } statIndex_t;
 
 

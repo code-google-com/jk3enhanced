@@ -3158,8 +3158,6 @@ int TotalAllociatedSkillPoints(gentity_t *ent)
 }
 //[/ExpSys]
 
-extern int ClipSize(int ammo,gentity_t *pog);//[Reload]
-
 extern void G_Knockdown( gentity_t *self, gentity_t *attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock );
 void player_touch(gentity_t *self, gentity_t *other, trace_t *trace )
 {
@@ -4822,24 +4820,23 @@ void ClientSpawn(gentity_t *ent) {
 		client->ps.stats[STAT_HOLDABLE_ITEM] = 0;
 	}
 
-// nmckenzie: DESERT_SIEGE... or well, siege generally.  This was over-writing the max value, which was NOT good for siege.
+	// nmckenzie: DESERT_SIEGE... or well, siege generally.  This was over-writing the max value, which was NOT good for siege.
 	if ( inSiegeWithClass == qfalse )
 	{//racc - not playing siege, assign ammo levels.
-		//[ExpSys][Reload]
-		//client->ps.ammo[AMMO_POWERCELL] = ammoData[AMMO_POWERCELL].max * (float) (client->skillLevel[SK_BOWCASTER] < client->skillLevel[SK_DISRUPTOR] ? client->skillLevel[SK_DISRUPTOR] : client->skillLevel[SK_BOWCASTER])/FORCE_LEVEL_3;
-		client->ps.ammo[AMMO_POWERCELL] = ClipSize(AMMO_POWERCELL,ent);
-		//client->ps.ammo[AMMO_METAL_BOLTS] = ammoData[AMMO_METAL_BOLTS].max * (float) client->skillLevel[SK_REPEATER]/FORCE_LEVEL_3;
-		client->ps.ammo[AMMO_METAL_BOLTS] = ClipSize(AMMO_METAL_BOLTS,ent);
-		//client->ps.ammo[AMMO_BLASTER] = ammoData[AMMO_BLASTER].max * (float) client->skillLevel[SK_BLASTER]/FORCE_LEVEL_3;
-		client->ps.ammo[AMMO_BLASTER] = ClipSize(AMMO_BLASTER,ent);
+		//[ExpSys]
+		client->ps.ammo[AMMO_POWERCELL] = ammoData[AMMO_POWERCELL].max * (float) (client->skillLevel[SK_BOWCASTER] < client->skillLevel[SK_DISRUPTOR] ? client->skillLevel[SK_DISRUPTOR] : client->skillLevel[SK_BOWCASTER])/FORCE_LEVEL_3;
 
-		client->ps.ammo[AMMO_ROCKETS] = ClipSize(AMMO_ROCKETS,ent);
-		//[/Reload]
-		client->ps.ammo[AMMO_THERMAL] = ClipSize(AMMO_THERMAL,ent);//ammoData[AMMO_THERMAL].max * (float) client->skillLevel[SK_THERMAL]/FORCE_LEVEL_3;
+		client->ps.ammo[AMMO_METAL_BOLTS] = ammoData[AMMO_METAL_BOLTS].max * (float) client->skillLevel[SK_REPEATER]/FORCE_LEVEL_3;
 
-		client->ps.ammo[AMMO_DETPACK] = ClipSize(AMMO_DETPACK,ent);//ammoData[AMMO_DETPACK].max * (float) client->skillLevel[SK_DETPACK]/FORCE_LEVEL_2;
-		client->ps.ammo[AMMO_TRIPMINE] = ClipSize(AMMO_TRIPMINE,ent);
-		client->ps.ammo[AMMO_TUSKEN_RIFLE] = ClipSize(AMMO_TUSKEN_RIFLE,ent);
+		client->ps.ammo[AMMO_BLASTER] = ammoData[AMMO_BLASTER].max * (float) client->skillLevel[SK_BLASTER]/FORCE_LEVEL_3;
+
+
+		client->ps.ammo[AMMO_ROCKETS] = ammoData[AMMO_ROCKETS].max;
+		client->ps.ammo[AMMO_THERMAL] = ammoData[AMMO_THERMAL].max * (float) client->skillLevel[SK_THERMAL]/FORCE_LEVEL_3;
+
+		client->ps.ammo[AMMO_DETPACK] = ammoData[AMMO_DETPACK].max * (float) client->skillLevel[SK_DETPACK]/FORCE_LEVEL_2;
+		//client->ps.ammo[AMMO_TRIPMINE] = ClipSize(AMMO_TRIPMINE,ent);
+		//client->ps.ammo[AMMO_TUSKEN_RIFLE] = ClipSize(AMMO_TUSKEN_RIFLE,ent);
 		//client->ps.ammo[AMMO_BLASTER] = 100; //ammoData[AMMO_BLASTER].max; //100 seems fair.
 		//[/ExpSys]
 	}
@@ -4877,15 +4874,6 @@ void ClientSpawn(gentity_t *ent) {
 		G_AddEvent(ent, EV_WEAPINVCHANGE, client->ps.stats[STAT_WEAPONS]);
 	}
 	//[/VisualWeapons]
-
-	//[Reload]
-	for(i=0;i<WP_NUM_WEAPONS;i++)
-		ent->bullets[i] = ammoPool[SkillLevelForWeap(ent,i)][i].max;
-
-	ent->reloadTime =-1;
-	ent->bulletsToReload = 0;
-	client->ps.stats[STAT_AMMOPOOL] = ammoPool[SkillLevelForWeap(ent,ent->client->ps.weapon)][ent->client->ps.weapon].max;
-	//[/Reload]
 
 	client->ps.isJediMaster = qfalse;
 

@@ -24,7 +24,6 @@ extern int gPainMOD;
 extern int gPainHitLoc;
 extern vec3_t gPainPoint;
 
-void CancelReload(gentity_t *ent);
 //==================================================================
 
 // the "gameversion" client command will print this plus compile date
@@ -729,13 +728,6 @@ struct gentity_s {
 	int			roff_ctr;		// current roff frame we are playing
 	//[/ROFF]
 
-	//[Reload]
-	qboolean	justReloaded;	//Used to stop user from holding down reload
-	int			bullets[WP_NUM_WEAPONS];//Number of bullets each gun has left
-	int			reloadTime;		//Every 0.2 seconds reload a bullet
-	int			bulletsToReload;//Bullets to reload
-	int			reloadCooldown;
-	//[/Reload]
 	int			cooldownTime;
 };
 
@@ -1878,8 +1870,6 @@ void G_CheckClientTimeouts	( gentity_t *ent );
 void ClientThink			( int clientNum, usercmd_t *ucmd );
 void ClientEndFrame			( gentity_t *ent );
 void G_RunClient			( gentity_t *ent );
-int SkillLevelForWeap(gentity_t *ent,int weap);
-
 //
 // g_team.c
 //

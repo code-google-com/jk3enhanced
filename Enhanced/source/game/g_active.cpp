@@ -927,10 +927,6 @@ void ClientEvents( gentity_t *ent, int oldEventSequence ) {
 			}
 			break;
 		case EV_FIRE_WEAPON:
-			//[Reload]
-			if(ent->reloadTime > 0)
-				CancelReload(ent);//1.3
-			//[/Reload]
 			FireWeapon( ent, qfalse );
 			ent->client->dangerTime = level.time;
 			ent->client->ps.eFlags &= ~EF_INVULNERABLE;
@@ -2108,7 +2104,6 @@ extern void G_RollBalance(gentity_t *self, gentity_t *inflictor, qboolean forceM
 extern qboolean G_ValidSaberStyle(gentity_t *ent, int saberStyle);
 extern qboolean WP_SaberCanTurnOffSomeBlades( saberInfo_t *saber );
 //[/StanceSelection]
-extern void Reload(gentity_t *ent);
 extern void ForceLift( gentity_t *self );
 void G_SoundOnEnt( gentity_t *ent, int channel, const char *soundPath );
 
@@ -2203,30 +2198,6 @@ void ClientThink_real( gentity_t *ent ) {
 	}
 	else if(!(ent->client->pers.cmd.buttons & BUTTON_THERMALTHROW) && ent->client->weaponbuttonNeedRelease)
 		ent->client->weaponbuttonNeedRelease = qfalse;
-
-	//[Reload]
-	if(ent->reloadTime <= level.time && ent->reloadTime > 0)
-	{
-		Reload(ent);
-	}
-	else if(ent->reloadTime > 0)
-	{
-		//keep him in the "use" anim
-		if (ent->client->ps.torsoAnim != BOTH_CONSOLE1)
-		{
-			G_SetAnim( ent, NULL, SETANIM_TORSO, BOTH_CONSOLE1, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD, 0 );
-			G_SoundOnEnt(ent, CHAN_WEAPON,"sound/effects/servo_hand.mp3");
-		}
-		else
-		{/*
-			if(ent->bulletsToReload > 0)
-				ent->client->ps.torsoTimer = ent->reloadTime;//ReloadTime(ent);
-			else
-				ent->client->ps.torsoTimer = 300;*/
-		}
-		ent->client->ps.weaponTime = ent->client->ps.torsoTimer - 100;
-	}
-	//[/Reload]
 
 	// This code was moved here from clientThink to fix a problem with g_synchronousClients 
 	// being set to 1 when in vehicles. 
@@ -3566,10 +3537,10 @@ void ClientThink_real( gentity_t *ent ) {
 		case GENCMD_FORCE_MANIPULATE:
 			ForceProtect(ent);
 			break;
-		//[ForceSys][Reload]
+		//[ForceSys]
 		case GENCMD_FORCE_ABSORB:
 			break;
-		//[/ForceSys][/Reload]
+		//[/ForceSys]
 		case GENCMD_FORCE_HEALOTHER:
 			ForceTeamHeal(ent);
 			break;

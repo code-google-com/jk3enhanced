@@ -3840,7 +3840,6 @@ extern void Delete_Autosaves(gentity_t* ent);
 //[KnockdownSys]
 extern void G_Knockdown( gentity_t *self, gentity_t *attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock );
 //[/KnockdownSys]
-extern void SetupReload(gentity_t *ent);
 extern void SP_misc_health_floor_unit( gentity_t *ent );
 
 void ClientCommand( int clientNum ) {
@@ -3942,18 +3941,11 @@ void ClientCommand( int clientNum ) {
 		return;
 	}
 
-	if(Q_stricmp(cmd,"reload") == 0)
-	{
-		if(ent->reloadTime > 0)
-			CancelReload(ent);
-		else
-			SetupReload(ent);
-		return;
-	}
 	if (Q_stricmp (cmd, "say") == 0) {
 		Cmd_Say_f (ent, SAY_ALL, qfalse);
 		return;
 	}
+
 	if (Q_stricmp (cmd, "say_team") == 0) {
 		if (g_gametype.integer < GT_TEAM)
 		{ //not a team game, just refer to regular say.

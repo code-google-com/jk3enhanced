@@ -2436,11 +2436,6 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	// weapon events
 	//
 	case EV_NOAMMO:
-		//[Reload]
-		if(es->number == cg.snap->ps.clientNum && cg.snap->ps.ammo[weaponData[cg.snap->ps.weapon].ammoIndex] != -10 &&
-			cg.snap->ps.weapon != WP_SABER && cg.snap->ps.weapon != WP_DET_PACK && cg.snap->ps.weapon != WP_GRENADE &&
-			cg.snap->ps.weapon != WP_THERMAL)
-			break;
 		if(es->number == cg.snap->ps.clientNum && (cg.snap->ps.weapon == WP_DET_PACK || cg.snap->ps.weapon == WP_GRENADE ||
 			cg.snap->ps.weapon == WP_THERMAL))
 		{
@@ -2452,7 +2447,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 				
 			break;
 		}
-		//[/Reload]
+
 		DEBUGNAME("EV_NOAMMO");
 //		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.noAmmoSound );
 		if ( es->number == cg.snap->ps.clientNum )
