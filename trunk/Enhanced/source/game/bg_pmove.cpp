@@ -7108,25 +7108,10 @@ void PM_BeginWeaponChange( int weapon ) {
 		return;
 	}
 
-#ifdef QAGAME
-	if(g_entities[pm->ps->clientNum].reloadTime > 0)
-		return;
-#endif
-
 	if(pm->ps->weapon == WP_BRYAR_PISTOL)
 	{//Changing weaps, remove dual weaps
 		pm->ps->eFlags &= ~EF_DUAL_WEAPONS;
 	}
-
-//[Reload]
-#ifdef QAGAME
-	if(1)
-	{
-		gentity_t *ent = &g_entities[pm->ps->clientNum];
-		pm->ps->stats[STAT_AMMOPOOL] = ent->client->ps.stats[STAT_AMMOPOOL] = ent->bullets[weapon];
-	}
-#endif
-//[Reload]
 
 	// turn of any kind of zooming when weapon switching.
 	if (pm->ps->zoomMode)
@@ -8228,13 +8213,6 @@ static void PM_Weapon( void )
 	}
 #endif
 
-#ifdef QAGAME
-	//[Reload]
-	if( g_entities[pm->ps->clientNum].reloadTime > 0 && (pm->cmd.buttons & BUTTON_ATTACK))//1.3
-		CancelReload(&g_entities[pm->ps->clientNum]);
-	//[/Reload]
-#endif
-
 	if(weap != WP_SABER && ((pm->cmd.buttons & BUTTON_SABERTHROW) || ((pm->cmd.buttons & BUTTON_FORCEPOWER) && pm->ps->fd.forcePowerSelected == FP_SABERTHROW)))
 	{
 #ifdef QAGAME
@@ -8797,13 +8775,6 @@ static void PM_Weapon( void )
 					pm->ps->ammo[weaponData[pm->ps->weapon].ammoIndex] < (weaponData[pm->ps->weapon].altEnergyPerShot * 2) )
 				{ //the weapon is out of ammo essentially because it cannot fire primary or secondary, so do the switch
 				//regardless of if the player is attacking or not
-					//[Reload]
-					#ifdef QAGAME
-					gentity_t *ent = &g_entities[pm->ps->clientNum];
-					if(ent->bullets[ent->client->ps.weapon] < 1)
-						pm->ps->ammo[weaponData[ent->client->ps.weapon].ammoIndex] = -10;
-					#endif
-					//[/Reload]
 
 					if (( pm->ps->weapon == WP_BRYAR_PISTOL )) 
 					{
@@ -8831,13 +8802,6 @@ static void PM_Weapon( void )
 					pm->ps->ammo[weaponData[pm->ps->weapon].ammoIndex] < weaponData[pm->ps->weapon].altEnergyPerShot)
 				{ //the weapon is out of ammo essentially because it cannot fire primary or secondary, so do the switch
 				  //regardless of if the player is attacking or not
-					//[Reload]
-					#ifdef QAGAME
-					gentity_t *ent = &g_entities[pm->ps->clientNum];
-					if(ent->bullets[ent->client->ps.weapon] < 1)
-						pm->ps->ammo[weaponData[ent->client->ps.weapon].ammoIndex] = -10;
-					#endif
-					//[/Reload]
 					PM_AddEventWithParm( EV_NOAMMO, WP_NUM_WEAPONS+pm->ps->weapon );
 
 					if (pm->ps->weaponTime < 500)

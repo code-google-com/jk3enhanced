@@ -376,7 +376,7 @@ void CG_DrawAmmoTicMethod(centity_t *cent, menuDef_t *menuHUD)
 			CG_DrawStringExt(
 				focusItem->window.rect.x, 
 				focusItem->window.rect.y,
-				va("%i/%i",(int)value,cg.snap->ps.stats[STAT_AMMOPOOL]),
+				va("%i",(int)value),
 				0,
 				qfalse,
 				qfalse,
