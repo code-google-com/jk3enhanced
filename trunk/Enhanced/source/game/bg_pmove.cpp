@@ -10231,22 +10231,21 @@ void BG_AdjustClientSpeed(playerState_t *ps, usercmd_t *cmd, int svTime)
 	}
 
 	//[MoveSys]
-	if( ((ps->userInt3 & FLAG_FATIGUED) || (ps->stats[STAT_DODGE] < DODGE_CRITICALLEVEL)) 
-		&& !(cmd->buttons&BUTTON_WALKING) && pm->ps->groundEntityNum != ENTITYNUM_NONE)
+	if( ((ps->userInt3 & FLAG_FATIGUED) || (ps->fd.forcePower < DODGE_CRITICALLEVEL)) 
+		&& !(cmd->buttons & BUTTON_WALKING) && pm->ps->groundEntityNum != ENTITYNUM_NONE)
 	{//run slower when tired
 		ps->speed *= .8;
 	}
 	//[/MoveSys]
 
 	saber = BG_MySaber( ps->clientNum, 0 );
-	if ( saber 
-		&& saber->moveSpeedScale != 1.0f )
+	if (saber && saber->moveSpeedScale != 1.0f)
 	{
 		ps->speed *= saber->moveSpeedScale;
 	}
+
 	saber = BG_MySaber( ps->clientNum, 1 );
-	if ( saber 
-		&& saber->moveSpeedScale != 1.0f )
+	if (saber && saber->moveSpeedScale != 1.0f)
 	{
 		ps->speed *= saber->moveSpeedScale;
 	}
