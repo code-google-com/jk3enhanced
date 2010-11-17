@@ -552,72 +552,6 @@ void CG_DrawSaberStyleTicMethod(centity_t *cent, menuDef_t *menuHUD)
 }
 
 
-//Dodge
-void CG_DrawDodge( menuDef_t *menuHUD )
-{
-	vec4_t			aColor;
-	itemDef_t		*focusItem;
-	float			percent = ((float)cg.snap->ps.stats[STAT_DODGE]/DODGE_MAX)*DPBAR_H;
-
-	//color of the bar
-	aColor[0] = 0.0f;
-	aColor[1] = .613f;
-	aColor[2] = .097f;
-	aColor[3] = 0.8f;
-
-	// Make the hud flash by setting forceHUDTotalFlashTime above cg.time
-	if (cg.snap->ps.stats[STAT_MAX_DODGE] > DODGE_CRITICALLEVEL  //our maximum level is lower than the standard critical level.
-		&& cg.snap->ps.stats[STAT_DODGE] < DODGE_CRITICALLEVEL)
-	{//color of the bar
-		aColor[0] = 1.0f;
-		aColor[1] = 0.0f;
-		aColor[2] = 0.0f;
-		aColor[3] = 0.8f;
-		if (cg.dodgeHUDNextFlashTime < cg.time)	
-		{
-			cg.dodgeHUDNextFlashTime = cg.time + 400;
-			trap_S_StartSound (NULL, 0, CHAN_LOCAL, cgs.media.noforceSound );
-
-		}
-	}
-	else
-	{// turn HUD back on if it had just finished flashing time.
-		cg.dodgeHUDNextFlashTime = 0;
-	}
-
-	if (percent > DPBAR_H)
-	{//clamp to MAX_DODGE
-		percent = DPBAR_H;
-	}
-
-	if (percent < 0.1f)
-	{
-		percent = 0.1f;
-	}
-
-	//now draw the part to show how much health there is in the color specified
-	CG_FillRect(DPBAR_X, DPBAR_Y+(DPBAR_H-percent), DPBAR_W, DPBAR_H-(DPBAR_H-percent), aColor);
-
-	focusItem = Menu_FindItemByName(menuHUD, "dodgeamount");
-
-	if (focusItem)
-	{
-		// Print force amount
-		trap_R_SetColor( focusItem->window.foreColor );	
-
-		CG_DrawNumField (
-			focusItem->window.rect.x, 
-			focusItem->window.rect.y, 
-			3, 
-			cg.snap->ps.stats[STAT_DODGE], 
-			focusItem->window.rect.w, 
-			focusItem->window.rect.h, 
-			NUM_FONT_SMALL,
-			qfalse);
-	}
-}
-
-
 //Force
 void CG_DrawForcePower( menuDef_t *menuHUD )
 {
@@ -705,7 +639,7 @@ void JKEHUD(centity_t *cent)
 			itemDef_t *focusItem;
 
 			// Print frame
-			focusItem = Menu_FindItemByName(menuHUD, "frame");
+			/*focusItem = Menu_FindItemByName(menuHUD, "frame");
 			if (focusItem)
 			{
 				CG_DrawPic( 
@@ -715,7 +649,7 @@ void JKEHUD(centity_t *cent)
 					focusItem->window.rect.h, 
 					focusItem->window.background 
 					);			
-			}
+			}*/
 
 			if (cg.predictedPlayerState.pm_type != PM_SPECTATOR)
 			{
@@ -786,7 +720,7 @@ void JKEHUD(centity_t *cent)
 				}
 			}
 
-			focusItem = Menu_FindItemByName(menuHUD, "frame");
+			/*focusItem = Menu_FindItemByName(menuHUD, "frame");
 			if (focusItem)
 			{
 				CG_DrawPic( 
@@ -796,24 +730,20 @@ void JKEHUD(centity_t *cent)
 					focusItem->window.rect.h, 
 					focusItem->window.background 
 					);			
-			}
+			}*/
 
 			CG_DrawForcePower(menuHUD);
-			CG_DrawDodge(menuHUD);
 			CG_DrawBalanceTicMethod(cent, menuHUD);
 
 			// Draw ammo tics or saber style
-			if ( cent->currentState.weapon == WP_SABER )
-			{
+			if ( cent->currentState.weapon == WP_SABER ) {
 				CG_DrawSaberStyleTicMethod(cent, menuHUD);
 			}
-			else
-			{
+			else {
 				CG_DrawAmmoTicMethod(cent, menuHUD);
 			}
 		}
-		else
-		{ 
+		else { 
 			//CG_Error("CG_ChatBox_ArrayInsert: unable to locate HUD menu file ");
 		}
 	}

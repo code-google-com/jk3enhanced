@@ -15,7 +15,7 @@ qboolean CanCounterThrow(gentity_t *self, gentity_t *thrower, qboolean pull)
 		return qfalse;
 	
 	if(!InFront(thrower->client->ps.origin, self->client->ps.origin, self->client->ps.viewangles, 0.0f) 
-		&& self->client->ps.stats[STAT_DODGE] < DODGE_CRITICALLEVEL)
+		&& self->client->ps.fd.forcePower < DODGE_CRITICALLEVEL)
 		return qfalse;
 
 	return qtrue;
@@ -698,46 +698,48 @@ void ForceThrow( gentity_t *self, qboolean pull )
 
 					if(!pull)
 					{
-					if((WalkCheck(push_list[x])
-						&& (push_list[x]->client->ps.saberAttackChainCount <= MISHAPLEVEL_HEAVY)
-					   && !BG_IsUsingHeavyWeap(&push_list[x]->client->ps)
-					   && !PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove)
-					   && push_list[x]->client->ps.stats[STAT_DODGE] > DODGE_CRITICALLEVEL)
-						|| BG_InRoll(&push_list[x]->client->ps,push_list[x]->client->ps.legsAnim)
-						&& !pull)
-					{
-						if(push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0
-							|| push_list[x]->client->ps.fd.forcePowerLevel[FP_PUSH] < self->client->ps.fd.forcePowerLevel[FP_PUSH])
-						pushPowerMod /= 2;
-					}
-					else if((WalkCheck(push_list[x])
-						&& (push_list[x]->client->ps.saberAttackChainCount <= MISHAPLEVEL_HEAVY)
-					   && (BG_IsUsingHeavyWeap(&push_list[x]->client->ps) && WalkCheck(push_list[x]))
-					   && !PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove)
-					   && (push_list[x]->client->ps.stats[STAT_DODGE] > DODGE_CRITICALLEVEL
-					   && InFront(push_list[x]->client->ps.origin, self->client->ps.origin, self->client->ps.viewangles, -.7f)))
-						&& !pull)
-					{
-						if(push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0
-							|| push_list[x]->client->ps.fd.forcePowerLevel[FP_PUSH] < self->client->ps.fd.forcePowerLevel[FP_PUSH])
-						pushPowerMod *= 1;
-					}
-					else
-					{
-						if(push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0
-							|| push_list[x]->client->ps.fd.forcePowerLevel[FP_PUSH] < self->client->ps.fd.forcePowerLevel[FP_PUSH])
-						pushPowerMod *= 1;//Push
-
-						if(!BG_IsUsingHeavyWeap(&push_list[x]->client->ps) && !WalkCheck(push_list[x]) && push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0)
-						{//Using a light weapon,Running,Don't have absorb
-							if(!InFront(push_list[x]->r.currentOrigin,self->r.currentOrigin,self->client->ps.viewangles,0.3f))
-									doKnockdown=qtrue;
-									//G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+						if((WalkCheck(push_list[x])
+							&& (push_list[x]->client->ps.saberAttackChainCount <= MISHAPLEVEL_HEAVY)
+						   && !BG_IsUsingHeavyWeap(&push_list[x]->client->ps)
+						   && !PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove)
+						   && push_list[x]->client->ps.fd.forcePower > DODGE_CRITICALLEVEL)
+							|| BG_InRoll(&push_list[x]->client->ps,push_list[x]->client->ps.legsAnim)
+							&& !pull)
+						{
+							if(push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0
+								|| push_list[x]->client->ps.fd.forcePowerLevel[FP_PUSH] < self->client->ps.fd.forcePowerLevel[FP_PUSH])
+							pushPowerMod /= 2;
+						}
+						else if((WalkCheck(push_list[x])
+							&& (push_list[x]->client->ps.saberAttackChainCount <= MISHAPLEVEL_HEAVY)
+						   && (BG_IsUsingHeavyWeap(&push_list[x]->client->ps) && WalkCheck(push_list[x]))
+						   && !PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove)
+						   && (push_list[x]->client->ps.fd.forcePower > DODGE_CRITICALLEVEL
+						   && InFront(push_list[x]->client->ps.origin, self->client->ps.origin, self->client->ps.viewangles, -.7f)))
+							&& !pull)
+						{
+							if(push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0
+								|| push_list[x]->client->ps.fd.forcePowerLevel[FP_PUSH] < self->client->ps.fd.forcePowerLevel[FP_PUSH])
+							pushPowerMod *= 1;
 						}
 						else
-								doKnockdown=qtrue;
-								//G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
-					}
+						{
+							if(push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0
+								|| push_list[x]->client->ps.fd.forcePowerLevel[FP_PUSH] < self->client->ps.fd.forcePowerLevel[FP_PUSH]) {
+								pushPowerMod *= 1;//Push
+							}
+
+							if(!BG_IsUsingHeavyWeap(&push_list[x]->client->ps) && !WalkCheck(push_list[x]) && push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0)
+							{//Using a light weapon,Running,Don't have absorb
+								if(!InFront(push_list[x]->r.currentOrigin,self->r.currentOrigin,self->client->ps.viewangles,0.3f))
+										doKnockdown=qtrue;
+										//G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+								}
+								else {
+									doKnockdown=qtrue;
+								}
+									//G_Knockdown(push_list[x], self, pushDir, 300, qtrue);
+							}
 					}
 					else if(pull)
 					{
@@ -745,7 +747,7 @@ void ForceThrow( gentity_t *self, qboolean pull )
 						&& (push_list[x]->client->ps.saberAttackChainCount <= MISHAPLEVEL_HEAVY)
 					   && !BG_IsUsingHeavyWeap(&push_list[x]->client->ps)
 					   && !PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove)
-					   && push_list[x]->client->ps.stats[STAT_DODGE] > DODGE_CRITICALLEVEL)
+					   && push_list[x]->client->ps.fd.forcePower > DODGE_CRITICALLEVEL)
 						|| BG_InRoll(&push_list[x]->client->ps,push_list[x]->client->ps.legsAnim))
 					{
 						if(push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0
@@ -756,7 +758,7 @@ void ForceThrow( gentity_t *self, qboolean pull )
 						|| (!WalkCheck(push_list[x]) && !BG_IsUsingHeavyWeap(&push_list[x]->client->ps))))
 						&& (push_list[x]->client->ps.saberAttackChainCount <= MISHAPLEVEL_HEAVY)
 					   && !PM_SaberInBrokenParry(push_list[x]->client->ps.saberMove)
-					   && (push_list[x]->client->ps.stats[STAT_DODGE] > DODGE_CRITICALLEVEL
+					   && (push_list[x]->client->ps.fd.forcePower > DODGE_CRITICALLEVEL
 					   && InFront(push_list[x]->client->ps.origin, self->client->ps.origin, self->client->ps.viewangles, -.7f)))
 					{
 						if(push_list[x]->client->ps.fd.forcePowerLevel[FP_ABSORB] == FORCE_LEVEL_0

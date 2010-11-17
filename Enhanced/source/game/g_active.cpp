@@ -3319,7 +3319,7 @@ void ClientThink_real( gentity_t *ent ) {
 
 		//[SaberLockSys]
 		if(ent->client->pers.cmd.buttons & BUTTON_ALT_ATTACK && ent->client->pers.cmd.forwardmove < 0
-			&& !( ent->client->ps.stats[STAT_DODGE] < DODGE_CRITICALLEVEL 
+			&& !( ent->client->ps.fd.forcePower < DODGE_CRITICALLEVEL 
 			|| ent->client->ps.saberAttackChainCount >= MISHAPLEVEL_HEAVY))
 		{//breaking out of the saberlock!
 			ent->client->ps.saberLockFrame = 0;

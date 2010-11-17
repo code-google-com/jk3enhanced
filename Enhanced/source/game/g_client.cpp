@@ -410,9 +410,6 @@ void JMSaberThink(gentity_t *ent)
 }
 
 
-//[ExpSys]
-void DetermineDodgeMax(gentity_t *ent);
-//[/ExpSys]
 void JMSaberTouch(gentity_t *self, gentity_t *other, trace_t *trace)
 {
 	int i = 0;
@@ -481,13 +478,6 @@ void JMSaberTouch(gentity_t *self, gentity_t *other, trace_t *trace)
 
 		i++;
 	}
-
-	//[ExpSys]
-	//recalc DP
-	DetermineDodgeMax(other);
-	//set dp to max.
-	other->client->ps.stats[STAT_DODGE] = other->client->ps.stats[STAT_MAX_DODGE]; 
-	//[/ExpSys]
 
 	self->pos2[0] = 1;
 	self->pos2[1] = level.time + JMSABER_RESPAWN_TIME;
@@ -4106,10 +4096,6 @@ void ClientSpawn(gentity_t *ent) {
 	}
 	//[/ExpSys]
 
-	//[DodgeSys]
-	savedDodgeMax = client->ps.stats[STAT_MAX_DODGE];
-	//[/DodgeSys]
-
 	l = 0;
 	while (l < MAX_SABERS)
 	{
@@ -4197,10 +4183,6 @@ void ClientSpawn(gentity_t *ent) {
 		client->skillLevel[i] = savedSkill[i];
 	}
 	//[/ExpSys]
-
-	//[DodgeSys]
-	client->ps.stats[STAT_MAX_DODGE] = savedDodgeMax;
-	//[/DodgeSys]
 
 	l = 0;
 	while (l < MAX_SABERS)
@@ -4996,11 +4978,6 @@ void ClientSpawn(gentity_t *ent) {
 	}
 	*/
 	//[/ExpSys]
-
-	//[DodgeSys]
-	//Init dodge stat.
-	client->ps.stats[STAT_DODGE] = client->ps.stats[STAT_MAX_DODGE];
-	//[/DodgeSys]
 
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );
