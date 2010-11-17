@@ -2257,100 +2257,6 @@ void PM_GrabWallForJump( int anim )
 	pm->ps->pm_flags |= PMF_STUCK_TO_WALL;
 }
 
-//[FORCE FALL]
-//[ForceDefines]
-//The FP cost of Force Fall
-#define FM_FORCEFALL			5
-
-//the velocity to which Force Fall activates and tries to slow you to.
-#define FORCEFALLVELOCITY		-500
-
-//Rate at which the player brakes
-int ForceFallBrakeRate[NUM_FORCE_POWER_LEVELS] =
-{
-	0, //Can't brake with zero Force Jump skills
-	50,
-	60,
-	70,
-};
-
-//time between Force Fall braking actions.
-#define FORCEFALLDEBOUNCE		100
-
-qboolean PM_CanForceFall()
-{	
-	return (qboolean)(!BG_InRoll(pm->ps, pm->ps->legsAnim) // not rolling
-		&& !PM_InKnockDown(pm->ps) // not knocked down
-		&& !BG_InDeathAnim(pm->ps->legsAnim) // not dead
-		&& !BG_SaberInSpecialAttack(pm->ps->torsoAnim) // not doing special attack
-		&& !BG_SaberInAttack(pm->ps->saberMove) // not attacking
-		&& BG_CanUseFPNow(pm->gametype, pm->ps, pm->cmd.serverTime, FP_HEAL) // can use force power
-		&& !(pm->ps->pm_flags & PMF_JUMP_HELD) // have to have released jump since last press
-		&& pm->cmd.upmove > 10 // pressing the jump button
-		&& pm->ps->velocity[2] < FORCEFALLVELOCITY // falling
-		&& pm->ps->groundEntityNum == ENTITYNUM_NONE // in the air
-		&& pm->ps->fd.forcePowerLevel[FP_LEVITATION] > FORCE_LEVEL_1 //have force jump level 2 or above
-		&& pm->ps->fd.forcePower > FM_FORCEFALL // have atleast 5 force power points
-		&& pm->waterlevel < 2 // above water level
-		&& pm->ps->gravity > 0); // not in zero-g
-}
-
-qboolean PM_InForceFall()
-{
-	int ForceManaModifier = 0;
-	int FFDebounce = pm->ps->fd.forcePowerDebounce[FP_LEVITATION] - (pm->ps->fd.forcePowerLevel[FP_LEVITATION] * 100);
-
-	// can player force fall?
-	if (PM_CanForceFall())	
-	{
-		// play special animation when player has the saber or melee
-		if (pm->ps->weapon == WP_MELEE || pm->ps->weapon == WP_SABER)
-			PM_SetAnim(SETANIM_BOTH, BOTH_FORCEINAIR1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD, 150);
-
-		// reduce falling velocity to a safe speed at set intervals
-		//Warning: Dirty Hack ahead!
-		if (FFDebounce + FORCEFALLDEBOUNCE < pm->cmd.serverTime)
-		{
-			if (pm->ps->velocity[2] < FORCEFALLVELOCITY)
-			{
-				if( (FORCEFALLVELOCITY - pm->ps->velocity[2]) < ForceFallBrakeRate[pm->ps->fd.forcePowerLevel[FP_LEVITATION]])
-				{
-					pm->ps->velocity[2] = FORCEFALLVELOCITY;
-				}
-				else
-				{
-					pm->ps->velocity[2] += ForceFallBrakeRate[pm->ps->fd.forcePowerLevel[FP_LEVITATION]];
-				}
-			}
-		}
-
-		// creates that cool Force Speed effect
-		pm->ps->powerups[PW_SPEED] = pm->cmd.serverTime + 100;
-
-		// is it time to reduce the players force power
-		if (pm->ps->fd.forcePowerDebounce[FP_LEVITATION] < pm->cmd.serverTime)
-		{
-			// reduced the use of force power for duel and power duel matches
-			if (pm->gametype == GT_DUEL || pm->gametype == GT_POWERDUEL)
-				ForceManaModifier = -4;
-
-			// FP_LEVITATION drains force mana only when player 
-			// has an upward velocity, so I used FP_HEAL instead
-			BG_ForcePowerDrain(pm->ps, FP_HEAL, FM_FORCEFALL + ForceManaModifier); 
-
-			// removes force power at a rate of 0.1 secs * force jump level
-			pm->ps->fd.forcePowerDebounce[FP_LEVITATION] = pm->cmd.serverTime + (pm->ps->fd.forcePowerLevel[FP_LEVITATION] * 100);
-		}
-
-		// player is force falling
-		return qtrue;
-	}
-
-	// player is not force falling
-	return qfalse;
-}
-//[/FORCE FALL]
-
 int NumberOfWeapons(void)
 {
 	int numWeaps=0;
@@ -2459,11 +2365,6 @@ static qboolean PM_CheckJump( void )
 	{//in knockdown
 		return qfalse;		
 	}
-
-	//[FORCE FALL]
-	if (PM_InForceFall())
-		return qfalse;
-	//[/FORCE FALL]
 
 	if(pm->ps->pm_type == PM_FREEZE)
 		return qfalse;
@@ -4801,11 +4702,6 @@ static void PM_CrashLand( void ) {
 	// make sure velocity resets so we don't bounce back up again in case we miss the clear elsewhere
 	//pm->ps->velocity[2] = 0;
 	//Clear velocity
-
-	if(PM_InForceFall())
-	{
-		return;
-	}
 
 	VectorClear(pm->ps->velocity);
 	// start footstep cycle over
