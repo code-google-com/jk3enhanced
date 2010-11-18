@@ -278,6 +278,7 @@
     <ClCompile Include="..\game\bg_weapons.cpp" />
     <ClCompile Include="..\game\q_math.cpp" />
     <ClCompile Include="..\game\q_shared.cpp" />
+    <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="ui_atoms.cpp" />
     <ClCompile Include="ui_force.cpp" />
     <ClCompile Include="ui_gameinfo.cpp" />
@@ -297,6 +298,9 @@
     <ClInclude Include="..\game\bg_weapons.h" />
     <ClInclude Include="..\qcommon\disablewarnings.h" />
     <ClInclude Include="..\qcommon\game_version.h" />
+    <ClInclude Include="colorRangeDef_t.h" />
+    <ClInclude Include="ContainerElement.h" />
+    <ClInclude Include="itemDef_t.h" />
     <ClInclude Include="keycodes.h" />
     <ClInclude Include="..\..\kotold\ui\jamp\menudef.h" />
     <ClInclude Include="..\game\q_shared.h" />
@@ -304,11 +308,14 @@
     <ClInclude Include="..\game\surfaceflags.h" />
     <ClInclude Include="..\qcommon\tags.h" />
     <ClInclude Include="..\cgame\tr_types.h" />
+    <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="StackPanel.h" />
     <ClInclude Include="UIElement.h" />
     <ClInclude Include="ui_force.h" />
     <ClInclude Include="ui_local.h" />
     <ClInclude Include="ui_public.h" />
     <ClInclude Include="ui_shared.h" />
+    <ClInclude Include="WindowDef_t.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ui.def" />

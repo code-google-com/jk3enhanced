@@ -5,6 +5,11 @@
 #include "../game/q_shared.h"
 #include "../cgame/tr_types.h"
 #include "keycodes.h"
+#include "itemDef_t.h"
+#include "UIElement.h"
+#include "Rectangle.h"
+#include "StackPanel.h"
+#include <list>
 
 //[SVN]
 //rearraigned repository to make it easier to initially compile.
@@ -18,7 +23,7 @@
 #define MAX_MENUFILE				32768
 #define MAX_MENUS					64
 #define MAX_MENUITEMS				256
-#define MAX_COLOR_RANGES			10
+
 #define MAX_OPEN_MENUS				16
 #define	MAX_TEXTSCROLL_LINES		256
 
@@ -100,47 +105,14 @@ typedef struct {
 } scriptDef_t;
 
 
-typedef struct {
+/*typedef struct {
   float x;    // horiz position
   float y;    // vert position
   float w;    // width
   float h;    // height;
 } rectDef_t;
 
-typedef rectDef_t Rectangle;
-
-// FIXME: do something to separate text vs window stuff
-typedef struct {
-  Rectangle rect;                 // client coord rectangle
-  Rectangle rectClient;           // screen coord rectangle
-  const char *name;               //
-  const char *group;              // if it belongs to a group
-  const char *cinematicName;		  // cinematic name
-  int cinematic;								  // cinematic handle
-  int style;                      //
-  int border;                     //
-  int ownerDraw;									// ownerDraw style
-	int ownerDrawFlags;							// show flags for ownerdraw items
-  float borderSize;               // 
-  int flags;                      // visible, focus, mouseover, cursor
-  Rectangle rectEffects;          // for various effects
-  Rectangle rectEffects2;         // for various effects
-  int offsetTime;                 // time based value for various effects
-  int nextTime;                   // time next effect should cycle
-  vec4_t foreColor;               // text color
-  vec4_t backColor;               // border color
-  vec4_t borderColor;             // border color
-  vec4_t outlineColor;            // border color
-  qhandle_t background;           // background asset  
-} windowDef_t;
-
-typedef windowDef_t Window;
-
-typedef struct {
-	vec4_t	color;
-	float		low;
-	float		high;
-} colorRangeDef_t;
+typedef rectDef_t Rectangle;*/
 
 // FIXME: combine flags into bitfields to save space
 // FIXME: consolidate all of the common stuff in one structure for menus and items
@@ -250,59 +222,6 @@ typedef struct textScrollDef_s
 
 #define ITF_ISANYSABER		(ITF_ISSABER|ITF_ISSABER2)	//either saber
 
-typedef struct itemDef_s {
-	Window		window;						// common positional, border, style, layout info
-	Rectangle	textRect;					// rectangle the text ( if any ) consumes     
-	int			type;						// text, button, radiobutton, checkbox, textfield, listbox, combo
-	int			alignment;					// left center right
-	int			textalignment;				// ( optional ) alignment for text within rect based on text width
-	float		textalignx;					// ( optional ) text alignment x coord
-	float		textaligny;					// ( optional ) text alignment x coord
-	float		textscale;					// scale percentage from 72pts
-	int			textStyle;					// ( optional ) style, normal and shadowed are it for now
-	const char	*text;						// display text
-	const char	*text2;						// display text, 2nd line
-	float		text2alignx;				// ( optional ) text2 alignment x coord
-	float		text2aligny;				// ( optional ) text2 alignment y coord
-	void		*parent;					// menu owner
-	qhandle_t	asset;						// handle to asset
-	void		*ghoul2;					// ghoul2 instance if available instead of a model.
-	int			flags;						// flags like g2valid, character, saber, saber2, etc.
-	const char	*mouseEnterText;			// mouse enter script
-	const char	*mouseExitText;				// mouse exit script
-	const char	*mouseEnter;				// mouse enter script
-	const char	*mouseExit;					// mouse exit script 
-	const char	*action;					// select script
-//JLFACCEPT MPMOVED
-	const char  *accept;
-//JLFDPADSCRIPT
-	const char * selectionNext;
-	const char * selectionPrev;
-
-	const char	*onFocus;					// select script
-	const char	*leaveFocus;				// select script
-	const char	*cvar;						// associated cvar 
-	const char	*cvarTest;					// associated cvar for enable actions
-	const char	*enableCvar;				// enable, disable, show, or hide based on value, this can contain a list
-	int			cvarFlags;					//	what type of action to take on cvarenables
-	sfxHandle_t focusSound;
-	int			numColors;					// number of color ranges
-	colorRangeDef_t colorRanges[MAX_COLOR_RANGES];
-	float		special;					// used for feeder id's etc.. diff per type
-	int			cursorPos;					// cursor position in characters
-	void		*typeData;					// type specific data ptr's	
-	const char	*descText;					//	Description text
-	int			appearanceSlot;				// order of appearance
-	int			iMenuFont;					// FONT_SMALL,FONT_MEDIUM,FONT_LARGE	// changed from 'font' so I could see what didn't compile, and differentiate between font handles returned from RegisterFont -ste
-	qboolean	disabled;					// Does this item ignore mouse and keyboard focus
-	int			invertYesNo;
-	int			xoffset;
-} itemDef_t;
-
-class LayoutElement : UIElement {
-	protected:
-};
-
 /*typedef struct stackPanelDef_s {
 	Window		window;						// common positional, border, style, layout info
 	Rectangle	textRect;					// rectangle the text ( if any ) consumes     
@@ -352,6 +271,8 @@ class LayoutElement : UIElement {
 	int			xoffset;
 } stackPanelDef_t;*/
 
+class UIElement;
+
 typedef struct {
 	Window window;
 	const char  *font;						// font
@@ -381,6 +302,7 @@ typedef struct {
 	float		appearanceTime;				//	when next item should appear
 	int			appearanceCnt;				//	current item displayed
 	float		appearanceIncrement;		//
+	std::list<UIElement> newItems;
 } menuDef_t;
 
 typedef struct {
@@ -539,13 +461,13 @@ void Menu_ScrollFeeder(menuDef_t *menu, int feeder, qboolean down);
 qboolean Float_Parse(char **p, float *f);
 qboolean Color_Parse(char **p, vec4_t *c);
 qboolean Int_Parse(char **p, int *i);
-qboolean Rect_Parse(char **p, rectDef_t *r);
+qboolean Rect_Parse(char **p, Rectangle *r);
 qboolean String_Parse(char **p, const char **out);
 qboolean Script_Parse(char **p, const char **out);
 qboolean PC_Float_Parse(int handle, float *f);
 qboolean PC_Color_Parse(int handle, vec4_t *c);
 qboolean PC_Int_Parse(int handle, int *i);
-qboolean PC_Rect_Parse(int handle, rectDef_t *r);
+qboolean PC_Rect_Parse(int handle, Rectangle *r);
 qboolean PC_String_Parse(int handle, const char **out);
 qboolean PC_Script_Parse(int handle, const char **out);
 int Menu_Count();

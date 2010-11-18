@@ -3226,13 +3226,17 @@ public:
 		return qtrue;
 	}
 
-	qboolean operator==(const char & str)
+	qboolean operator==(const char* &str)
 	{
 		return (qboolean)(Q_stricmp(value, (char*)str) == 0);
 	}
 
 	qboolean operator==(const string & str)
 	{
+		return (qboolean)(Q_stricmp(value, str.AsChar()) == 0);
+	}
+
+	qboolean operator==(string str) {
 		return (qboolean)(Q_stricmp(value, str.AsChar()) == 0);
 	}
 
