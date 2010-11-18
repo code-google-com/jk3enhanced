@@ -292,6 +292,7 @@
     <ClCompile Include="..\game\bg_slidemove.cpp" />
     <ClCompile Include="..\game\bg_vehicleLoad.cpp" />
     <ClCompile Include="..\game\bg_weapons.cpp" />
+    <ClCompile Include="..\ui\StackPanel.cpp" />
     <ClCompile Include="cg_camera.cpp" />
     <ClCompile Include="cg_consolecmds.cpp" />
     <ClCompile Include="cg_draw.cpp" />

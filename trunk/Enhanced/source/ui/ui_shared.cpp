@@ -534,7 +534,7 @@ qboolean PC_Int_Parse(int handle, int *i) {
 Rect_Parse
 =================
 */
-qboolean Rect_Parse(char **p, rectDef_t *r) {
+qboolean Rect_Parse(char **p, Rectangle *r) {
 	if (Float_Parse(p, &r->x)) {
 		if (Float_Parse(p, &r->y)) {
 			if (Float_Parse(p, &r->w)) {
@@ -552,7 +552,7 @@ qboolean Rect_Parse(char **p, rectDef_t *r) {
 PC_Rect_Parse
 =================
 */
-qboolean PC_Rect_Parse(int handle, rectDef_t *r) {
+qboolean PC_Rect_Parse(int handle, Rectangle *r) {
 	if (PC_Float_Parse(handle, &r->x)) {
 		if (PC_Float_Parse(handle, &r->y)) {
 			if (PC_Float_Parse(handle, &r->w)) {
@@ -664,7 +664,7 @@ void Init_Display(displayContextDef_t *dc) {
 
 // type and style painting 
 
-void GradientBar_Paint(rectDef_t *rect, vec4_t color) {
+void GradientBar_Paint(Rectangle *rect, vec4_t color) {
 	// gradient bar takes two paints
 	DC->setColor( color );
 	DC->drawHandlePic(rect->x, rect->y, rect->w, rect->h, DC->Assets.gradientBar);
@@ -715,7 +715,7 @@ void Window_Paint(Window *w, float fadeAmount, float fadeClamp, float fadeCycle)
 {
 	//float bordersize = 0;
 	vec4_t color;
-	rectDef_t fillRect = w->rect;
+	Rectangle fillRect = w->rect;
 
 
 	if (debugMode) 
@@ -845,7 +845,7 @@ void Window_Paint(Window *w, float fadeAmount, float fadeClamp, float fadeCycle)
 	else if (w->border == WINDOW_BORDER_KCGRADIENT) 
 	{
 		// this is just two gradient bars along each horz edge
-		rectDef_t r = w->rect;
+		Rectangle r = w->rect;
 		r.h = w->borderSize;
 		GradientBar_Paint(&r, w->borderColor);
 		r.y = w->rect.y + w->rect.h - 1;
@@ -980,7 +980,7 @@ qboolean IsVisible(int flags) {
   return (qboolean)(flags & WINDOW_VISIBLE && !(flags & WINDOW_FADINGOUT));
 }
 
-qboolean Rect_ContainsPoint(rectDef_t *rect, float x, float y) {
+qboolean Rect_ContainsPoint(Rectangle *rect, float x, float y) {
   if (rect) {
     if (x > rect->x && x < rect->x + rect->w && y > rect->y && y < rect->y + rect->h) {
       return qtrue;
@@ -1369,8 +1369,8 @@ qboolean Script_SetItemColorCvar(itemDef_t *item, char **args)
 qboolean Script_SetItemRect(itemDef_t *item, char **args) 
 {
 	const char *itemname;
-	rectDef_t *out;
-	rectDef_t rect;
+	Rectangle *out;
+	Rectangle rect;
 	menuDef_t	*menu;	
 
 	// expecting type of color to set and 4 args for the color
@@ -1626,8 +1626,8 @@ qboolean Script_Close(itemDef_t *item, char **args)
 	return qtrue;
 }
 
-//void Menu_TransitionItemByName(menuDef_t *menu, const char *p, rectDef_t rectFrom, rectDef_t rectTo, int time, float amt) 
-void Menu_TransitionItemByName(menuDef_t *menu, const char *p, const rectDef_t *rectFrom, const rectDef_t *rectTo, int time, float amt) 
+//void Menu_TransitionItemByName(menuDef_t *menu, const char *p, Rectangle rectFrom, Rectangle rectTo, int time, float amt) 
+void Menu_TransitionItemByName(menuDef_t *menu, const char *p, const Rectangle *rectFrom, const Rectangle *rectTo, int time, float amt) 
 {
 	itemDef_t *item;
 	int i;
@@ -1643,8 +1643,8 @@ void Menu_TransitionItemByName(menuDef_t *menu, const char *p, const rectDef_t *
 			}
 			item->window.flags |= (WINDOW_INTRANSITION | WINDOW_VISIBLE);
 			item->window.offsetTime = time;
-			memcpy(&item->window.rectClient, rectFrom, sizeof(rectDef_t));
-			memcpy(&item->window.rectEffects, rectTo, sizeof(rectDef_t));
+			memcpy(&item->window.rectClient, rectFrom, sizeof(Rectangle));
+			memcpy(&item->window.rectEffects, rectTo, sizeof(Rectangle));
 			item->window.rectEffects2.x = abs(rectTo->x - rectFrom->x) / amt;
 			item->window.rectEffects2.y = abs(rectTo->y - rectFrom->y) / amt;
 			item->window.rectEffects2.w = abs(rectTo->w - rectFrom->w) / amt;
@@ -1778,7 +1778,7 @@ qboolean Script_RunDeferred ( itemDef_t* item, char **args )
 qboolean Script_Transition(itemDef_t *item, char **args) 
 {
 	const char *name;
-	rectDef_t rectFrom, rectTo;
+	Rectangle rectFrom, rectTo;
 	int time;
 	float amt;
 
@@ -1868,7 +1868,7 @@ qboolean Script_Scale(itemDef_t *item, char **args)
 	float scale;
 	int	j,count;
 	itemDef_t *itemFound;
-	rectDef_t rectTo;
+	Rectangle rectTo;
 
 	if (String_Parse(args, &name)) 
 	{
@@ -1963,7 +1963,7 @@ qboolean Script_SetPlayerModel(itemDef_t *item, char **args)
 ParseRect
 =================
 */
-qboolean ParseRect(const char **p, rectDef_t *r) 
+qboolean ParseRect(const char **p, Rectangle *r) 
 {
 	if (!COM_ParseFloat(p, &r->x)) 
 	{
@@ -1991,7 +1991,7 @@ transition2		lfvscr		25 0 202 264  20 25
 qboolean Script_Transition2(itemDef_t *item, char **args) 
 {
 	const char *name;
-	rectDef_t rectTo;
+	Rectangle rectTo;
 	int time;
 	float amt;
 
@@ -2451,7 +2451,7 @@ qboolean Item_SetFocus(itemDef_t *item, float x, float y) {
 	oldFocus = Menu_ClearFocus((menuDef_t *) item->parent);
 
 	if (item->type == ITEM_TYPE_TEXT) {
-		rectDef_t r;
+		Rectangle r;
 		r = item->textRect;
 		r.y -= r.h;
 
@@ -2558,7 +2558,7 @@ int Item_TextScroll_ThumbDrawPosition ( itemDef_t *item )
 
 int Item_TextScroll_OverLB ( itemDef_t *item, float x, float y ) 
 {
-	rectDef_t		r;
+	Rectangle		r;
 	textScrollDef_t *scrollPtr;
 	int				thumbstart;
 	int				count;
@@ -2841,7 +2841,7 @@ float Item_Slider_ThumbPosition(itemDef_t *item) {
 }
 
 int Item_Slider_OverSlider(itemDef_t *item, float x, float y) {
-	rectDef_t r;
+	Rectangle r;
 
 	r.x = Item_Slider_ThumbPosition(item) - (SLIDER_THUMB_WIDTH / 2);
 	r.y = item->window.rect.y - 2;
@@ -2856,7 +2856,7 @@ int Item_Slider_OverSlider(itemDef_t *item, float x, float y) {
 
 int Item_ListBox_OverLB(itemDef_t *item, float x, float y) 
 {
-	rectDef_t r;
+	Rectangle r;
 	listBoxDef_t *listPtr;
 	int thumbstart;
 	int count;
@@ -2975,7 +2975,7 @@ int Item_ListBox_OverLB(itemDef_t *item, float x, float y)
 
 void Item_ListBox_MouseEnter(itemDef_t *item, float x, float y) 
 {
-	rectDef_t r;
+	Rectangle r;
 	listBoxDef_t *listPtr = (listBoxDef_t*)item->typeData;
         
 	item->window.flags &= ~(WINDOW_LB_LEFTARROW | WINDOW_LB_RIGHTARROW | WINDOW_LB_THUMB | WINDOW_LB_PGUP | WINDOW_LB_PGDN);
@@ -3047,7 +3047,7 @@ void Item_ListBox_MouseEnter(itemDef_t *item, float x, float y)
 
 void Item_MouseEnter(itemDef_t *item, float x, float y) {
 
-	rectDef_t r;
+	Rectangle r;
 	if (item) {
 		r = item->textRect;
 		r.y -= r.h;
@@ -3754,7 +3754,7 @@ static void Scroll_TextScroll_AutoFunc (void *p)
 static void Scroll_TextScroll_ThumbFunc(void *p) 
 {
 	scrollInfo_t *si = (scrollInfo_t*)p;
-	rectDef_t	 r;
+	Rectangle	 r;
 	int			 pos;
 	int			 max;
 
@@ -3821,7 +3821,7 @@ static void Scroll_ListBox_AutoFunc(void *p) {
 
 static void Scroll_ListBox_ThumbFunc(void *p) {
 	scrollInfo_t *si = (scrollInfo_t*)p;
-	rectDef_t r;
+	Rectangle r;
 	int pos, max;
 
 	listBoxDef_t *listPtr = (listBoxDef_t*)si->item->typeData;
@@ -4016,7 +4016,7 @@ qboolean Item_Slider_HandleKey(itemDef_t *item, int key, qboolean down) {
 		if (key == A_MOUSE1 || key == A_ENTER || key == A_MOUSE2 || key == A_MOUSE3) {
 			editFieldDef_t *editDef = (editFieldDef_t *) item->typeData;
 			if (editDef) {
-				rectDef_t testRect;
+				Rectangle testRect;
 				width = SLIDER_WIDTH;
 				if (item->text) {
 					x = item->textRect.x + item->textRect.w + 8;
@@ -4525,7 +4525,7 @@ void ToWindowCoords(float *x, float *y, windowDef_t *window) {
 	*y += window->rect.y;
 }
 
-void Rect_ToWindowCoords(rectDef_t *rect, windowDef_t *window) {
+void Rect_ToWindowCoords(Rectangle *rect, windowDef_t *window) {
 	ToWindowCoords(&rect->x, &rect->y, window);
 }
 
@@ -7084,10 +7084,6 @@ layoutKeywordHash_t *LayoutHash_Find(layoutKeywordHash_t *table[], char *keyword
 	return NULL;
 }
 
-qboolean LayoutParse_StackPanel(itemDef_t *item, int handle) {
-	return qtrue;
-}
-
 /*
 ===============
 Keyword Hash
@@ -8798,7 +8794,6 @@ keywordHash_t itemParseKeywords[] = {
 };
 
 layoutKeywordHash_t layoutParseKeywords[] = {
-	{"stackPanel",		LayoutParse_StackPanel,		NULL	},
 	{0,					0,							0		}
 };
 
@@ -9553,7 +9548,80 @@ qboolean MenuParse_itemDef( itemDef_t *item, int handle ) {
 qboolean MenuParse_stackPanel(itemDef_t *item, int handle) {
 	menuDef_t *menu = (menuDef_t*)item;
 
-	if(menu->itemCount < MAX_MENUITEMS) {
+	if(menu->newItems.size() < MAX_MENUITEMS) {
+		StackPanel *panel = new StackPanel();
+
+		pc_token_t token;
+		if (!trap_PC_ReadToken(handle, &token)) {
+			return qfalse;
+		}
+
+		if (*token.string != '{') {
+			return qfalse;
+		}
+
+		while(true) {
+			if (!trap_PC_ReadToken(handle, &token)) {
+				PC_SourceError(handle, "end of file inside stack panel item\n");
+				return qfalse;
+			}
+
+			if (*token.string == '}') {
+				return qtrue;
+			}
+
+			if(Q_stricmp(token.string, "rect") == 0) {
+				Rectangle rect;
+				if(!PC_Rect_Parse(handle, &rect)) return qfalse;
+
+				panel->SetRectangle(rect);
+			}
+			else if(Q_stricmp(token.string, "itemDef") == 0) {
+
+				itemDef_t *item = (itemDef_t *)UI_Alloc(sizeof(itemDef_t));
+				Item_Init(item);
+				if (!Item_Parse(handle, item)) {
+					return qfalse;
+				}
+
+				Item_InitControls(item);
+
+				/*menuDef_t *menu = (menuDef_t*)item;
+				if (menu->itemCount < MAX_MENUITEMS) {
+					menu->items[menu->itemCount] = (itemDef_t *) UI_Alloc(sizeof(itemDef_t));
+					Item_Init(menu->items[menu->itemCount]);
+					if (!Item_Parse(handle, menu->items[menu->itemCount])) {
+						return qfalse;
+					}
+					Item_InitControls(menu->items[menu->itemCount]);
+					menu->items[menu->itemCount++]->parent = menu;
+				}
+				return qtrue;*/
+			}
+		}
+
+		/*while ( 1 ) {
+			if (!trap_PC_ReadToken(handle, &token)) {
+				PC_SourceError(handle, "end of file inside menu item\n");
+				return qfalse;
+			}
+
+			if (*token.string == '}') {
+				return qtrue;
+			}
+
+			keywordHash_t *key = KeywordHash_Find(itemParseKeywordHash, token.string);
+			if(key) {
+				if (!key->func(item, handle)) {
+					PC_SourceError(handle, "couldn't parse menu item keyword %s", token.string);
+					return qfalse;
+				}
+			}
+			else {
+				PC_SourceError(handle, "unknown menu item keyword %s", token.string);
+				continue;
+			}
+		}*/
 	}
 
 	return qtrue;
@@ -9745,7 +9813,7 @@ qboolean Display_MouseMove(void *p, int x, int y) {
 int Display_CursorType(int x, int y) {
 	int i;
 	for (i = 0; i < menuCount; i++) {
-		rectDef_t r2;
+		Rectangle r2;
 		r2.x = Menus[i].window.rect.x - 3;
 		r2.y = Menus[i].window.rect.y - 3;
 		r2.w = r2.h = 7;

@@ -330,7 +330,7 @@ static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4
 #define PIC_WIDTH 12
 
 extern const char *CG_GetLocationString(const char *loc); //cg_main.c
-void CG_DrawNewTeamInfo(rectDef_t *rect, float text_x, float text_y, float scale, vec4_t color, qhandle_t shader) {
+void CG_DrawNewTeamInfo(Rectangle *rect, float text_x, float text_y, float scale, vec4_t color, qhandle_t shader) {
 	int xx;
 	float y;
 	int i, j, len, count;
@@ -431,7 +431,7 @@ void CG_DrawNewTeamInfo(rectDef_t *rect, float text_x, float text_y, float scale
 }
 
 
-void CG_DrawTeamSpectators(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader) {
+void CG_DrawTeamSpectators(Rectangle *rect, float scale, vec4_t color, qhandle_t shader) {
 	if (cg.spectatorLen) {
 		float maxX;
 
@@ -490,7 +490,7 @@ void CG_DrawTeamSpectators(rectDef_t *rect, float scale, vec4_t color, qhandle_t
 
 
 
-void CG_DrawMedal(int ownerDraw, rectDef_t *rect, float scale, vec4_t color, qhandle_t shader) {
+void CG_DrawMedal(int ownerDraw, Rectangle *rect, float scale, vec4_t color, qhandle_t shader) {
 	score_t *score = &cg.scores[cg.selectedScore];
 	float value = 0;
 	char *text = NULL;

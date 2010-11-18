@@ -82,7 +82,7 @@ return 3;
 
 
 // Draw the stars spent on the current force power
-void UI_DrawForceStars(rectDef_t *rect, float scale, vec4_t color, int textStyle, int forceindex, int val, int min, int max) 
+void UI_DrawForceStars(Rectangle *rect, float scale, vec4_t color, int textStyle, int forceindex, int val, int min, int max) 
 {
 	int	i,pad = 4;
 	int	xPos,width = 16;
