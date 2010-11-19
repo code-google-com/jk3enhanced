@@ -8,6 +8,10 @@ class UIElement {
 		Rectangle	rectangle;
 
 	public:
+
+		UIElement() {}
+		~UIElement() {}
+
 		Rectangle GetRectangle() {
 			return rectangle;
 		}
