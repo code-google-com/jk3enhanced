@@ -444,6 +444,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\StackPanel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ui_atoms.cpp"
 				>
 			</File>
@@ -509,11 +513,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\colorRangeDef_t.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ConfigurationElement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ContainerElement.h"
+				>
+			</File>
+			<File
 				RelativePath="..\qcommon\disablewarnings.h"
 				>
 			</File>
 			<File
 				RelativePath="..\qcommon\game_version.h"
+				>
+			</File>
+			<File
+				RelativePath=".\itemDef_t.h"
 				>
 			</File>
 			<File
@@ -530,6 +550,14 @@
 			</File>
 			<File
 				RelativePath="..\qcommon\qfiles.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Rectangle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StackPanel.h"
 				>
 			</File>
 			<File
@@ -562,6 +590,14 @@
 			</File>
 			<File
 				RelativePath=".\ui_shared.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UIElement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WindowDef_t.h"
 				>
 			</File>
 		</Filter>

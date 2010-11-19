@@ -5,6 +5,8 @@
 #include "itemDef_t.h"
 #include <list>
 
+void Item_Paint(itemDef_t *item);
+
 class ContainerElement : public UIElement {
 	protected:
 		std::list<UIElement*> children;
@@ -16,13 +18,22 @@ class ContainerElement : public UIElement {
 		}*/
 
 		ContainerElement() {}
+		~ContainerElement() {}
 
-		void AddOldElement(itemDef_t *item) {
-			oldChildren.insert(oldChildren.end(), item);
+		void AddOldElement(itemDef_t* item) {
+			oldChildren.push_back(item);
 		}
 
-		void AddElement(UIElement *element) {
-			children.insert(children.end(), element);
+		void AddElement(UIElement* element) {
+			children.push_back(element);
+		}
+
+		void Draw() {
+			for(std::list<itemDef_t*>::iterator i = oldChildren.begin(); i != oldChildren.end(); ++i) {
+				itemDef_t *child = (*i);
+
+				Item_Paint(child);
+			}
 		}
 };
 

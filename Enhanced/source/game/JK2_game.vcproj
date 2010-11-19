@@ -551,10 +551,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g_reload.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\g_roff.cpp"
 				>
 			</File>

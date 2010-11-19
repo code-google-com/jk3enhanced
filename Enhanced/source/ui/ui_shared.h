@@ -302,7 +302,9 @@ typedef struct {
 	float		appearanceTime;				//	when next item should appear
 	int			appearanceCnt;				//	current item displayed
 	float		appearanceIncrement;		//
-	std::list<UIElement> newItems;
+	UIElement *newItems[MAX_MENUITEMS];
+	int			newItemCount;
+	//std::list<UIElement*> newItems;
 } menuDef_t;
 
 typedef struct {

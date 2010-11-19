@@ -6986,6 +6986,15 @@ void Menu_Paint(menuDef_t *menu, qboolean forcePaint) {
 		}
 	}
 
+	if(menu->newItemCount > 0) {
+		for(int i = 0; i < menu->newItemCount; i++) {
+			UIElement *child = menu->newItems[i];
+
+			child->Arrange();
+			child->Draw();
+		}
+	}
+
 	if (debugMode) {
 		vec4_t color;
 		color[0] = color[2] = color[3] = 1;
@@ -9548,8 +9557,9 @@ qboolean MenuParse_itemDef( itemDef_t *item, int handle ) {
 qboolean MenuParse_stackPanel(itemDef_t *item, int handle) {
 	menuDef_t *menu = (menuDef_t*)item;
 
-	if(menu->newItems.size() < MAX_MENUITEMS) {
+	if(menu->newItemCount < MAX_MENUITEMS) {
 		StackPanel *panel = new StackPanel();
+		menu->newItems[menu->newItemCount++] = panel;
 
 		pc_token_t token;
 		if (!trap_PC_ReadToken(handle, &token)) {
@@ -9585,6 +9595,9 @@ qboolean MenuParse_stackPanel(itemDef_t *item, int handle) {
 				}
 
 				Item_InitControls(item);
+				item->parent = menu; //Technically the parent should be the stackpanel, but because we're mixing old code with new we've gotta do this
+
+				panel->AddOldElement(item);
 
 				/*menuDef_t *menu = (menuDef_t*)item;
 				if (menu->itemCount < MAX_MENUITEMS) {

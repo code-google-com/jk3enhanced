@@ -765,6 +765,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\ui\StackPanel.cpp"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
