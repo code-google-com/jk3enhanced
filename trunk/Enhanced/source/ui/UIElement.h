@@ -12,8 +12,8 @@ class UIElement {
 		UIElement() {}
 		~UIElement() {}
 
-		Rectangle GetRectangle() {
-			return rectangle;
+		Rectangle *GetRectangle() {
+			return &rectangle;
 		}
 
 		void SetRectangle(Rectangle rect) {

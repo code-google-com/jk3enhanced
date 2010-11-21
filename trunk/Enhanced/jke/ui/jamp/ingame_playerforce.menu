@@ -1121,196 +1121,213 @@
 			decoration
 		}
 		
-		// Force Grip title
-		itemDef 
-		{
-			name					setfp_grip
-			group					darkpowers
-			style					0	
-			text					@MENUS_FORCE_GRIP
-			//descText				@MENUS_DESCRIPTION_OF_A_FORCE
-			//[ForceSys]
-			rect					270 240 110 15
-			//rect					230 223 110 15
-			//[/ForceSys]
-			textalign				ITEM_ALIGN_LEFT												
-			textalignx				0
-			textaligny				0
-			font					4
-			textscale				1
-			forecolor				1 0.2 0.2 1
-			outlinecolor			1 .5 .5 .5
-			backcolor				0 0 0 0
-			border					0
-			bordercolor				0 0 0 0
-			visible					1 
-			decoration
-		}
-	
-		// Force Grip assign
-		itemDef 
-		{
-			name					setfp_grip
-			group					darkpowers
-			style					0	
-			ownerdraw				UI_FORCE_RANK_GRIP
-			//[ForceSys]
-			rect					270 240 175 15
-			//rect					230 223 175 15
-			//[/ForceSys]
-			textalign				ITEM_ALIGN_LEFT		
-			textalignx				115
-			textaligny				-5
-			textscale				.25        
-			outlinecolor			1 .5 .5 .5
-			backcolor				0 0 0 0
-			forecolor				1 0.2 0.2 1
-			border					0
-			bordercolor				0 0 0 0
-			descText				@MENUS_IMMOBILIZE_OPPONENTS
-			visible					1 
-			action 
-			{ 
-				play			"sound/interface/button1.wav" ;
-			}
-
-			mouseenter 
-			{ 
-				setitemcolor	setfp_grip forecolor 1 0.7 0.7 1
-			}
-			mouseexit 
-			{ 
-				setitemcolor	setfp_grip forecolor 1 0.2 0.2 1
-			}
-		}
-		
 		stackPanel
 		{
-			rect					270 255 175 15
+			rect					270 240 110 15
+			orientation				Vertical
 		
-			// Force Lightning title
-			itemDef 
+			stackPanel 
 			{
-				name					setfp_lightning
-				group					darkpowers
-				style					0	
-				text					@MENUS_FORCE_LIGHTNING
-				//descText				@MENUS_DESCRIPTION_OF_A_FORCE
-				//[ForceSys]
-				rect					270 255 110 15
-				//rect					230 257 110 15
-				//[/ForceSys]
-				textalign				ITEM_ALIGN_LEFT												
-				textalignx				0
-				textaligny				0
-				font					4
-				textscale				1
-				forecolor				1 0.2 0.2 1
-				outlinecolor			1 .5 .5 .5
-				backcolor				0 0 0 0
-				border					0
-				bordercolor				0 0 0 0
-				visible					1 
-				decoration
+				rect				0 0 175 15
+				orientation			Horizontal
+				// Force Grip title
+				itemDef 
+				{
+					name					setfp_grip
+					group					darkpowers
+					style					0	
+					text					@MENUS_FORCE_GRIP
+					//descText				@MENUS_DESCRIPTION_OF_A_FORCE
+					//[ForceSys]
+					rect					0 0 0 15
+					//rect					230 223 110 15
+					//[/ForceSys]
+					textalign				ITEM_ALIGN_LEFT												
+					textalignx				0
+					textaligny				0
+					font					4
+					textscale				1
+					forecolor				1 0.2 0.2 1
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					border					0
+					bordercolor				0 0 0 0
+					visible					1 
+					decoration
+				}
+			
+				// Force Grip assign
+				itemDef 
+				{
+					name					setfp_grip
+					group					darkpowers
+					style					0	
+					ownerdraw				UI_FORCE_RANK_GRIP
+					//[ForceSys]
+					rect					270 240 175 15
+					//rect					230 223 175 15
+					//[/ForceSys]
+					textalign				ITEM_ALIGN_LEFT		
+					textalignx				115
+					textaligny				-5
+					textscale				.25        
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					forecolor				1 0.2 0.2 1
+					border					0
+					bordercolor				0 0 0 0
+					descText				@MENUS_IMMOBILIZE_OPPONENTS
+					visible					1 
+					action 
+					{ 
+						play			"sound/interface/button1.wav" ;
+					}
+
+					mouseenter 
+					{ 
+						setitemcolor	setfp_grip forecolor 1 0.7 0.7 1
+					}
+					mouseexit 
+					{ 
+						setitemcolor	setfp_grip forecolor 1 0.2 0.2 1
+					}
+				}
 			}
-
-			// Force Lightning assign
-			itemDef 
+		
+			stackPanel 
 			{
-				name					setfp_lightning
-				group					darkpowers
-				style					0	
-				ownerdraw				UI_FORCE_RANK_LIGHTNING
-				//[ForceSys]
-				rect					270 255 175 15
-				//rect					230 257 175 15
-				//[/ForceSys]
-				textalign				ITEM_ALIGN_LEFT										
-				textalignx				115
-				textaligny				-5
-				textscale				.25        
-				outlinecolor			1 .5 .5 .5
-				backcolor				0 0 0 0
-				forecolor				1 0.2 0.2 1
-				border					0
-				bordercolor				0 0 0 0
-				descText				@MENUS_UNLEASH_DEADLY_ELECTRICAL
-				visible					1 
-				action 
-				{ 
-					play			"sound/interface/button1.wav" ;
+				rect				0 0 175 15
+				orientation			Horizontal
+				// Force Lightning title
+				itemDef 
+				{
+					name					setfp_lightning
+					group					darkpowers
+					style					0	
+					text					@MENUS_FORCE_LIGHTNING
+					//descText				@MENUS_DESCRIPTION_OF_A_FORCE
+					//[ForceSys]
+					rect					0 0 0 15
+					//rect					270 255 110 15
+					//[/ForceSys]
+					textalign				ITEM_ALIGN_LEFT												
+					textalignx				0
+					textaligny				0
+					font					4
+					textscale				1
+					forecolor				1 0.2 0.2 1
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					border					0
+					bordercolor				0 0 0 0
+					visible					1 
+					decoration
 				}
 
-				mouseenter 
-				{ 
-					setitemcolor	setfp_lightning forecolor 1 0.7 0.7 1
-				}
-				mouseexit 
-				{ 
-					setitemcolor	setfp_lightning forecolor 1 0.2 0.2 1
+				// Force Lightning assign
+				itemDef 
+				{
+					name					setfp_lightning
+					group					darkpowers
+					style					0	
+					ownerdraw				UI_FORCE_RANK_LIGHTNING
+					//[ForceSys]
+					//rect					270 255 175 15
+					rect					0 0 175 15
+					//[/ForceSys]
+					textalign				ITEM_ALIGN_LEFT										
+					textalignx				115
+					textaligny				-5
+					textscale				.25        
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					forecolor				1 0.2 0.2 1
+					border					0
+					bordercolor				0 0 0 0
+					descText				@MENUS_UNLEASH_DEADLY_ELECTRICAL
+					visible					1 
+					action 
+					{ 
+						play			"sound/interface/button1.wav" ;
+					}
+
+					mouseenter 
+					{ 
+						setitemcolor	setfp_lightning forecolor 1 0.7 0.7 1
+					}
+					mouseexit 
+					{ 
+						setitemcolor	setfp_lightning forecolor 1 0.2 0.2 1
+					}
 				}
 			}
 			
-			// Force Rage title
-			itemDef 
+			stackPanel 
 			{
-				name					setfp_rage
-				group					darkpowers
-				style					0	
-				text					@MENUS_DARK_RAGE
-				//descText				@MENUS_DESCRIPTION_OF_A_FORCE
-				//[ForceSys]			270 255 175 15
-				rect					270 270 110 15
-				//rect					230 257 110 15
-				//[/ForceSys]
-				textalign				ITEM_ALIGN_LEFT												
-				textalignx				0
-				textaligny				0
-				font					4
-				textscale				1
-				forecolor				1 0.2 0.2 1
-				outlinecolor			1 .5 .5 .5
-				backcolor				0 0 0 0
-				border					0
-				bordercolor				0 0 0 0
-				visible					1 
-				decoration
-			}
-
-			// Force Rage assign
-			itemDef 
-			{
-				name					setfp_rage
-				group					darkpowers
-				style					0	
-				ownerdraw				UI_FORCE_RANK_RAGE
-				//[ForceSys]
-				rect					270 270 175 15
-				//rect					230 257 175 15
-				//[/ForceSys]
-				textalign				ITEM_ALIGN_LEFT										
-				textalignx				115
-				textaligny				-5
-				textscale				.25        
-				outlinecolor			1 .5 .5 .5
-				backcolor				0 0 0 0
-				forecolor				1 0.2 0.2 1
-				border					0
-				bordercolor				0 0 0 0
-				descText				@MENUS_UNLEASH_DEADLY_RAGE
-				visible					1 
-				action 
-				{ 
-					play			"sound/interface/button1.wav" ;
+				rect				0 0 175 15
+				orientation			Horizontal
+			
+				// Force Rage title
+				itemDef 
+				{
+					name					setfp_rage
+					group					darkpowers
+					style					0	
+					text					@MENUS_DARK_RAGE
+					//descText				@MENUS_DESCRIPTION_OF_A_FORCE
+					//[ForceSys]			270 255 175 15
+					rect					0 0 0 15
+					//rect					230 257 110 15
+					//[/ForceSys]
+					textalign				ITEM_ALIGN_LEFT												
+					textalignx				0
+					textaligny				0
+					font					4
+					textscale				1
+					forecolor				1 0.2 0.2 1
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					border					0
+					bordercolor				0 0 0 0
+					visible					1 
+					decoration
 				}
 
-				mouseenter 
-				{ 
-					setitemcolor	setfp_rage forecolor 1 0.7 0.7 1
-				}
-				mouseexit 
-				{ 
-					setitemcolor	setfp_rage forecolor 1 0.2 0.2 1
+				// Force Rage assign
+				itemDef 
+				{
+					name					setfp_rage
+					group					darkpowers
+					style					0	
+					ownerdraw				UI_FORCE_RANK_RAGE
+					//[ForceSys]
+					rect					0 0 175 15
+					//rect					230 257 175 15
+					//[/ForceSys]
+					textalign				ITEM_ALIGN_LEFT										
+					textalignx				115
+					textaligny				-5
+					textscale				.25        
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					forecolor				1 0.2 0.2 1
+					border					0
+					bordercolor				0 0 0 0
+					descText				@MENUS_UNLEASH_DEADLY_RAGE
+					visible					1 
+					action 
+					{ 
+						play			"sound/interface/button1.wav" ;
+					}
+
+					mouseenter 
+					{ 
+						setitemcolor	setfp_rage forecolor 1 0.7 0.7 1
+					}
+					mouseexit 
+					{ 
+						setitemcolor	setfp_rage forecolor 1 0.2 0.2 1
+					}
 				}
 			}
 		}
