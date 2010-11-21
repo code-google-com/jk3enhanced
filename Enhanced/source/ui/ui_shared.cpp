@@ -955,29 +955,75 @@ void Menu_PostParse(menuDef_t *menu) {
 	Menu_UpdatePosition(menu);
 }
 
+itemDef_t *Container_ClearFocus(ContainerElement *container) {
+	itemDef_t *ret = nullptr;
+	std::list<itemDef_t*> items = container->GetOldChildren();
+
+	std::list<itemDef_t*>::const_iterator it;
+	for(it = items.begin(); it != items.end(); ++it) {
+		itemDef_t *child = *it;
+
+		if (child->window.flags & WINDOW_HASFOCUS) {
+			ret = child;
+		} 
+
+		child->window.flags &= ~WINDOW_HASFOCUS;
+		if (child->leaveFocus) {
+			Item_RunScript(child, child->leaveFocus);
+		}
+	}
+
+	std::list<UIElement*> elements = container->GetChildren();
+
+	for(std::list<UIElement*>::iterator i = elements.begin(); i != elements.end(); ++i) {
+		ContainerElement *container = dynamic_cast<ContainerElement*>(*i);
+
+		if(container != nullptr) {
+			itemDef_t *temp = Container_ClearFocus(container);
+
+			if(temp != nullptr) {
+				ret = temp;
+			}
+		}
+	}
+
+	return ret;
+}
+
 itemDef_t *Menu_ClearFocus(menuDef_t *menu) {
-  int i;
-  itemDef_t *ret = NULL;
+	itemDef_t *ret = NULL;
 
-  if (menu == NULL) {
-    return NULL;
-  }
+	if (menu == NULL) {
+		return NULL;
+	}
 
-  for (i = 0; i < menu->itemCount; i++) {
-    if (menu->items[i]->window.flags & WINDOW_HASFOCUS) {
-      ret = menu->items[i];
-    } 
-    menu->items[i]->window.flags &= ~WINDOW_HASFOCUS;
-    if (menu->items[i]->leaveFocus) {
-      Item_RunScript(menu->items[i], menu->items[i]->leaveFocus);
-    }
-  }
+	for (int i = 0; i < menu->itemCount; i++) {
+		if (menu->items[i]->window.flags & WINDOW_HASFOCUS) {
+			ret = menu->items[i];
+		} 
+
+		menu->items[i]->window.flags &= ~WINDOW_HASFOCUS;
+		if (menu->items[i]->leaveFocus) {
+			Item_RunScript(menu->items[i], menu->items[i]->leaveFocus);
+		}
+	}
+
+	for(int i = 0; i < menu->newItemCount; i++) {
+		ContainerElement *element = dynamic_cast<ContainerElement*>(menu->newItems[i]);
+
+		if(element != nullptr) {
+			itemDef_t *item = Container_ClearFocus(element);
+			if(item != nullptr) {
+				ret = item;
+			}
+		}
+	}
  
-  return ret;
+	return ret;
 }
 
 qboolean IsVisible(int flags) {
-  return (qboolean)(flags & WINDOW_VISIBLE && !(flags & WINDOW_FADINGOUT));
+	return (qboolean)(flags & WINDOW_VISIBLE && !(flags & WINDOW_FADINGOUT));
 }
 
 qboolean Rect_ContainsPoint(Rectangle *rect, float x, float y) {
@@ -989,12 +1035,45 @@ qboolean Rect_ContainsPoint(Rectangle *rect, float x, float y) {
   return qfalse;
 }
 
+int Container_ItemsMatchingGroup(ContainerElement *container, const char *name) {
+	int count = 0;
+	std::list<itemDef_t*> items = container->GetOldChildren();
+
+	std::list<itemDef_t*>::const_iterator it;
+	for(it = items.begin(); it != items.end(); ++it) {
+		itemDef_t *child = *it;
+
+		if ((!child->window.name) && (!child->window.group))
+		{
+			Com_Printf(S_COLOR_YELLOW"WARNING: item has neither name or group\n");
+			continue;
+		}
+
+		if (Q_stricmp(child->window.name, name) == 0 || 
+			(child->window.group && Q_stricmp(child->window.group, name) == 0)) 
+		{
+			count++;
+		} 
+	}
+
+	std::list<UIElement*> elements = container->GetChildren();
+
+	for(std::list<UIElement*>::iterator i = elements.begin(); i != elements.end(); ++i) {
+		ContainerElement *container = dynamic_cast<ContainerElement*>(*i);
+
+		if(container != nullptr) {
+			count += Container_ItemsMatchingGroup(container, name);
+		}
+	}
+
+	return count;
+}
+
 int Menu_ItemsMatchingGroup(menuDef_t *menu, const char *name) 
 {
-	int i;
 	int count = 0;
 
-	for (i = 0; i < menu->itemCount; i++) 
+	for (int i = 0; i < menu->itemCount; i++) 
 	{
 		if ((!menu->items[i]->window.name) && (!menu->items[i]->window.group))
 		{
@@ -1009,21 +1088,75 @@ int Menu_ItemsMatchingGroup(menuDef_t *menu, const char *name)
 		} 
 	}
 
+	for(int i = 0; i < menu->newItemCount; i++) {
+		ContainerElement *element = dynamic_cast<ContainerElement*>(menu->newItems[i]);
+
+		if(element != nullptr) {
+			count += Container_ItemsMatchingGroup(element, name);
+		}
+	}
+
 	return count;
 }
 
+itemDef_t *Container_GetMatchingItemByNumber(ContainerElement *container, int *count, int index, const char *name) {
+
+	std::list<itemDef_t*> items = container->GetOldChildren();
+
+	std::list<itemDef_t*>::const_iterator it;
+	for(it = items.begin(); it != items.end(); ++it) {
+		itemDef_t *child = *it;
+
+		if (Q_stricmp(child->window.name, name) == 0 || (child->window.group && Q_stricmp(child->window.group, name) == 0)) {
+			if (*count == index) {
+				return child;
+			}
+
+			*count = *count + 1;
+		} 
+	}
+
+	std::list<UIElement*> elements = container->GetChildren();
+
+	for(std::list<UIElement*>::iterator i = elements.begin(); i != elements.end(); ++i) {
+		ContainerElement *el = dynamic_cast<ContainerElement*>(*i);
+
+		if(el != nullptr) {
+			itemDef_t *item = Container_GetMatchingItemByNumber(el, count, index, name);
+			if(item != nullptr) {
+				return item;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 itemDef_t *Menu_GetMatchingItemByNumber(menuDef_t *menu, int index, const char *name) {
-  int i;
-  int count = 0;
-  for (i = 0; i < menu->itemCount; i++) {
-    if (Q_stricmp(menu->items[i]->window.name, name) == 0 || (menu->items[i]->window.group && Q_stricmp(menu->items[i]->window.group, name) == 0)) {
-      if (count == index) {
-        return menu->items[i];
-      }
-      count++;
-    } 
-  }
-  return NULL;
+	int i;
+	int count = 0;
+	for (i = 0; i < menu->itemCount; i++) {
+		if (Q_stricmp(menu->items[i]->window.name, name) == 0 || (menu->items[i]->window.group && Q_stricmp(menu->items[i]->window.group, name) == 0)) {
+			if (count == index) {
+				return menu->items[i];
+			}
+			count++;
+		} 
+	}
+
+	for(int i = 0; i < menu->newItemCount; i++) {
+		ContainerElement *element = dynamic_cast<ContainerElement*>(menu->newItems[i]);
+
+		if(element != nullptr) {
+			itemDef_t *item = Container_GetMatchingItemByNumber(element, &count, index, name);
+
+			if(item != nullptr) {
+				return item;
+			}
+		}
+	}
+
+	return NULL;
 }
 
 qboolean Script_SetColor ( itemDef_t *item, char **args ) 
@@ -1432,14 +1565,15 @@ void Menu_ShowGroup (menuDef_t *menu, char *groupName, qboolean showFlag)
 
 void Menu_ShowItemByName(menuDef_t *menu, const char *p, qboolean bShow) {
 	itemDef_t *item;
-	int i;
 	int count = Menu_ItemsMatchingGroup(menu, p);
-	for (i = 0; i < count; i++) {
+
+	for (int i = 0; i < count; i++) {
 		item = Menu_GetMatchingItemByNumber(menu, i, p);
 		if (item != NULL) {
 			if (bShow) {
 				item->window.flags |= WINDOW_VISIBLE;
-			} else {
+			} 
+			else {
 				item->window.flags &= ~WINDOW_VISIBLE;
 				// stop cinematics playing in the window
 				if (item->window.cinematic >= 0) {
@@ -1470,13 +1604,13 @@ void Menu_FadeItemByName(menuDef_t *menu, const char *p, qboolean fadeOut) {
 }
 
 menuDef_t *Menus_FindByName(const char *p) {
-  int i;
-  for (i = 0; i < menuCount; i++) {
-    if (Q_stricmp(Menus[i].window.name, p) == 0) {
-      return &Menus[i];
-    } 
-  }
-  return NULL;
+	for (int i = 0; i < menuCount; i++) {
+		if (Q_stricmp(Menus[i].window.name, p) == 0) {
+			return &Menus[i];
+		} 
+	}
+
+	return NULL;
 }
 
 void Menus_ShowByName(const char *p) {
@@ -4297,6 +4431,33 @@ void Menus_HandleOOBClick(menuDef_t *menu, int key, qboolean down) {
 	}
 }
 
+itemDef_t *Container_GetFocusedItem(ContainerElement *element) {
+	std::list<itemDef_t*> children = element->GetOldChildren();
+
+	std::list<itemDef_t*>::const_iterator it;
+	for(it=children.begin(); it!=children.end(); ++it) {
+		itemDef_t *child = *it;
+
+		if(child->window.flags & WINDOW_HASFOCUS) {
+			return child;
+		}
+	}
+
+	std::list<UIElement*> elements = element->GetChildren();
+
+	for(std::list<UIElement*>::iterator i = elements.begin(); i != elements.end(); ++i) {
+		ContainerElement *container = dynamic_cast<ContainerElement*>(*i);
+
+		if(container != nullptr) {
+			itemDef_t *item = Container_GetFocusedItem(container);
+			if(item != nullptr) {
+				return item;
+			}
+		}
+	}
+
+	return nullptr;
+}
 
 void Menu_HandleKey(menuDef_t *menu, int key, qboolean down) {
 	int i;
@@ -4361,6 +4522,24 @@ void Menu_HandleKey(menuDef_t *menu, int key, qboolean down) {
 			item = menu->items[i];
 		}
 	}
+
+	//if(!item) {
+		for(i = 0; i < menu->newItemCount; i++) {
+			ContainerElement *element = dynamic_cast<ContainerElement*>(menu->newItems[i]);
+
+			if(element != nullptr) {
+				itemDef_t *temp = Container_GetFocusedItem(element);
+
+				if(temp != nullptr) {
+					item = temp;
+				}
+
+				/*if(item != nullptr) {
+					break;
+				}*/
+			}
+		}
+	//}
 
 	// Ignore if disabled
 	if (item && item->disabled) 
@@ -6854,18 +7033,80 @@ void Item_Init(itemDef_t *item) {
 	Window_Init(&item->window);
 }
 
+void Container_FocusItem(ContainerElement *container, int x, int y, bool focusSet, int pass) {
+	std::list<itemDef_t*> children = container->GetOldChildren();
+
+	std::list<itemDef_t*>::const_iterator it;
+	for(it=children.begin(); it!=children.end(); ++it) {
+		itemDef_t *child = *it;
+
+		if (!(child->window.flags & (WINDOW_VISIBLE | WINDOW_FORCED))) {
+			continue;
+		}
+
+		if (child->disabled) {
+			continue;
+		}
+
+		// items can be enabled and disabled based on cvars
+		if (child->cvarFlags & (CVAR_ENABLE | CVAR_DISABLE) && !Item_EnableShowViaCvar(child, CVAR_ENABLE)) {
+			continue;
+		}
+
+		if (child->cvarFlags & (CVAR_SHOW | CVAR_HIDE) && !Item_EnableShowViaCvar(child, CVAR_SHOW)) {
+			continue;
+		}
+
+		if (Rect_ContainsPoint(&child->window.rect, x, y)) {
+			if (pass == 1) {
+				//overItem = child;
+
+				if (child->type == ITEM_TYPE_TEXT && child->text) {
+					if (!Rect_ContainsPoint(&child->window.rect, x, y)) {
+						continue;
+					}
+				}
+				// if we are over an item
+				if (IsVisible(child->window.flags)) {
+					// different one
+					Item_MouseEnter(child, x, y);
+					// Item_SetMouseOver(overItem, qtrue);
+
+					// if item is not a decoration see if it can take focus
+					if (!focusSet) {
+						focusSet = Item_SetFocus(child, x, y);
+					}
+				}
+			}
+		} 
+		else if (child->window.flags & WINDOW_MOUSEOVER) {
+			Item_MouseLeave(child);
+			Item_SetMouseOver(child, qfalse);
+		}
+	}
+
+	std::list<UIElement*> elements = container->GetChildren();
+	for(std::list<UIElement*>::iterator i = elements.begin(); i != elements.end(); ++i) {
+		ContainerElement *el = dynamic_cast<ContainerElement*>(*i);
+
+		if(el != nullptr) {
+			Container_FocusItem(el, x, y, focusSet, pass);
+		}
+	}
+}
+
 void Menu_HandleMouseMove(menuDef_t *menu, float x, float y) {
-  int i, pass;
-  qboolean focusSet = qfalse;
+	int i, pass;
+	qboolean focusSet = qfalse;
 
-  itemDef_t *overItem;
-  if (menu == NULL) {
-    return;
-  }
+	itemDef_t *overItem;
+	if (menu == NULL) {
+		return;
+	}
 
-  if (!(menu->window.flags & (WINDOW_VISIBLE | WINDOW_FORCED))) {
-    return;
-  }
+	if (!(menu->window.flags & (WINDOW_VISIBLE | WINDOW_FORCED))) {
+		return;
+	}
 
 	if (itemCapture) {
 		//Item_MouseMove(itemCapture, x, y);
@@ -6878,17 +7119,16 @@ void Menu_HandleMouseMove(menuDef_t *menu, float x, float y) {
 
   // FIXME: this is the whole issue of focus vs. mouse over.. 
   // need a better overall solution as i don't like going through everything twice
-  for (pass = 0; pass < 2; pass++) {
-    for (i = 0; i < menu->itemCount; i++) {
+	for (pass = 0; pass < 2; pass++) {
+		for (i = 0; i < menu->itemCount; i++) {
       // turn off focus each item
       // menu->items[i].window.flags &= ~WINDOW_HASFOCUS;
 
-      if (!(menu->items[i]->window.flags & (WINDOW_VISIBLE | WINDOW_FORCED))) {
-        continue;
-      }
+			if (!(menu->items[i]->window.flags & (WINDOW_VISIBLE | WINDOW_FORCED))) {
+				continue;
+			}
 
-			if (menu->items[i]->disabled) 
-			{
+			if (menu->items[i]->disabled) {
 				continue;
 			}
 
@@ -6901,11 +7141,10 @@ void Menu_HandleMouseMove(menuDef_t *menu, float x, float y) {
 				continue;
 			}
 
-
-
-      if (Rect_ContainsPoint(&menu->items[i]->window.rect, x, y)) {
+			if (Rect_ContainsPoint(&menu->items[i]->window.rect, x, y)) {
 				if (pass == 1) {
 					overItem = menu->items[i];
+
 					if (overItem->type == ITEM_TYPE_TEXT && overItem->text) {
 						if (!Rect_ContainsPoint(&overItem->window.rect, x, y)) {
 							continue;
@@ -6923,13 +7162,20 @@ void Menu_HandleMouseMove(menuDef_t *menu, float x, float y) {
 						}
 					}
 				}
-      } else if (menu->items[i]->window.flags & WINDOW_MOUSEOVER) {
-          Item_MouseLeave(menu->items[i]);
-          Item_SetMouseOver(menu->items[i], qfalse);
-      }
-    }
-  }
+			} else if (menu->items[i]->window.flags & WINDOW_MOUSEOVER) {
+				Item_MouseLeave(menu->items[i]);
+				Item_SetMouseOver(menu->items[i], qfalse);
+			}
+		}
 
+		for(i = 0; i < menu->newItemCount; i++) {
+			ContainerElement *container = dynamic_cast<ContainerElement*>(menu->newItems[i]);
+
+			if(container != nullptr) {			
+				Container_FocusItem(container, x, y, focusSet, pass);
+			}			
+		}
+	}
 }
 
 void Menu_Paint(menuDef_t *menu, qboolean forcePaint) {
@@ -9554,6 +9800,73 @@ qboolean MenuParse_itemDef( itemDef_t *item, int handle ) {
 	return qtrue;
 }
 
+/*qboolean MenuParse_panel(itemDef_t *item, int handle) {
+	menuDef_t *menu = (menuDef_t*)item;
+
+	if(menu->newItemCount < MAX_MENUITEMS) {
+	}
+}*/
+
+bool ContainerParse_StackPanel(ContainerElement *container, menuDef_t *menu, int handle) {
+	StackPanel *panel = new StackPanel();
+	container->AddElement(panel);
+
+	pc_token_t token;
+	if (!trap_PC_ReadToken(handle, &token)) {
+		return qfalse;
+	}
+
+	if (*token.string != '{') {
+		return qfalse;
+	}
+
+	while(true) {
+		if (!trap_PC_ReadToken(handle, &token)) {
+			PC_SourceError(handle, "end of file inside stack panel item\n");
+			return qfalse;
+		}
+
+		if (*token.string == '}') {
+			return qtrue;
+		}
+
+		if(Q_stricmp(token.string, "rect") == 0) {
+			Rectangle rect;
+			if(!PC_Rect_Parse(handle, &rect)) return qfalse;
+
+			panel->SetRectangle(rect);
+		}
+		else if(Q_stricmp(token.string, "orientation") == 0) {
+			const char *orientation;
+			if(!PC_String_Parse(handle, &orientation)) return qfalse;
+
+			if(Q_stricmp(orientation, "Horizontal") == 0) {
+				panel->SetOrientation(kOrientationHorizontal);
+			}
+			else {
+				panel->SetOrientation(kOrientationVertical);
+			}
+		}
+		else if(Q_stricmp(token.string, "itemDef") == 0) {
+
+			itemDef_t *item = (itemDef_t *)UI_Alloc(sizeof(itemDef_t));
+			Item_Init(item);
+			if (!Item_Parse(handle, item)) {
+				return qfalse;
+			}
+
+			Item_InitControls(item);
+			item->parent = menu;
+
+			panel->AddOldElement(item);
+		}
+		else if(Q_stricmp(token.string, "stackPanel") == 0) {
+			ContainerParse_StackPanel(panel, menu, handle);
+		}
+	}
+
+}
+
 qboolean MenuParse_stackPanel(itemDef_t *item, int handle) {
 	menuDef_t *menu = (menuDef_t*)item;
 
@@ -9586,6 +9899,17 @@ qboolean MenuParse_stackPanel(itemDef_t *item, int handle) {
 
 				panel->SetRectangle(rect);
 			}
+			else if(Q_stricmp(token.string, "orientation") == 0) {
+				const char *orientation;
+				if(!PC_String_Parse(handle, &orientation)) return qfalse;
+
+				if(Q_stricmp(orientation, "Horizontal") == 0) {
+					panel->SetOrientation(kOrientationHorizontal);
+				}
+				else {
+					panel->SetOrientation(kOrientationVertical);
+				}
+			}
 			else if(Q_stricmp(token.string, "itemDef") == 0) {
 
 				itemDef_t *item = (itemDef_t *)UI_Alloc(sizeof(itemDef_t));
@@ -9610,6 +9934,9 @@ qboolean MenuParse_stackPanel(itemDef_t *item, int handle) {
 					menu->items[menu->itemCount++]->parent = menu;
 				}
 				return qtrue;*/
+			}
+			else if(Q_stricmp(token.string, "stackPanel") == 0) {
+				ContainerParse_StackPanel(panel, menu, handle);
 			}
 		}
 
