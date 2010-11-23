@@ -2858,7 +2858,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		//we want NPCs to drop weapons as well.
 		//if (self->s.eType != ET_NPC)
 		{
-			TossClientItems( self );
+			//TossClientItems( self );
 		}
 		//[//CoOp]
 	}
@@ -5321,8 +5321,9 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		knockback = 0;
 	}
 
-	if(targ->client && (targ->client->ps.stats[STAT_HEALTH]-damage) < 1)
-		knockback *=2.5;
+	if(targ->client && (targ->client->ps.stats[STAT_HEALTH] - damage) < 1) {
+		knockback *= 2.5;
+	}
 
 	// figure momentum add, even if the damage won't be taken
 	if ( knockback && targ->client ) {
@@ -5380,6 +5381,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		{
 			VectorScale (dir, g_knockback.value * (float)knockback / mass, kvel);
 		}
+
 		VectorAdd (targ->client->ps.velocity, kvel, targ->client->ps.velocity);
 		
 

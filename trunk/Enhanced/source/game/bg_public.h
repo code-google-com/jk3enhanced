@@ -146,7 +146,7 @@
 
 //[Flamethrower]
 const int FLAMETHROWER_FUELCOST = 3;		//fuel cost of flamethrower per hit trace -- 1.3 was 3
-const float JETPACK_MAXFUEL = 66;
+const float JETPACK_MAXFUEL = 550;
 //[/Flamethrower]
 
 //[BUGFIX12]
@@ -626,6 +626,7 @@ typedef enum {
 	STAT_CLIENTS_READY,				// bit mask of clients wishing to exit the intermission (FIXME: configstring?)
 	//[DodgeSys]
 	STAT_MAX_HEALTH,					// health / armor limit, changable by handicap
+	STAT_FUEL,
 	//STAT_MAX_HEALTH					// health / armor limit, changable by handicap
 	//[/DodgeSys]
 } statIndex_t;

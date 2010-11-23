@@ -1573,7 +1573,7 @@ void Flamethrower_Fire( gentity_t *self )
 void ItemUse_FlameThrower(gentity_t *ent)
 {
 
-	if (ent->client->ps.jetpackFuel < FLAMETHROWER_FUELCOST)
+	if (ent->client->ps.stats[STAT_FUEL] < FLAMETHROWER_FUELCOST)
 		return;
 
 	if(BG_InLedgeMove(ent->client->ps.legsAnim))
@@ -1610,7 +1610,7 @@ void ItemUse_Jetpack( gentity_t *ent )
 	}
 
 	if (!ent->client->jetPackOn &&
-		ent->client->ps.jetpackFuel < 5)
+		ent->client->ps.stats[STAT_FUEL] < 5)
 	{ //too low on fuel to start it up
 		return;
 	}

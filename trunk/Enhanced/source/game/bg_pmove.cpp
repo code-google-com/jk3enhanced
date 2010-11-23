@@ -5197,26 +5197,6 @@ static void PM_GroundTrace( void ) {
 		PM_CrashLand();
 
 #ifdef QAGAME
-		//1.3 [PlayerOnHead]
-		if(trace.entityNum != ENTITYNUM_WORLD && Q_stricmp(g_entities[pm->ps->clientNum].NPC_type,"seeker") 
-			&& g_entities[pm->ps->clientNum].s.NPC_class != CLASS_VEHICLE && !G_InDFA(&g_entities[pm->ps->clientNum]))
-		{
-			gentity_t *trEnt = &g_entities[trace.entityNum];
-
-			if(trEnt->inuse && trEnt->client && !trEnt->item 
-				&& trEnt->s.NPC_class != CLASS_SEEKER && trEnt->s.NPC_class != CLASS_VEHICLE && !G_InDFA(trEnt))
-			{//Player?
-				trEnt->client->ps.legsAnim = trEnt->client->ps.torsoAnim = 0;
-				g_entities[pm->ps->clientNum].client->ps.legsAnim = g_entities[pm->ps->clientNum].client->ps.torsoAnim = 0;
-				vec3_t pushdir;
-				VectorSubtract(g_entities[pm->ps->clientNum].client->ps.origin,trEnt->client->ps.origin,pushdir);
-				G_Knockdown(trEnt,&g_entities[pm->ps->clientNum],pushdir,0,qfalse);
-				G_Knockdown(&g_entities[pm->ps->clientNum],trEnt,pushdir,5,qfalse);
-				G_Throw(&g_entities[pm->ps->clientNum],pushdir,5);
-				g_entities[pm->ps->clientNum].client->ps.velocity[2]=50;
-			}
-		}
-		//1.3 [/PlayerOnHead]
 		if (pm->ps->clientNum < MAX_CLIENTS &&
 			!pm->ps->m_iVehicleNum &&
 			trace.entityNum < ENTITYNUM_WORLD &&
@@ -6788,16 +6768,7 @@ static void PM_Footsteps( void ) {
 			else
 			{
 				PM_ContinueLegsAnim(ires);
-			}//pistol,e11,grenades,detpack,thermal,t21 -- 1.3
-			if(!(pm->cmd.buttons & BUTTON_ATTACK) && !(pm->cmd.buttons&BUTTON_ALT_ATTACK) && (pm->cmd.forwardmove != 0 || pm->cmd.rightmove != 0)&&!BG_CrouchAnim(pm->ps->legsAnim)
-				&& PM_RunningAnim(pm->ps->legsAnim) && pm->ps->weapon != WP_SABER)
-			{
-				if((pm->ps->weapon == WP_BRYAR_PISTOL || pm->ps->weapon == WP_BLASTER || pm->ps->weapon == WP_GRENADE || pm->ps->weapon == WP_DET_PACK
-					|| pm->ps->weapon == WP_THERMAL))
-						PM_SetAnim(SETANIM_TORSO, desiredAnim, setAnimFlags, 100);
 			}
-			else if(pm->ps->weapon != WP_SABER && pm->ps->weapon != WP_MELEE)
-				PM_SetAnim(SETANIM_TORSO, WeaponReadyAnim[pm->ps->weapon], setAnimFlags, 100);
 		}
 	}
 
@@ -7703,7 +7674,7 @@ int PM_ItemUsable(playerState_t *ps, int forcedUse)
 		return 1;
 	//[Flamethrower]
 	case HI_FLAMETHROWER: //check for stuff here?
-		if (pm->ps->jetpackFuel < FLAMETHROWER_FUELCOST)
+		if (pm->ps->stats[STAT_FUEL] < FLAMETHROWER_FUELCOST)
 		{//not enough fuel to fire the weapon.
 			return 0;
 		}
@@ -9108,10 +9079,10 @@ static void PM_Weapon( void )
 		if((pm->ps->weapon != WP_BRYAR_PISTOL && pm->ps->weapon != WP_BLASTER && pm->ps->weapon != WP_GRENADE && pm->ps->weapon != WP_DET_PACK
 			&& pm->ps->weapon != WP_THERMAL)||!PM_RunningAnim(pm->ps->legsAnim))
 		{
-		if (pm->ps->eFlags & EF_DUAL_WEAPONS)
-			PM_StartTorsoAnim( WeaponAttackAnim2[pm->ps->weapon] );
-		else
-			PM_StartTorsoAnim( WeaponAttackAnim[pm->ps->weapon] );
+			if (pm->ps->eFlags & EF_DUAL_WEAPONS)
+				PM_StartTorsoAnim( WeaponAttackAnim2[pm->ps->weapon] );
+			else
+				PM_StartTorsoAnim( WeaponAttackAnim[pm->ps->weapon] );
 		}
 		else if(pm->ps->torsoAnim != BOTH_ATTACK2)
 		{
@@ -10071,14 +10042,19 @@ void BG_AdjustClientSpeed(playerState_t *ps, usercmd_t *cmd, int svTime)
 
 	if (ps->fd.forcePowersActive & (1 << FP_SPEED))
 	{//1.3
-		if(pm->ps->fd.forcePowerLevel[FP_SPEED] >= FORCE_LEVEL_3)
-			ps->speed *= 1.4;
-		else if(pm->ps->fd.forcePowerLevel[FP_SPEED] >= FORCE_LEVEL_2)
-			ps->speed *= 1.2;//was 1.7
-		else
-			ps->speed *= 1.1;
-		if(BG_CrouchAnim(pm->ps->legsAnim))
-			ps->speed*=1.0;
+		if(pm->ps->fd.forcePowerLevel[FP_SPEED] >= FORCE_LEVEL_3) {
+			ps->speed *= 1.5;
+		}
+		else if(pm->ps->fd.forcePowerLevel[FP_SPEED] >= FORCE_LEVEL_2) {
+			ps->speed *= 1.3;//was 1.7
+		}
+		else {
+			ps->speed *= 1.2;
+		}
+
+		if(BG_CrouchAnim(pm->ps->legsAnim)) {
+			ps->speed *= 1.0;
+		}
 		//1.25
 	}
 	else if (ps->fd.forcePowersActive & (1 << FP_RAGE))

@@ -614,7 +614,7 @@ qboolean G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 		//[DodgeSys]
 		//make players be able to dodge projectiles.
 		missileDmg = ent->damage;
-		if(G_DoDodge(other, &g_entities[other->r.ownerNum], trace->endpos, -1, &missileDmg, ent->methodOfDeath))
+		if(G_DoDodge(other, &g_entities[ent->r.ownerNum], trace->endpos, -1, &missileDmg, ent->methodOfDeath))
 		{//player dodged the damage, have missile continue moving.
 			if(ent->s.weapon == WP_ROCKET_LAUNCHER)
 				ent->genericValue1 = 0;
@@ -652,34 +652,33 @@ qboolean G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 					didDmg = qtrue;
 				}
 			}
-			else
-				{
-					gentity_t *owner = &g_entities[ent->r.ownerNum];
+			else {
+				gentity_t *owner = &g_entities[ent->r.ownerNum];
 				float distance = VectorDistance(owner->r.currentOrigin,other->r.currentOrigin);
 
 				if(distance <= 100.0f)
 				{
-						G_Damage (other, ent, owner, velocity,
-						//[DodgeSys]
-						ent->r.currentOrigin, missileDmg * 2, 
-						//[/DodgeSys]
-						0, ent->methodOfDeath);
+					G_Damage (other, ent, owner, velocity,
+					//[DodgeSys]
+					ent->r.currentOrigin, missileDmg * 2, 
+					//[/DodgeSys]
+					0, ent->methodOfDeath);
 				}
 				else if (distance <= 300.0f)
 				{
-						G_Damage (other, ent, owner, velocity,
-						//[DodgeSys]
-						ent->r.currentOrigin, missileDmg * 1.5,
-						//[/DodgeSys]
-						0, ent->methodOfDeath);
+					G_Damage (other, ent, owner, velocity,
+					//[DodgeSys]
+					ent->r.currentOrigin, missileDmg * 1.5,
+					//[/DodgeSys]
+					0, ent->methodOfDeath);
 				}
 				else
 				{
-				G_Damage (other, ent, &g_entities[ent->r.ownerNum], velocity,
-					//[DodgeSys]
-					ent->r.currentOrigin, missileDmg,
-					//[/DodgeSys]
-					0, ent->methodOfDeath);
+					G_Damage (other, ent, &g_entities[ent->r.ownerNum], velocity,
+						//[DodgeSys]
+						ent->r.currentOrigin, missileDmg,
+						//[/DodgeSys]
+						0, ent->methodOfDeath);
 				}
 				didDmg = qtrue;
 			}

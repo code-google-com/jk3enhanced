@@ -514,15 +514,18 @@ qboolean PC_Int_Parse(int handle, int *i) {
 
 	if (!trap_PC_ReadToken(handle, &token))
 		return qfalse;
+
 	if (token.string[0] == '-') {
 		if (!trap_PC_ReadToken(handle, &token))
 			return qfalse;
 		negative = qtrue;
 	}
+
 	if (token.type != TT_NUMBER) {
 		PC_SourceError(handle, "expected integer but found %s\n", token.string);
 		return qfalse;
 	}
+
 	*i = token.intvalue;
 	if (negative)
 		*i = - *i;
@@ -643,7 +646,8 @@ qboolean PC_Script_Parse(int handle, const char **out) {
 		}
 		Q_strcat(script, 2048, " ");
 	}
-	return qfalse; 	// bk001105 - LCC   missing return value
+
+	return qfalse;
 }
 
 // display, window, menu, item code

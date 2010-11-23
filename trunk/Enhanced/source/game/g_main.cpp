@@ -885,7 +885,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &tier_storyinfo, "tier_storyinfo", "0", CVAR_ARCHIVE, 0, qfalse  },
 	{ &tiers_complete, "tiers_complete", "", CVAR_ARCHIVE, 0, qfalse  },
 	//[/CoOp]
-	{ &g_knockback, "g_knockback", "1000", 0, 0, qtrue  },
+	{ &g_knockback, "g_knockback", "150", 0, 0, qtrue  },
 	{ &g_quadfactor, "g_quadfactor", "3", 0, 0, qtrue  },
 	{ &g_weaponRespawn, "g_weaponrespawn", "5", 0, 0, qtrue  },
 	{ &g_weaponTeamRespawn, "g_weaponTeamRespawn", "5", 0, 0, qtrue },
@@ -3945,10 +3945,10 @@ int ojp_survivor_npc_count = 0;
 void SetMoverState( gentity_t *ent, moverState_t moverState, int time );
 //[/AREAPORTALFIX]
 
-//[ExpSys]
-const int JETPACK_DEFUEL_RATE = 300; //approx. 30 seconds of idle use from a fully charged fuel amt
-const int JETPACK_REFUEL_RATE = 200;
-//[/ExpSys]
+const int JETPACK_DEFUEL_RATE	= 300;
+const int JETPACK_REFUEL_RATE	= 200;
+const int CLOAK_DEFUEL_RATE		= 200;
+const int CLOAK_REFUEL_RATE		= 150;
 
 extern gentity_t *NPC_SpawnType( vec3_t loc, char *npc_type, char *targetname, qboolean isVehicle );
 
@@ -4392,34 +4392,20 @@ void G_RunFrame( int levelTime ) {
 					//[JetpackSys]
 					if (ent->client->pers.cmd.forwardmove || ent->client->pers.cmd.upmove || ent->client->pers.cmd.rightmove)
 					{ //only use fuel when actually boosting.
-						ent->client->ps.jetpackFuel -= 4;
+						ent->client->ps.stats[STAT_FUEL] -= 1;
 					}
 					//[/JetpackSys]
 					
-					if (ent->client->ps.jetpackFuel <= 0)
+					if (ent->client->ps.stats[STAT_FUEL] <= 0)
 					{ //turn it off
-						ent->client->ps.jetpackFuel = 0;
+						ent->client->ps.stats[STAT_FUEL] = 0;
 						Jetpack_Off(ent);
 					}
+
 					ent->client->jetPackDebReduce = level.time + JETPACK_DEFUEL_RATE;
 				}
 			}
-			else if (ent->client->ps.jetpackFuel < JETPACK_MAXFUEL)
-			{ //recharge jetpack
-				if((ent->client->jetPackTakeForce && ent->client->jetPackDebRecharge < level.time && ent->client->ps.fd.forcePower > 0)
-					|| !ent->client->jetPackTakeForce && ent->client->jetPackDebRecharge < level.time)
-				//if (ent->client->jetPackDebRecharge < level.time && ent->client->ps.fd.forcePower > 0)
-				{
-					ent->client->ps.jetpackFuel++;
-					if(ent->client->jetPackTakeForce)
-						ent->client->ps.fd.forcePower--;
-					ent->client->jetPackTakeForce = (qboolean)(!ent->client->jetPackTakeForce);
-					ent->client->jetPackDebRecharge = level.time + JETPACK_REFUEL_RATE;
-				}
-			}
 
-#define CLOAK_DEFUEL_RATE		200 //approx. 20 seconds of idle use from a fully charged fuel amt
-#define CLOAK_REFUEL_RATE		150 //seems fair
 			if (ent->client->ps.powerups[PW_CLOAKED])
 			{ //using cloak, drain battery
 				if (ent->client->cloakDebReduce < level.time)

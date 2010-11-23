@@ -1103,24 +1103,26 @@ CG_WeaponSelectable
 ===============
 */
 static qboolean CG_WeaponSelectable( int i ) {
-	if (!i)
-	{
+    if (!i)
+    {
 		return qfalse;
-	}
-	
-	if ( !cg.snap->ps.ammo[weaponData[i].ammoIndex] ) {
-		return qfalse;
-	}
+    }
 
-	if (i == WP_DET_PACK && cg.predictedPlayerState.ammo[weaponData[i].ammoIndex] < 1 &&
-		!cg.predictedPlayerState.hasDetPackPlanted)
-	{
+    if (cg.predictedPlayerState.ammo[weaponData[i].ammoIndex] < weaponData[i].energyPerShot &&
+            cg.predictedPlayerState.ammo[weaponData[i].ammoIndex] < weaponData[i].altEnergyPerShot)
+    {
 		return qfalse;
-	}
+    }
 
-	if ( ! (cg.predictedPlayerState.stats[ STAT_WEAPONS ] & ( 1 << i ) ) ) {
+    if (i == WP_DET_PACK && cg.predictedPlayerState.ammo[weaponData[i].ammoIndex] < 1 &&
+            !cg.predictedPlayerState.hasDetPackPlanted)
+    {
 		return qfalse;
-	}
+    }
+
+    if ( ! (cg.predictedPlayerState.stats[ STAT_WEAPONS ] & ( 1 << i ) ) ) {
+		return qfalse;
+    }
 
 	return qtrue;
 }

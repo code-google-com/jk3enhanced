@@ -7102,7 +7102,7 @@ void CG_DrawFlagStatus()
 }
 
 //draw meter showing jetpack fuel when it's not full
-#define JPFUELBAR_H			JETPACK_MAXFUEL
+#define JPFUELBAR_H			100.0f
 #define JPFUELBAR_W			20.0f
 #define JPFUELBAR_X			(SCREEN_WIDTH-JPFUELBAR_W-8.0f)
 //[NewHud]
@@ -7117,7 +7117,7 @@ void CG_DrawJetpackFuel(void)
 	vec4_t cColor;
 	float x = JPFUELBAR_X;
 	float y = JPFUELBAR_Y;
-	float percent = ((float)cg.snap->ps.jetpackFuel / JETPACK_MAXFUEL) * JPFUELBAR_H;
+	float percent = ((float)cg.snap->ps.stats[STAT_FUEL] / JETPACK_MAXFUEL) * JPFUELBAR_H;
 
 	if (percent > JPFUELBAR_H)
 	{
@@ -7187,10 +7187,11 @@ void CG_DrawEWebHealth(void)
 	}
 
 	//kind of hacky, need to pass a coordinate in here
-	if (cg.snap->ps.jetpackFuel < JETPACK_MAXFUEL)
+	if (cg.snap->ps.stats[STAT_FUEL] < JETPACK_MAXFUEL)
 	{
 		x -= (JPFUELBAR_W+8.0f);
 	}
+
 	if (cg.snap->ps.cloakFuel < 100)
 	{
 		x -= (JPFUELBAR_W+8.0f);
@@ -7247,7 +7248,7 @@ void CG_DrawCloakFuel(void)
 		return;
 	}
 
-	if ( cg.snap->ps.jetpackFuel < JETPACK_MAXFUEL )
+	if ( cg.snap->ps.stats[STAT_FUEL] < JETPACK_MAXFUEL )
 	{//if drawing jetpack fuel bar too, then move this over...?
 		x -= (JPFUELBAR_W+8.0f);
 	}
@@ -7273,7 +7274,7 @@ void CG_DrawCloakFuel(void)
 	cColor[0] = 0.1f;
 	cColor[1] = 0.1f;
 	cColor[2] = 0.3f;
-	cColor[3] = 0.1f;
+	cColor[3] = 0.3f;
 
 	//draw the background (black)
 	CG_DrawRect(x, y, CLFUELBAR_W, CLFUELBAR_H, 1.0f, colorTable[CT_BLACK]);
@@ -8157,7 +8158,7 @@ static void CG_Draw2D( void ) {
 		CG_DrawActivePowers();
 	}
 
-	if (cg.snap->ps.jetpackFuel < JETPACK_MAXFUEL)
+	if (cg.snap->ps.stats[STAT_FUEL] < JETPACK_MAXFUEL)
 	{ //draw it as long as it isn't full
         CG_DrawJetpackFuel();        
 	}
