@@ -3148,54 +3148,6 @@ int TotalAllociatedSkillPoints(gentity_t *ent)
 }
 //[/ExpSys]
 
-extern void G_Knockdown( gentity_t *self, gentity_t *attacker, const vec3_t pushDir, float strength, qboolean breakSaberLock );
-void player_touch(gentity_t *self, gentity_t *other, trace_t *trace )
-{
-	if(!other)
-		return;
-
-	if(!other->client)
-		return;
-
-
-	if(other->client->pushEffectTime > level.time
-		|| other->client->ps.fd.forceGripBeingGripped > level.time)
-	{//Other player was pushed!
-		float speed = (vec_t)sqrt (other->client->ps.velocity[0]*
-			other->client->ps.velocity[0] + other->client->ps.velocity[1]*
-			other->client->ps.velocity[1])/2;
-
-		if(speed > 50)
-		{
-			int damage = (speed >= 100 ? 35 : 10);
-			gentity_t *gripper = NULL;
-			int i=0;
-
-			G_Knockdown(self,other,other->client->ps.velocity,100,qfalse);
-			self->client->ps.velocity[1] = other->client->ps.velocity[1]*5.5f;
-			self->client->ps.velocity[0] = other->client->ps.velocity[0]*5.5f;
-
-			for(i=0;i<1024;i++)
-			{
-				gripper = &g_entities[i];
-				if(gripper && gripper->client)
-				{
-					if(gripper->client->ps.fd.forceGripEntityNum == other->client->ps.clientNum)
-						break;
-				}
-			}
-
-			if(gripper == NULL)
-				return;
-
-			G_Printf("Damage: %i\n",damage);
-			//G_Damage(gripEnt, self, self, NULL, NULL, 2, DAMAGE_NO_ARMOR, MOD_FORCE_DARK);
-			G_Damage(other,gripper,gripper,NULL,NULL,damage,DAMAGE_NO_ARMOR,MOD_FORCE_DARK);
-			G_Damage(self,other,other,NULL,NULL,damage,DAMAGE_NO_ARMOR,0);
-		}
-	}
-}
-
 #define LEVEL_1_LIGHTSIDE 6
 #define LEVEL_1_DARKSIDE 10
 #define LEVEL_1_LIGHTSABER 8
@@ -4192,7 +4144,7 @@ void ClientSpawn(gentity_t *ent) {
 		l++;
 	}
 
-	for(i=0;i<NUM_FORCE_POWERS;i++)
+	for(i = 0; i < NUM_FORCE_POWERS; i++)
 	{
 		client->forcePowerStart[i]=-1;
 	}
@@ -4205,7 +4157,7 @@ void ClientSpawn(gentity_t *ent) {
 	client->ps.duelIndex = ENTITYNUM_NONE;
 
 	//spawn with 100
-	client->ps.jetpackFuel = JETPACK_MAXFUEL;
+	client->ps.stats[STAT_FUEL] = JETPACK_MAXFUEL;
 	client->ps.cloakFuel = 100;
 
 	client->pers = saved;
@@ -4256,7 +4208,6 @@ void ClientSpawn(gentity_t *ent) {
 	ent->r.contents = CONTENTS_BODY;
 	ent->clipmask = MASK_PLAYERSOLID;
 	ent->die = player_die;
-	ent->touch = player_touch;
 	ent->waterlevel = 0;
 	ent->watertype = 0;
 	ent->flags = 0;

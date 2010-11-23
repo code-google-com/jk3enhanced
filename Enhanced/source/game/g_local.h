@@ -1043,9 +1043,7 @@ struct gclient_s {
 
 	qboolean	jetPackOn;
 	int			jetPackToggleTime;
-	int			jetPackDebRecharge;
 	int			jetPackDebReduce;
-	qboolean	jetPackTakeForce;
 
 	int			cloakToggleTime;
 	int			cloakDebRecharge;

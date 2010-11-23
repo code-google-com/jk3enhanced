@@ -2816,7 +2816,7 @@ void WP_ForcePowersUpdate( gentity_t *self, usercmd_t *ucmd )
 	if(self->client->flameTime > level.time)
 	{//flamethrower is active, flip active flamethrower flag
 
-		if (self->client->ps.jetpackFuel < FLAMETHROWER_FUELCOST)
+		if (self->client->ps.stats[STAT_FUEL] < FLAMETHROWER_FUELCOST)
 		{//not enough gas, turn it off.
 			self->client->flameTime = 0;
 			self->client->ps.userInt3 &= ~(1 << FLAG_FLAMETHROWER);
@@ -2837,7 +2837,7 @@ void WP_ForcePowersUpdate( gentity_t *self, usercmd_t *ucmd )
 				{
 				   G_AddMercBalance(self, 1);
 				}
-				self->client->ps.jetpackFuel -= FLAMETHROWER_FUELCOST;
+				self->client->ps.stats[STAT_FUEL] -= FLAMETHROWER_FUELCOST;
 			}
 		}
 	}

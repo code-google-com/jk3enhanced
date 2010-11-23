@@ -3347,7 +3347,9 @@ void NPC_BSST_Attack( void )
 	else if ( trap_InPVS( NPC->enemy->r.currentOrigin, NPC->r.currentOrigin ) )
 	{
 		NPCInfo->enemyLastSeenTime = level.time;
-		faceEnemy = qtrue;
+		//faceEnemy = qtrue;
+		faceEnemy = qfalse;
+		NPC->enemy = NULL;
 		NPC_AimAdjust( -1 );//adjust aim worse longer we cannot see enemy
 	}
 

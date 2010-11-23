@@ -4003,12 +4003,18 @@ int OJP_SaberCanBlock(gentity_t *self, gentity_t *atk, qboolean checkBBoxBlock, 
 		return 0;
 	}
 	
-	if(self->client->ps.fd.forcePowersActive & (1<<FP_SPEED))
+	if(self->client->ps.fd.forcePowersActive & (1<<FP_SPEED)) {
 		return 0;
-	if(self->client->ps.groundEntityNum == ENTITYNUM_NONE)
+	}
+
+	if(self->client->ps.groundEntityNum == ENTITYNUM_NONE) {
 		return 0;
-	if(self->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE]==FORCE_LEVEL_0)
+	}
+
+	if(self->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE] == FORCE_LEVEL_0) {
 		return 0;
+	}
+
 	if(BG_KickMove(self->client->ps.saberMove))
 	{
 		return 0;
@@ -4049,10 +4055,11 @@ int OJP_SaberCanBlock(gentity_t *self, gentity_t *atk, qboolean checkBBoxBlock, 
 			return 0;
 		}
 	}
+
 	if(!WalkCheck(self) && self->client->ps.fd.forcePowersActive & (1 << FP_SPEED))
-		{//can't block while running in force speed.
-			return 0;
-		}
+	{//can't block while running in force speed.
+		return 0;
+	}
 
 	if (PM_InKnockDown(&self->client->ps))
 	{//can't block while knocked down or getting up from knockdown.
@@ -4104,13 +4111,9 @@ int OJP_SaberCanBlock(gentity_t *self, gentity_t *atk, qboolean checkBBoxBlock, 
 	}
 
 	//ok, I'm removing this to get around the problems with long reach attacks cliping thru the player.
-	//SABERSYSRAFIXME - allow for blocking behind our backs
 	if (!InFront( point, self->client->ps.origin, self->client->ps.viewangles, -.2 ))
 	{//can only
-		if(self->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_3)
-			return 1;
-		else
-			return 0;
+		return 0;
 	}
 	
 
@@ -5989,40 +5992,52 @@ qboolean DodgeRollCheck(gentity_t *self, int dodgeAnim, vec3_t forward, vec3_t r
 	return qtrue;
 }
 
-extern qboolean BG_HopAnim( int anim );
-extern qboolean PM_InKnockDown( playerState_t *ps );
-extern int DetermineDisruptorCharge(gentity_t *ent);
-//Returns qfalse if hit effects/damage is still suppose to be applied.
-qboolean G_DoDodge( gentity_t *self, gentity_t *shooter, vec3_t dmgOrigin, int hitLoc, int * dmg, int mod )
-{
-	int	dodgeAnim = -1;
-	int dpcost = BasicDodgeCosts[mod];
+bool G_CanDodge(gentity_t *self, gentity_t *attacker, int dpCost) {
 
-	//saved copy of the original damage level.  This is used determine the kickback power for slashdamage dodges.
-	int savedDmg = *dmg; 
+	if(!self || !self->client || !self->inuse || self->health <= 0 ) {		
+		if(g_debugdodge.integer) {
+			G_Printf("%i: Client %i Entity is dead or bad.  Can't Dodge.\n", 
+					level.time, self->s.number);
+		}
 
-	//partial dodge flag
-	qboolean partial = qfalse;
-
-	//Don't do any visuals.
-	qboolean NoAction = qfalse;
-
-	if( !ojp_allowBodyDodge.integer )
-	{//body dodges have been disabled. 
-		if(self->client && !(self->client->pers.cmd.generic_cmd & GENCMD_FORCE_HEALOTHER))
-		return qfalse;
+		return false;
 	}
 
-	if(shooter && shooter->client && shooter->client->ps.weapon == WP_TUSKEN_RIFLE) return qfalse;
+	if( !ojp_allowBodyDodge.integer ) {
+		if(!(self->client->pers.cmd.generic_cmd & GENCMD_FORCE_HEALOTHER)) {
+			return false;
+		}
+	}
 
-	if(self->client && self->client->ps.fd.forcePowerLevel[FP_SEE] == FORCE_LEVEL_0)
-		return qfalse;
+	if(attacker && attacker->client) {
+		if(!InFront(attacker->client->ps.origin, self->client->ps.origin, self->client->ps.viewangles, -.7f)) {
+			return false;
+		}
 
-	if(self->client && self->client->ps.groundEntityNum == ENTITYNUM_NONE)
-		return qfalse;
+		if(attacker->client->ps.weapon == WP_TUSKEN_RIFLE) {
+			return false;
+		}
 
-	if(self->NPC 
-		&& (self->client->NPC_class == CLASS_SABER_DROID ||
+		if(attacker->client->ps.duelInProgress && attacker->client->ps.duelIndex != self->s.number) {
+			return false;
+		}
+	
+		if (self->client->ps.duelInProgress && self->client->ps.duelIndex != attacker->s.number) {
+			return false;
+		}
+	}
+
+	if(self->client->ps.fd.forcePowerLevel[FP_SEE] == FORCE_LEVEL_0) {
+		return false;
+	}
+
+	if(self->client->ps.groundEntityNum == ENTITYNUM_NONE) {
+		return false;
+	}
+
+	if(self->NPC)
+	{
+		if (self->client->NPC_class == CLASS_SABER_DROID ||
 			self->client->NPC_class == CLASS_ASSASSIN_DROID ||
 			self->client->NPC_class == CLASS_GONK ||
 			self->client->NPC_class == CLASS_MOUSE ||
@@ -6031,50 +6046,42 @@ qboolean G_DoDodge( gentity_t *self, gentity_t *shooter, vec3_t dmgOrigin, int h
 			self->client->NPC_class == CLASS_R2D2 ||
 			self->client->NPC_class == CLASS_R5D2 ||
 			self->client->NPC_class == CLASS_SEEKER ||
-			self->client->NPC_class == CLASS_INTERROGATOR) )
-	{//non-humans don't get Dodge.
-		return qfalse;
+			self->client->NPC_class == CLASS_INTERROGATOR)
+		{
+			return false;
+		}
 	}
 
-	if( dpcost == -1 )
-	{//can't dodge this.
-		if(g_debugdodge.integer)
-		{
+	if( dpCost == -1 ) {
+		if(g_debugdodge.integer) {
 			G_Printf("%i: Client %i Can't Dodge this type of damage.\n", 
 					level.time, self->s.number);
 		}
+
 		return qfalse;
 	}
 
-	if(!self || !self->client || !self->inuse || self->health <= 0 )
-	{		
-		if(g_debugdodge.integer)
-		{
-			G_Printf("%i: Client %i Entity is dead or bad.  Can't Dodge.\n", 
-					level.time, self->s.number);
-		}
+	if (self->client->ps.fd.forcePower < 30) {
 		return qfalse;
 	}
 
-	//[DodgeChange]
-	if (self->client->ps.fd.forcePower < 30)
-	{//Not enough dodge
-		return qfalse;
-	}
-	//[/DodgeChange]
+	return true;
+}
 
-	//check for private duel conditions
-	if (shooter && shooter->client)
-	{
-		if(shooter->client->ps.duelInProgress && shooter->client->ps.duelIndex != self->s.number)
-		{//enemy client is in duel with someone else.
-			return qfalse;
-		}
-	
-		if (self->client->ps.duelInProgress && self->client->ps.duelIndex != shooter->s.number)
-		{//we're in a duel with someone else.
-			return qfalse;
-		}
+extern qboolean BG_HopAnim( int anim );
+extern qboolean PM_InKnockDown( playerState_t *ps );
+extern int DetermineDisruptorCharge(gentity_t *ent);
+//Returns qfalse if hit effects/damage is still suppose to be applied.
+qboolean G_DoDodge( gentity_t *self, gentity_t *shooter, vec3_t dmgOrigin, int hitLoc, int * dmg, int mod )
+{
+	int	dodgeAnim = -1;
+	int dpcost = BasicDodgeCosts[mod];
+	int savedDmg = *dmg; 
+	qboolean partial = qfalse;
+	qboolean NoAction = qfalse;
+
+	if(!G_CanDodge(self, shooter, dpcost)) {
+		return qfalse;
 	}
 
 	if(BG_HopAnim(self->client->ps.legsAnim) //in dodge hop
@@ -7747,8 +7754,8 @@ void WP_SaberStartMissileBlockCheck( gentity_t *self, usercmd_t *ucmd  )
 			//[SaberSys]
 			if(closestSwingBlock && owner->health > 0)//&& !self->client->ps.duelInProgress)
 			{
-				self->client->ps.saberBlocked = BlockedforQuad(closestSwingQuad);
-				self->client->ps.userInt3 |= ( 1 << FLAG_PREBLOCK );
+				//self->client->ps.saberBlocked = BlockedforQuad(closestSwingQuad);
+				//self->client->ps.userInt3 |= ( 1 << FLAG_PREBLOCK );
 			}
 			else if(owner->health > 0)//!self->client->ps.duelInProgress)
 			{

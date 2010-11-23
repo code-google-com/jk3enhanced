@@ -24,6 +24,11 @@ void ForceSpeed( gentity_t *self, int forceDuration )
 
 	self->client->ps.forceAllowDeactivateTime = level.time + 1500;
 
+	if(self->client->ps.weapon == WP_SABER) {
+		G_Sound(self, CHAN_AUTO, self->client->saber[0].soundOff);
+		self->client->ps.saberHolstered = 2;
+	}
+	
 	WP_ForcePowerStart( self, FP_SPEED, forceDuration );
 	G_Sound( self, CHAN_BODY, G_SoundIndex("sound/weapons/force/speed.wav") );
 	G_Sound( self, TRACK_CHANNEL_2, speedLoopSound );

@@ -101,7 +101,7 @@ void CG_DrawHealthTicMethod(menuDef_t *menuHUD)
 
 	focusItem = Menu_FindItemByName(menuHUD, "health_tic1");
 
-	if (focusItem)
+	/*if (focusItem)
 	{
 		if (healthAmt > 0)
 		{
@@ -122,7 +122,7 @@ void CG_DrawHealthTicMethod(menuDef_t *menuHUD)
 				focusItem->window.background
 				);
 		}
-	}
+	}*/
 
 	// Print the mueric amount
 	focusItem = Menu_FindItemByName(menuHUD, "healthamount");
@@ -556,14 +556,15 @@ void CG_DrawSaberStyleTicMethod(centity_t *cent, menuDef_t *menuHUD)
 void CG_DrawForcePower( menuDef_t *menuHUD )
 {
 	vec4_t			aColor;
+	vec4_t			cColor;
 	itemDef_t		*focusItem;
-	float			percent = ((float)cg.snap->ps.fd.forcePower/115.0f)*FPBAR_H;
+	float			percent = ((float)cg.snap->ps.fd.forcePower/100.0f)*FPBAR_H;
 
 	//color of the bar
 	aColor[0] = 0.503f;
 	aColor[1] = 0.375f;
 	aColor[2] = 0.996f;
-	aColor[3] = 0.8f;
+	aColor[3] = 0.5f;
 
 	if (cg.forceHUDTotalFlashTime > cg.time || (cg_entities[cg.snap->ps.clientNum].currentState.userInt3 &  ( 1 << FLAG_FATIGUED)))
 	{//color of the bar
@@ -593,8 +594,12 @@ void CG_DrawForcePower( menuDef_t *menuHUD )
 		percent = 0.1f;
 	}
 
-	//now draw the part to show how much health there is in the color specified
+	Vector4Copy(colorTable[CT_BLACK], cColor);
+	cColor[3] = 0.4f;
+
+	CG_DrawRect(FPBAR_X - 1.0f, FPBAR_Y - 1.0f, FPBAR_W + 2.0f, FPBAR_H + 2.1f, 1.0f, colorTable[CT_BLACK]);
 	CG_FillRect(FPBAR_X, FPBAR_Y+(FPBAR_H-percent), FPBAR_W, FPBAR_H-(FPBAR_H-percent), aColor);
+	CG_FillRect(FPBAR_X, FPBAR_Y, FPBAR_W, FPBAR_H-percent, cColor);
 	
 	focusItem = Menu_FindItemByName(menuHUD, "forceamount");
 
@@ -634,6 +639,7 @@ void JKEHUD(centity_t *cent)
 	{//Tic method
 		// Draw the left HUD 
 		menuHUD = Menus_FindByName("lefthud");
+
 		if (menuHUD)
 		{
 			itemDef_t *focusItem;

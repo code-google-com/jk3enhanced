@@ -688,22 +688,26 @@ qboolean ClientInactivityTimer( gclient_t *client ) {
 		// gameplay, everyone isn't kicked
 		client->inactivityTime = level.time + 60 * 1000;
 		client->inactivityWarning = qfalse;
-	} else if ( client->pers.cmd.forwardmove || 
+	} 
+	else if ( client->pers.cmd.forwardmove || 
 		client->pers.cmd.rightmove || 
 		client->pers.cmd.upmove ||
 		(client->pers.cmd.buttons & (BUTTON_ATTACK|BUTTON_ALT_ATTACK)) ) {
 		client->inactivityTime = level.time + g_inactivity.integer * 1000;
 		client->inactivityWarning = qfalse;
-	} else if ( !client->pers.localClient ) {
+	} 
+	else if ( !client->pers.localClient ) {
 		if ( level.time > client->inactivityTime ) {
 			trap_DropClient( client - level.clients, "Dropped due to inactivity" );
 			return qfalse;
 		}
+
 		if ( level.time > client->inactivityTime - 10000 && !client->inactivityWarning ) {
 			client->inactivityWarning = qtrue;
 			trap_SendServerCommand( client - level.clients, "cp \"Ten seconds until inactivity drop!\n\"" );
 		}
 	}
+
 	return qtrue;
 }
 
@@ -1096,6 +1100,7 @@ void G_ThrownDeathAnimForDeathAnim( gentity_t *hitEnt, vec3_t impactPoint )
 		}
 		break;
 	}
+
 	if ( anim != -1 )
 	{
 		NPC_SetAnim( hitEnt, SETANIM_BOTH, anim, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD );
@@ -1109,22 +1114,18 @@ SendPendingPredictableEvents
 ==============
 */
 void SendPendingPredictableEvents( playerState_t *ps ) {
-	gentity_t *t;
-	int event, seq;
-	int extEvent, number;
-
 	// if there are still events pending
 	if ( ps->entityEventSequence < ps->eventSequence ) {
 		// create a temporary entity for this event which is sent to everyone
 		// except the client who generated the event
-		seq = ps->entityEventSequence & (MAX_PS_EVENTS-1);
-		event = ps->events[ seq ] | ( ( ps->entityEventSequence & 3 ) << 8 );
+		int seq = ps->entityEventSequence & (MAX_PS_EVENTS-1);
+		int event = ps->events[ seq ] | ( ( ps->entityEventSequence & 3 ) << 8 );
 		// set external event to zero before calling BG_PlayerStateToEntityState
-		extEvent = ps->externalEvent;
+		int extEvent = ps->externalEvent;
 		ps->externalEvent = 0;
 		// create temporary entity for event
-		t = G_TempEntity( ps->origin, event );
-		number = t->s.number;
+		gentity_t *t = G_TempEntity( ps->origin, event );
+		int number = t->s.number;
 		BG_PlayerStateToEntityState( ps, &t->s, qtrue );
 		t->s.number = number;
 		t->s.eType = ET_EVENTS + event;
@@ -1200,11 +1201,8 @@ static void G_UpdateForceSightBroadcasts ( gentity_t *self )
 
 static void G_UpdateJediMasterBroadcasts ( gentity_t *self )
 {
-	int i;
-
 	// Not jedi master mode then nothing to do
-	if ( g_gametype.integer != GT_JEDIMASTER )
-	{
+	if ( g_gametype.integer != GT_JEDIMASTER ) {
 		return;
 	}
 
@@ -1215,14 +1213,13 @@ static void G_UpdateJediMasterBroadcasts ( gentity_t *self )
 	}
 
 	// Broadcast ourself to all clients within range
-	for ( i = 0; i < level.numConnectedClients; i ++ )
+	for (int i = 0; i < level.numConnectedClients; i ++ )
 	{
 		gentity_t *ent = &g_entities[level.sortedClients[i]];
 		float	  dist;
 		vec3_t	  angles;
 
-		if ( ent == self )
-		{
+		if ( ent == self ) {
 			continue;
 		}
 
@@ -1237,14 +1234,13 @@ static void G_UpdateJediMasterBroadcasts ( gentity_t *self )
 		}
 		
 		// If not within the field of view then forget it
-		if ( !InFieldOfVision ( ent->client->ps.viewangles, MAX_JEDIMASTER_FOV, angles ) )
-		{
+		if ( !InFieldOfVision ( ent->client->ps.viewangles, MAX_JEDIMASTER_FOV, angles)) {
 			continue;
 		}
 
 		// Turn on the broadcast bit for the master and since there is only one
 		// master we are done
-		self->r.broadcastClients[ent->s.clientNum/32] |= (1 << (ent->s.clientNum%32));
+		self->r.broadcastClients[ent->s.clientNum / 32] |= (1 << (ent->s.clientNum % 32));
 	}
 }
 
@@ -1545,20 +1541,10 @@ NPC_GetWalkSpeed
 
 static int NPC_GetWalkSpeed( gentity_t *ent )
 {
-	int	walkSpeed = 0;
-
-	if ( ( ent->client == NULL ) || ( ent->NPC == NULL ) )
+	if((ent->client == NULL) || (ent->NPC == NULL))
 		return 0;
 
-	switch ( ent->client->playerTeam )
-	{
-	case NPCTEAM_PLAYER:	//To shutup compiler, will add entries later (this is stub code)
-	default:
-		walkSpeed = ent->NPC->stats.walkSpeed;
-		break;
-	}
-
-	return walkSpeed;
+	return ent->NPC->stats.walkSpeed;
 }
 
 /*
@@ -1570,35 +1556,9 @@ static int NPC_GetRunSpeed( gentity_t *ent )
 {
 	int	runSpeed = 0;
 
-	if ( ( ent->client == NULL ) || ( ent->NPC == NULL ) )
+	if ( ( ent->client == NULL ) || ( ent->NPC == NULL ) ) {
 		return 0;
-/*
-	switch ( ent->client->playerTeam )
-	{
-	case TEAM_BORG:
-		runSpeed = ent->NPC->stats.runSpeed;
-		runSpeed += BORG_RUN_INCR * (g_spskill->integer%3);
-		break;
-
-	case TEAM_8472:
-		runSpeed = ent->NPC->stats.runSpeed;
-		runSpeed += SPECIES_RUN_INCR * (g_spskill->integer%3);
-		break;
-
-	case TEAM_STASIS:
-		runSpeed = ent->NPC->stats.runSpeed;
-		runSpeed += STASIS_RUN_INCR * (g_spskill->integer%3);
-		break;
-
-	case TEAM_BOTS:
-		runSpeed = ent->NPC->stats.runSpeed;
-		break;
-
-	default:
-		runSpeed = ent->NPC->stats.runSpeed;
-		break;
 	}
-*/
 	// team no longer indicates species/race.  Use NPC_class to adjust speed for specific npc types
 	switch( ent->client->NPC_class)
 	{
@@ -2705,6 +2665,7 @@ void ClientThink_real( gentity_t *ent ) {
 
 			//ent->client->ps.speed = ent->client->ps.basespeed = NPC_GetRunSpeed( ent );
 		}
+
 		client->ps.basespeed = client->ps.speed;
 	}
 	else if (!client->ps.m_iVehicleNum &&
@@ -2716,7 +2677,7 @@ void ClientThink_real( gentity_t *ent ) {
 		else if((ent->client->ps.fd.forcePowersActive & (1 << FP_LEVITATION)))
 			client->ps.speed = g_speed.value /(3);
 		else if(ent->client->ps.eFlags & EF_WALK )
-			client->ps.speed = g_speed.value /(2);
+			client->ps.speed = g_speed.value / (2);
 		else
 			client->ps.speed = g_speed.value;
 
@@ -3920,21 +3881,18 @@ Checks whether a client has exceded any timeouts and act accordingly
 void G_CheckClientTimeouts ( gentity_t *ent )
 {
 	// Only timeout supported right now is the timeout to spectator mode
-	if ( !g_timeouttospec.integer )
-	{
+	if ( !g_timeouttospec.integer ) {
 		return;
 	}
 
 	// Already a spectator, no need to boot them to spectator
-	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR )
-	{
+	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR ) {
 		return;
 	}
 
 	// See how long its been since a command was received by the client and if its 
 	// longer than the timeout to spectator then force this client into spectator mode
-	if ( level.time - ent->client->pers.cmd.serverTime > g_timeouttospec.integer * 1000 )
-	{
+	if (level.time - ent->client->pers.cmd.serverTime > g_timeouttospec.integer * 1000) {
 		SetTeam ( ent, "spectator" );
 	}
 }
@@ -3959,37 +3917,10 @@ void ClientThink( int clientNum,usercmd_t *ucmd ) {
 	// phone jack if they don't get any for a while
 	ent->client->lastCmdTime = level.time;
 
-	if (ucmd)
-	{
+	if (ucmd) {
 		ent->client->pers.cmd = *ucmd;
 	}
 
-/* 	This was moved to clientthink_real, but since its sort of a risky change i left it here for 
-    now as a more concrete reference - BSD
-  
-	if ( clientNum < MAX_CLIENTS
-		&& ent->client->ps.m_iVehicleNum )
-	{//driving a vehicle
-		if (g_entities[ent->client->ps.m_iVehicleNum].client)
-		{
-			gentity_t *veh = &g_entities[ent->client->ps.m_iVehicleNum];
-
-			if (veh->m_pVehicle &&
-				veh->m_pVehicle->m_pPilot == (bgEntity_t *)ent)
-			{ //only take input from the pilot...
-				veh->client->ps.commandTime = ent->client->ps.commandTime;
-				memcpy(&veh->m_pVehicle->m_ucmd, &ent->client->pers.cmd, sizeof(usercmd_t));
-				if ( veh->m_pVehicle->m_ucmd.buttons & BUTTON_TALK )
-				{ //forced input if "chat bubble" is up
-					veh->m_pVehicle->m_ucmd.buttons = BUTTON_TALK;
-					veh->m_pVehicle->m_ucmd.forwardmove = 0;
-					veh->m_pVehicle->m_ucmd.rightmove = 0;
-					veh->m_pVehicle->m_ucmd.upmove = 0;
-				}
-			}
-		}
-	}
-*/
 	if ( !(ent->r.svFlags & SVF_BOT) && !g_synchronousClients.integer ) {
 		ClientThink_real( ent );
 	}
@@ -3998,25 +3929,6 @@ void ClientThink( int clientNum,usercmd_t *ucmd ) {
 	else if ( clientNum >= MAX_CLIENTS ) {
 		ClientThink_real( ent );
 	}
-
-/*	This was moved to clientthink_real, but since its sort of a risky change i left it here for 
-    now as a more concrete reference - BSD
-    
-	if ( clientNum < MAX_CLIENTS
-		&& ent->client->ps.m_iVehicleNum )
-	{//driving a vehicle
-		//run it
-		if (g_entities[ent->client->ps.m_iVehicleNum].inuse &&
-			g_entities[ent->client->ps.m_iVehicleNum].client)
-		{
-			ClientThink(ent->client->ps.m_iVehicleNum, &g_entities[ent->client->ps.m_iVehicleNum].m_pVehicle->m_ucmd);
-		}
-		else
-		{ //vehicle no longer valid?
-			ent->client->ps.m_iVehicleNum = 0;
-		}
-	}
-*/
 }
 
 
@@ -4024,6 +3936,7 @@ void G_RunClient( gentity_t *ent ) {
 	if ( !(ent->r.svFlags & SVF_BOT) && !g_synchronousClients.integer ) {
 		return;
 	}
+
 	ent->client->pers.cmd.serverTime = level.time;
 	ClientThink_real( ent );
 }

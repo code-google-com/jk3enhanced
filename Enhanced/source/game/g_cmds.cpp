@@ -1079,7 +1079,7 @@ void StopFollowing( gentity_t *ent ) {
 	ent->client->ps.isJediMaster = qfalse; // major exploit if you are spectating somebody and they are JM and you reconnect
 	//[/OLDGAMETYPES]
 	ent->client->ps.cloakFuel = 100; // so that fuel goes away after stop following them
-	ent->client->ps.jetpackFuel = JETPACK_MAXFUEL; // so that fuel goes away after stop following them
+	ent->client->ps.stats[STAT_FUEL] = JETPACK_MAXFUEL; // so that fuel goes away after stop following them
 	ent->health = ent->client->ps.stats[STAT_HEALTH] = 100; // so that you don't keep dead angles if you were spectating a dead person
 	//[/BugFix38]
 }
@@ -1851,7 +1851,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	default:
 	case SAY_ALL:
 		G_LogPrintf( "say: {%s} %s: %s\n", OJPRankString[ent->client->playerRank], ent->client->pers.netname, chatText );
-		Com_sprintf (name, sizeof(name), "%s%c%c"EC" {%s}: ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE,OJPRankString[ent->client->playerRank] );
+		Com_sprintf (name, sizeof(name), "%s%c%c"EC" : ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
 		color = COLOR_GREEN;
 		break;
 	case SAY_TEAM:
