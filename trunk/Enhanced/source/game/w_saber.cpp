@@ -7013,7 +7013,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 	}
 
 	//attacker animation stuff
-	if(mechSelf.doButterFingers)
+	if(mechSelf.doDisarm)
 	{
 		ButterFingers(&g_entities[self->client->ps.saberEntityNum], self, otherOwner, &tr);
 	}
@@ -7049,7 +7049,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 	else
 	{//Didn't go into a special animation, so do a saber lock/bounce/deflection/etc that's approprate
 		if(otherOwner && otherOwner->inuse && otherOwner->client 
-			&& !mechOther.doButterFingers
+			&& !mechOther.doDisarm
 			&& !mechOther.doHeavySlowBounce
 			&& !mechOther.doSlowBounce
 			&& !mechOther.doParry
@@ -7129,7 +7129,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 	//defender animations
 	if(otherOwner && otherOwner->inuse && otherOwner->client)
 	{
-		if(mechOther.doButterFingers)
+		if(mechOther.doDisarm)
 		{
 			ButterFingers(&g_entities[otherOwner->client->ps.saberEntityNum], otherOwner, self, &tr);
 		}
@@ -7244,12 +7244,12 @@ void WP_SaberStartMissileBlockCheck( gentity_t *self, usercmd_t *ucmd  )
 		doFullRoutine = qfalse;
 	}
 	
-	if(!WalkCheck(self)
+	/*if(!WalkCheck(self)
 	&& (BG_SaberInAttack( self->client->ps.saberMove )
 	|| PM_SaberInStart( self->client->ps.saberMove )))
 	{//this was put in to help bolts stop swings a bit. I dont knwo why it helps but it does :p
 		doFullRoutine = qfalse;
-	}
+	}*/
 
 	else if ( self->client->ps.fd.forcePowersActive&(1<<FP_LIGHTNING) )
 	{//can't block while zapping
@@ -11257,6 +11257,7 @@ void WP_SaberPositionUpdate( gentity_t *self, usercmd_t *ucmd )
 	{//racc - we've won a saber lock, indicate that we're firing.
 		self->client->ps.weaponstate = WEAPON_FIRING;
 	}
+
 	if (self->client->ps.weapon != WP_SABER ||
 		self->client->ps.weaponstate == WEAPON_RAISING ||
 		self->client->ps.weaponstate == WEAPON_DROPPING ||

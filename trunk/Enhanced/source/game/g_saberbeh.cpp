@@ -7,7 +7,7 @@ static GAME_INLINE void ClearSabMech( sabmech_t *sabmech)
 {
 	sabmech->doStun = qfalse;
 	sabmech->doKnockdown = qfalse;
-	sabmech->doButterFingers = qfalse;
+	sabmech->doDisarm = qfalse;
 	sabmech->doParry = qfalse;
 	sabmech->doSlowBounce = qfalse;
 	sabmech->doHeavySlowBounce = qfalse;
@@ -25,13 +25,15 @@ qboolean SabBeh_RollBalance(gentity_t *self, sabmech_t *mechSelf, qboolean force
 	if( self->client->ps.saberAttackChainCount >= MISHAPLEVEL_FULL )
 	{//hard mishap.
 		//mechSelf->doKnockdown = qtrue;
-		mechSelf->doButterFingers= qtrue;
+		mechSelf->doDisarm = qtrue;
 		self->client->ps.saberAttackChainCount = MISHAPLEVEL_HEAVY;
 		return qtrue;
 	}
 	
-	if(atkParry && self->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_3)
+	if(atkParry && self->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE] >= FORCE_LEVEL_3) {
 		return qfalse;//Riposte change
+	}
+
 	if( self->client->ps.fd.forcePower < DODGE_CRITICALLEVEL )//added by JRHockney to do more heavybounces like old times
 	{//heavy slow bounce
 		randNum = Q_irand(0, 99);
@@ -114,7 +116,7 @@ void G_RollBalance(gentity_t *self, gentity_t *inflictor, qboolean forceMishap)
 
 	if(SabBeh_RollBalance(self, &mechSelf, forceMishap,qfalse))
 	{//mishap occurred, animate it
-		if(mechSelf.doButterFingers)
+		if(mechSelf.doDisarm)
 		{
 			//RAFIXME - impliment lose vector handling.
 			//ButterFingers(&g_entities[self->client->ps.saberEntityNum], self, inflictor, &tr);
@@ -170,12 +172,13 @@ void SabBeh_AddBalance(gentity_t *self, sabmech_t *mechSelf, int amount, qboolea
 		switch (randNum)
 		{
 		case 0:
-			mechSelf->doButterFingers = qtrue;
+			mechSelf->doDisarm = qtrue;
 			break;
 		case 1:
 			mechSelf->doKnockdown = qtrue;
 			break;
 		};
+
 		self->client->ps.saberAttackChainCount = MISHAPLEVEL_HEAVY;
 	}
 }
@@ -352,7 +355,7 @@ void SabBeh_AttackVsBlock( gentity_t *attacker, sabmech_t *mechAttacker,
 		&& blocker->client->ps.userInt3 & (1 << FLAG_OLDSLOWBOUNCE)
 		&& attacker->client->ps.fd.saberAnimLevel == SS_TAVION)
 	{//blocker's saber was directly hit while in a slow bounce, disarm the blocker!
-		mechBlocker->doButterFingers = qtrue;
+		mechBlocker->doDisarm = qtrue;
 		blocker->client->ps.saberAttackChainCount = 0;
 #ifdef _DEBUG
 		mechBlocker->behaveMode = SABBEHAVE_BLOCKFAKED;

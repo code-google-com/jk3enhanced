@@ -18,10 +18,10 @@
 
 #define MAX_HUD_TICS 8
 
-#define FPBAR_H			65.0f
-#define FPBAR_W			13.0f
-#define FPBAR_X			565.0f
-#define FPBAR_Y			367.0f
+const float FPBAR_H		= 7.0f;
+const float FPBAR_W		= 65.0f;
+const float FPBAR_X		= 537.0f;
+const float FPBAR_Y		= 420.0f;
 
 #define DPBAR_H			65.0f
 #define DPBAR_W			13.0f
@@ -558,8 +558,8 @@ void CG_DrawForcePower( menuDef_t *menuHUD )
 	vec4_t			aColor;
 	vec4_t			cColor;
 	itemDef_t		*focusItem;
-	float			percent = ((float)cg.snap->ps.fd.forcePower/100.0f)*FPBAR_H;
-
+	float			percent = ((float)cg.snap->ps.fd.forcePower / 100.0f) * FPBAR_W;
+	
 	//color of the bar
 	aColor[0] = 0.503f;
 	aColor[1] = 0.375f;
@@ -571,7 +571,7 @@ void CG_DrawForcePower( menuDef_t *menuHUD )
 		aColor[0] = 1.0f;
 		aColor[1] = 0.0f;
 		aColor[2] = 0.0f;
-		aColor[3] = 0.8f;
+		aColor[3] = 0.5f;
 		if (cg.forceHUDNextFlashTime < cg.time)	
 		{
 			cg.forceHUDNextFlashTime = cg.time + 400;
@@ -584,7 +584,7 @@ void CG_DrawForcePower( menuDef_t *menuHUD )
 	}
 
 
-	if (percent > FPBAR_H)
+	if (percent > FPBAR_W)
 	{
 		return;
 	}
@@ -597,23 +597,32 @@ void CG_DrawForcePower( menuDef_t *menuHUD )
 	Vector4Copy(colorTable[CT_BLACK], cColor);
 	cColor[3] = 0.4f;
 
-	CG_DrawRect(FPBAR_X - 1.0f, FPBAR_Y - 1.0f, FPBAR_W + 2.0f, FPBAR_H + 2.1f, 1.0f, colorTable[CT_BLACK]);
-	CG_FillRect(FPBAR_X, FPBAR_Y+(FPBAR_H-percent), FPBAR_W, FPBAR_H-(FPBAR_H-percent), aColor);
-	CG_FillRect(FPBAR_X, FPBAR_Y, FPBAR_W, FPBAR_H-percent, cColor);
+	CG_DrawRect(FPBAR_X - 1.0f, FPBAR_Y - 1.0f, FPBAR_W + 2.1f, FPBAR_H + 2.1f, 1.0f, colorTable[CT_BLACK]);
+	CG_FillRect(FPBAR_X + ( FPBAR_W- percent), FPBAR_Y, FPBAR_W-(FPBAR_W-percent), FPBAR_H, aColor);
+	CG_FillRect((FPBAR_X), FPBAR_Y, (FPBAR_W)-percent, FPBAR_H, cColor);
+
+	//CG_DrawRect(FPBAR_X - 1.0f, FPBAR_Y - 1.0f, FPBAR_W + 2.1f, FPBAR_H + 2.1f, 1.0f, colorTable[CT_BLACK]);
+	//CG_FillRect(FPBAR_X, FPBAR_Y, FPBAR_W-(FPBAR_W-percent), FPBAR_H, aColor);
+	//CG_FillRect((FPBAR_X + percent), FPBAR_Y, (FPBAR_W)-percent, FPBAR_H, cColor);
+
+	//CG_DrawRect(FPBAR_X - 1.0f, FPBAR_Y - 1.0f, FPBAR_W + 2.0f, FPBAR_H + 2.1f, 1.0f, colorTable[CT_BLACK]);
+	//CG_FillRect(FPBAR_X, FPBAR_Y+(FPBAR_H-percent), FPBAR_W, FPBAR_H-(FPBAR_H-percent), aColor);
+	
+	//CG_FillRect(FPBAR_X, FPBAR_Y, FPBAR_W, FPBAR_H-percent, cColor);
 	
 	focusItem = Menu_FindItemByName(menuHUD, "forceamount");
 
 	if (focusItem)
 	{// Print force amount
-		trap_R_SetColor( focusItem->window.foreColor );	
+		trap_R_SetColor( colorTable[CT_WHITE] );	
 
 		CG_DrawNumField (
-			focusItem->window.rect.x, 
-			focusItem->window.rect.y, 
+			FPBAR_X - 19.0f, 
+			FPBAR_Y + 0.3f, 
 			3, 
 			cg.snap->ps.fd.forcePower, 
-			focusItem->window.rect.w, 
-			focusItem->window.rect.h, 
+			4, 
+			7, 
 			NUM_FONT_SMALL,
 			qfalse);
 	}

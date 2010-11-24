@@ -14901,13 +14901,16 @@ void CG_Player( centity_t *cent ) {
 
 					//Keep the jet fire sound looping
 					trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, 
-						trap_S_RegisterSound( "sound/effects/fire_lp" ) );
+						trap_S_RegisterSound( "sound/jetpack/thrust" ) );
 				}
 				else
 				{ //just idling
 					//FIXME: Different smaller effect for idle
 					//Play the effect
 					trap_FX_PlayEffectID(cgs.effects.mBobaJet, flamePos, flameDir, -1, -1);
+
+					trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, 
+						trap_S_RegisterSound( "sound/jetpack/idle" ) );
 				}
 
 				n++;

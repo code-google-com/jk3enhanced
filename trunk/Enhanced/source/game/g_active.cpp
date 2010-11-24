@@ -2112,31 +2112,16 @@ void ClientThink_real( gentity_t *ent ) {
 			ent->client->ps.activeForcePass = ent->client->ps.fd.forcePowerLevel[i];
 		}
 	}
-	//[SentryHack]
+
 	if(ent->client->isHacking == -100 && ent->client->ps.hackingTime <= level.time)
 	{
 		ItemUse_Sentry2(ent);
 		ent->client->isHacking = qfalse;
 	}
-	//[/SentryHack]
-	//[SentryGun]
-	if (ent->sentryDeadThink <= level.time && ent->sentryDeadThink > 0 )
-	{
-		//G_Printf("Give!\n");
-		ent->client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << HI_SENTRY_GUN);
-		ent->sentryDeadThink = 0;
-	}
-	//[/SentryGun]
-	//[Forcefield]
-	if (ent->forceFieldThink <= level.time && ent->forceFieldThink > 0)
-	{
-		ent->client->ps.stats[STAT_HOLDABLE_ITEMS] |= (1 << HI_SHIELD);
-		ent->forceFieldThink = 0;
-	}
-	//[/Forcefield]
-	if(ent->client->frozenTime <= level.time && (ent->client->ps.userInt3 & (1 << FLAG_FROZEN)))
+
+	if(ent->client->frozenTime <= level.time && (ent->client->ps.userInt3 & (1 << FLAG_FROZEN))) {
 		ent->client->ps.userInt3 &= ~(1 << FLAG_FROZEN);
-		//ent->client->ps.pm_type = PM_NORMAL;
+	}
 
 	if((ent->client->pers.cmd.buttons & BUTTON_THERMALTHROW) && !ent->client->weaponbuttonNeedRelease)
 	{

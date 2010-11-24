@@ -235,18 +235,25 @@ bgEntity_t *PM_BGEntForNum( int num )
 }
 qboolean PM_WalkingAnim( int anim );
 qboolean PM_RunningAnim( int anim );
+qboolean PM_InGetUp( playerState_t *ps );
 //[DualPistols]
 qboolean PM_CanSetWeaponReadyAnim(void)
 {
 	if ( pm->ps->pm_type != PM_JETPACK
-		&& pm->ps->weaponstate != WEAPON_FIRING
-		&& ( (!pm->cmd.forwardmove && !pm->cmd.rightmove)
-			|| ( ( pm->ps->groundEntityNum == ENTITYNUM_NONE || ((pm->cmd.buttons & BUTTON_WALKING )&&pm->cmd.forwardmove>0) ) && (PM_WalkingAnim(pm->ps->torsoAnim)||PM_RunningAnim(pm->ps->torsoAnim) ) )
-			)
-		//&& pm->ps->legsAnim != BOTH_RUN4
-		)
+		&& pm->ps->weaponstate != WEAPON_FIRING)
 	{
-		return qtrue;
+		if( (!pm->cmd.forwardmove && !pm->cmd.rightmove)) {
+			return qtrue;
+		}
+
+		if(PM_WalkingAnim(pm->ps->legsAnim) || PM_RunningAnim(pm->ps->legsAnim)) {
+			if(pm->ps->groundEntityNum == ENTITYNUM_NONE) {
+				return qtrue;
+			}
+			else if(/*(pm->cmd.buttons & BUTTON_WALKING) &&*/ pm->cmd.forwardmove > 0) {
+				return qtrue;
+			}
+		}
 	}
 
 	return qfalse;
@@ -4597,8 +4604,8 @@ static void PM_CrashLand( void ) {
 	{
 		if( delta >= 2 && !PM_InOnGroundAnim( pm->ps->legsAnim ) && !PM_InKnockDown( pm->ps ) && !BG_InRoll(pm->ps, pm->ps->legsAnim) &&
 			pm->ps->forceHandExtend == HANDEXTEND_NONE )
-		{//roll! JUMP ROLL DISABLED
-			/*int anim = PM_TryRoll();
+		{
+			int anim = PM_TryRoll();
 
 			if (PM_InRollComplete(pm->ps, pm->ps->legsAnim))
 			{
@@ -4608,7 +4615,7 @@ static void PM_CrashLand( void ) {
 				PM_SetAnim(SETANIM_BOTH,BOTH_LAND1,SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD, 150);
 				pm->ps->legsTimer = TIMER_LAND;
 				pm->ps->weaponTime=0; // 1.3
-				pm->ps->forceHandExtend = HANDEXTEND_NONE;// 1.3
+				//pm->ps->forceHandExtend = HANDEXTEND_NONE;// 1.3
 			}
 
 			if ( anim )
@@ -4620,10 +4627,10 @@ static void PM_CrashLand( void ) {
 				{ //get out of it on torso
 					pm->ps->torsoTimer = 0;
 				}
+
 				PM_SetAnim(SETANIM_BOTH,anim,SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD, 150);
 				didRoll = qtrue;
-				pm->ps->forceHandExtend = HANDEXTEND_WEAPONREADY;//1.3
-			}*/
+			}
 		}
 	}
 
@@ -4706,7 +4713,6 @@ static void PM_CrashLand( void ) {
 	VectorClear(pm->ps->velocity);
 	// start footstep cycle over
 	pm->ps->bobCycle = 0;
-	pm->ps->forceHandExtend = HANDEXTEND_WEAPONREADY;//1.3
 }
 
 /*
@@ -8017,15 +8023,16 @@ qboolean CanFireWeapon()
 	 }
 
 
-	 if(pm->ps->weapon == WP_TUSKEN_RIFLE && pm->ps->zoomMode != 1)
+	 if(pm->ps->weapon == WP_TUSKEN_RIFLE && pm->ps->zoomMode != 1) {
 		 return qfalse;
-
+	 }
 
 #ifdef QAGAME
 	//[PistolLevel3]
 	if(pm->ps->weapon == WP_BRYAR_PISTOL && ent->client->skillLevel[SK_PISTOL] != FORCE_LEVEL_3
 		&& (pm->cmd.buttons & BUTTON_ALT_ATTACK))
 		return qfalse;
+
 	if(ent->client->ps.fd.forceGripBeingGripped > level.time && g_entities[ent->client->forceAttacker].client
 		&& g_entities[ent->client->forceAttacker].client->ps.fd.forcePowerLevel[FP_GRIP] >= FORCE_LEVEL_2)
 		return qfalse;
@@ -8060,8 +8067,13 @@ static void PM_Weapon( void )
 	qboolean vehicleRocketLock = qfalse;
 	int weap = pm->ps->weapon;
 
-	if(pm->ps->userInt3 & (1<<FLAG_FROZEN))
+	if(pm->ps->userInt3 & (1<<FLAG_FROZEN)) {
 		return;
+	}
+
+	if(PM_InKnockDown(pm->ps)) {
+		return;
+	}
 
 #ifdef QAGAME
 	if (pm->ps->clientNum >= MAX_CLIENTS &&
@@ -14060,6 +14072,7 @@ qboolean PM_GettingUpFromKnockDown( float standheight, float crouchheight )
 						pm->ps->legsTimer = 0;
 					}
 					PM_SetAnim( SETANIM_BOTH, anim, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD|SETANIM_FLAG_HOLDLESS, 100 );
+
 					//RAFIXME - impliment saberBounceMove?
 					pm->ps->saberMove = LS_READY;//don't finish whatever saber anim you may have been in
 					//pm->ps->saberMove = pm->ps->saberBounceMove = LS_READY;//don't finish whatever saber anim you may have been in

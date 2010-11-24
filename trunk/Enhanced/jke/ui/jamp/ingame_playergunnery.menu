@@ -142,228 +142,254 @@
 			decoration
 		}
 		
-		// pistol title
-		itemDef 
+		stackPanel
 		{
-			name					setsk_pistol
-			group					gunpowers
-			style					0	
-			text					@OJP_MENUS_SKILL_PISTOL
-			rect					20 90 110 15
-			textalign				ITEM_ALIGN_LEFT												
-			textalignx				0
-			textaligny				0
-			font					4
-			textscale				1
-			forecolor				.2 1 .2 1
-			outlinecolor			1 .5 .5 .5
-			backcolor				0 0 0 0
-			border					0
-			bordercolor				0 0 0 0
-			visible					1 
-			decoration
-		}
-	
-		// pistol assign
-		itemDef 
-		{
-			name					setsk_pistol
-			group					gunpowers
-			style					0	
-			ownerdraw				UI_FORCE_RANK_PISTOL
-			rect					20 90 175 15
-			textalign				ITEM_ALIGN_LEFT		
-			textalignx				115
-			textaligny				-5
-			textscale				.25        
-			forecolor				.2 1 .2 1
-			backcolor				0 0 0 0
-			forecolor				1 0.2 0.2 1
-			border					0
-			bordercolor				0 0 0 0
-			descText				@OJP_MENUS_DESC_SKILL_PISTOL
-			visible					1 
-			action 
-			{ 
-				play			"sound/interface/button1.wav" ;
-			}
+			rect		20 90 110 15
+			orientation	Vertical
+			
+			stackPanel
+			{
+				rect		20 90 110 15
+				orientation	Horizontal
+			
+				// pistol title
+				itemDef 
+				{
+					name					setsk_pistol
+					group					gunpowers
+					style					0	
+					text					@OJP_MENUS_SKILL_PISTOL
+					rect					0 0 0 15
+					textalign				ITEM_ALIGN_LEFT												
+					textalignx				0
+					textaligny				0
+					font					4
+					textscale				1
+					forecolor				1 0.2 0.2 1
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					border					0
+					bordercolor				0 0 0 0
+					visible					1 
+					decoration
+				}
+			
+				// pistol assign
+				itemDef 
+				{
+					name					setsk_pistol
+					group					gunpowers
+					style					0	
+					ownerdraw				UI_FORCE_RANK_PISTOL
+					rect					20 90 175 15
+					textalign				ITEM_ALIGN_LEFT		
+					textalignx				115
+					textaligny				-5
+					textscale				.25        
+					backcolor				0 0 0 0
+					forecolor				1 0.2 0.2 1
+					border					0
+					bordercolor				0 0 0 0
+					descText				@OJP_MENUS_DESC_SKILL_PISTOL
+					visible					1 
+					action 
+					{ 
+						play			"sound/interface/button1.wav" ;
+					}
 
-			mouseenter 
-			{ 
-				setitemcolor	setsk_pistol forecolor .7 1 2. 1
+					mouseenter 
+					{ 
+						setitemcolor	setsk_pistol forecolor .7 1 2. 1
+					}
+					mouseexit 
+					{ 
+						setitemcolor	setsk_pistol forecolor .2 1 .2 1
+					}
+				}
 			}
-			mouseexit 
-			{ 
-				setitemcolor	setsk_pistol forecolor .2 1 .2 1
-			}
-		}
-		
-		// blaster title
-		itemDef 
-		{
-			name					setsk_blaster
-			group					gunpowers
-			style					0	
-			text					@OJP_MENUS_SKILL_BLASTER
-			rect					20 105 110 15
-			textalign				ITEM_ALIGN_LEFT												
-			textalignx				0
-			textaligny				0
-			font					4
-			textscale				1
-			forecolor				.2 1 .2 1
-			outlinecolor			1 .5 .5 .5
-			backcolor				0 0 0 0
-			border					0
-			bordercolor				0 0 0 0
-			visible					1 
-			decoration
-		}
-	
-		// blaster assign
-		itemDef 
-		{
-			name					setsk_blaster
-			group					gunpowers
-			style					0	
-			ownerdraw				UI_FORCE_RANK_BLASTER
-			rect					20 105 175 15
-			textalign				ITEM_ALIGN_LEFT		
-			textalignx				115
-			textaligny				-5
-			textscale				.25        
-			forecolor				.2 1 .2 1
-			backcolor				0 0 0 0
-			forecolor				1 0.2 0.2 1
-			border					0
-			bordercolor				0 0 0 0
-			descText				@OJP_MENUS_DESC_SKILL_BLASTER
-			visible					1 
-			action 
-			{ 
-				play			"sound/interface/button1.wav" ;
-			}
+			
+			stackPanel
+			{
+				rect		20 105 110 15
+				orientation	Horizontal
+				// blaster title
+				itemDef 
+				{
+					name					setsk_blaster
+					group					gunpowers
+					style					0	
+					text					@OJP_MENUS_SKILL_BLASTER
+					rect					0 0 0 15
+					textalign				ITEM_ALIGN_LEFT												
+					textalignx				0
+					textaligny				0
+					font					4
+					textscale				1
+					forecolor				.2 1 .2 1
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					border					0
+					bordercolor				0 0 0 0
+					visible					1 
+					decoration
+				}
+			
+				// blaster assign
+				itemDef 
+				{
+					name					setsk_blaster
+					group					gunpowers
+					style					0	
+					ownerdraw				UI_FORCE_RANK_BLASTER
+					rect					20 105 175 15
+					textalign				ITEM_ALIGN_LEFT		
+					textalignx				115
+					textaligny				-5
+					textscale				.25        
+					forecolor				.2 1 .2 1
+					backcolor				0 0 0 0
+					forecolor				1 0.2 0.2 1
+					border					0
+					bordercolor				0 0 0 0
+					descText				@OJP_MENUS_DESC_SKILL_BLASTER
+					visible					1 
+					action 
+					{ 
+						play			"sound/interface/button1.wav" ;
+					}
 
-			mouseenter 
-			{ 
-				setitemcolor	setsk_blaster forecolor .7 1 2. 1
+					mouseenter 
+					{ 
+						setitemcolor	setsk_blaster forecolor .7 1 2. 1
+					}
+					mouseexit 
+					{ 
+						setitemcolor	setsk_blaster forecolor .2 1 .2 1
+					}
+				}
 			}
-			mouseexit 
-			{ 
-				setitemcolor	setsk_blaster forecolor .2 1 .2 1
-			}
-		}
+			
+			stackPanel
+			{
+				rect		30 115 175 15
+				orientation	Horizontal
+				// blaster rate of fire upgrade
+				//[BlasterRateOfFireUpgrade]
+				itemDef 
+				{
+					name					blasterrateoffire
+					group					blasterrateoffireg
+					style					0	
+					ownerdraw				UI_FORCE_RANK_BLASTERRATEOFFIRE 
+					rect					0 0 0 15
+					textalign				ITEM_ALIGN_LEFT		
+					textalignx				115
+					textaligny				-5
+					textscale				.25        
+					forecolor				.2 1 .2 1
+					backcolor				0 0 0 0
+					forecolor				1 0.2 0.2 1
+					border					0
+					bordercolor				0 0 0 0
+					descText				"Increase's blaster's rate of fire."
+					visible					1
+					action 
+					{ 
+						play			"sound/interface/button1.wav" ;
+					}
 
-		// blaster rate of fire upgrade
-		//[BlasterRateOfFireUpgrade]
-		itemDef 
-		{
-			name					blasterrateoffire
-			group					blasterrateoffireg
-			style					0	
-			ownerdraw				UI_FORCE_RANK_BLASTERRATEOFFIRE 
-			rect					30 115 175 15
-			textalign				ITEM_ALIGN_LEFT		
-			textalignx				115
-			textaligny				-5
-			textscale				.25        
-			forecolor				.2 1 .2 1
-			backcolor				0 0 0 0
-			forecolor				1 0.2 0.2 1
-			border					0
-			bordercolor				0 0 0 0
-			descText				"Increase's blaster's rate of fire."
-			visible					1
-			action 
-			{ 
-				play			"sound/interface/button1.wav" ;
+					mouseenter 
+					{ 
+						setitemcolor	blasterrateoffire forecolor .7 1 2. 1
+					}
+					mouseexit 
+					{ 
+						setitemcolor	blasterrateoffire forecolor .2 1 .2 1
+					}
+				}
+				
+				itemDef 
+				{
+					name					blasterrateoffire
+					group					blasterrateoffireg
+					style					0	
+					text					"Rate of fire upgrade"
+					rect					30 115 110 15
+					textalign				ITEM_ALIGN_LEFT												
+					textalignx				0
+					textaligny				0
+					font					4
+					textscale				1
+					forecolor				.2 1 .2 1
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					border					0
+					bordercolor				0 0 0 0
+					visible					1
+					decoration
+				}
+				//[/BlasterRateOfFireUpgrade]
 			}
+			
+			stackPanel
+			{
+				rect		20 130 110 15
+				orientation Horizontal
+				// bowcaster title
+				itemDef 
+				{
+					name					setsk_bowcaster
+					group					gunpowers
+					style					0	
+					text					@OJP_MENUS_SKILL_BOWCASTER
+					rect					0 0 0 15
+					textalign				ITEM_ALIGN_LEFT												
+					textalignx				0
+					textaligny				0
+					font					4
+					textscale				1
+					forecolor				.2 1 .2 1
+					outlinecolor			1 .5 .5 .5
+					backcolor				0 0 0 0
+					border					0
+					bordercolor				0 0 0 0
+					visible					1 
+					decoration
+				}
+			
+				// bowcaster assign
+				itemDef 
+				{
+					name					setsk_bowcaster
+					group					gunpowers
+					style					0	
+					ownerdraw				UI_FORCE_RANK_BOWCASTER
+					rect					20 130 175 15
+					textalign				ITEM_ALIGN_LEFT		
+					textalignx				115
+					textaligny				-5
+					textscale				.25        
+					forecolor				.2 1 .2 1
+					backcolor				0 0 0 0
+					forecolor				1 0.2 0.2 1
+					border					0
+					bordercolor				0 0 0 0
+					descText				@OJP_MENUS_DESC_SKILL_BOWCASTER
+					visible					1 
+					action 
+					{ 
+						play			"sound/interface/button1.wav" ;
+					}
 
-			mouseenter 
-			{ 
-				setitemcolor	blasterrateoffire forecolor .7 1 2. 1
-			}
-			mouseexit 
-			{ 
-				setitemcolor	blasterrateoffire forecolor .2 1 .2 1
-			}
-		}
-		
-		itemDef 
-		{
-			name					blasterrateoffire
-			group					blasterrateoffireg
-			style					0	
-			text					"Rate of fire upgrade"
-			rect					30 115 110 15
-			textalign				ITEM_ALIGN_LEFT												
-			textalignx				0
-			textaligny				0
-			font					4
-			textscale				1
-			forecolor				.2 1 .2 1
-			outlinecolor			1 .5 .5 .5
-			backcolor				0 0 0 0
-			border					0
-			bordercolor				0 0 0 0
-			visible					1
-			decoration
-		}
-		//[/BlasterRateOfFireUpgrade]
-		
-		// bowcaster title
-		itemDef 
-		{
-			name					setsk_bowcaster
-			group					gunpowers
-			style					0	
-			text					@OJP_MENUS_SKILL_BOWCASTER
-			rect					20 130 110 15
-			textalign				ITEM_ALIGN_LEFT												
-			textalignx				0
-			textaligny				0
-			font					4
-			textscale				1
-			forecolor				.2 1 .2 1
-			outlinecolor			1 .5 .5 .5
-			backcolor				0 0 0 0
-			border					0
-			bordercolor				0 0 0 0
-			visible					1 
-			decoration
-		}
-	
-		// bowcaster assign
-		itemDef 
-		{
-			name					setsk_bowcaster
-			group					gunpowers
-			style					0	
-			ownerdraw				UI_FORCE_RANK_BOWCASTER
-			rect					20 130 175 15
-			textalign				ITEM_ALIGN_LEFT		
-			textalignx				115
-			textaligny				-5
-			textscale				.25        
-			forecolor				.2 1 .2 1
-			backcolor				0 0 0 0
-			forecolor				1 0.2 0.2 1
-			border					0
-			bordercolor				0 0 0 0
-			descText				@OJP_MENUS_DESC_SKILL_BOWCASTER
-			visible					1 
-			action 
-			{ 
-				play			"sound/interface/button1.wav" ;
-			}
-
-			mouseenter 
-			{ 
-				setitemcolor	setsk_bowcaster forecolor .7 1 2. 1
-			}
-			mouseexit 
-			{ 
-				setitemcolor	setsk_bowcaster forecolor .2 1 .2 1
+					mouseenter 
+					{ 
+						setitemcolor	setsk_bowcaster forecolor .7 1 2. 1
+					}
+					mouseexit 
+					{ 
+						setitemcolor	setsk_bowcaster forecolor .2 1 .2 1
+					}
+				}
 			}
 		}
 		
