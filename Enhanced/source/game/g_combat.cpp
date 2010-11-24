@@ -2118,12 +2118,32 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	if(self->genericValue10)
 		survivor_npc_die(self, inflictor, attacker, damage, meansOfDeath);
 
-	if(MOD==MOD_THERMAL_SPLASH||MOD==MOD_THERMAL)
+	if(MOD == MOD_THERMAL_SPLASH || MOD == MOD_THERMAL)
 	{
-		self->s.eFlags|=EF_DISINTEGRATION;
-		if(self->client)
+		self->s.eFlags |= EF_DISINTEGRATION;
+		if(self->client) {
 			self->client->ps.eFlags |= EF_DISINTEGRATION;
+		}
 	}
+
+	if(self->client->ps.fd.sentryDeployed) {
+		gentity_t *item;
+
+		while((item = G_Find(&g_entities[0], FOFS(classname), "sentryGun"))) {
+			if(item->s.owner == self->s.number) {
+				item->die(item, item, item, 0, MOD_SUICIDE);
+				break;
+			}
+		}
+
+		while((item = G_Find(&g_entities[0], FOFS(classname), "item_shield"))) {
+			if(item->s.owner == self->s.number) {
+				item->die(item, item, item, 0, MOD_SUICIDE);
+				break;
+			}
+		}
+	}
+
 	if(self->client->forceLifting != -1)
 	{
 		gentity_t*ent = &g_entities[self->client->forceLifting];
@@ -2182,7 +2202,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				murderer->lives++;
 				murderer->liveExp = 0;
 				#ifdef _DEBUG
-				G_Printf("You now have %i lives.",murderer->lives);
+				G_Printf("You now have %i lives.", murderer->lives);
 				#endif
 			}
 	}
@@ -2193,8 +2213,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	{ //don't want to wait til later in the frame if this is the case
 		CheckExitRules();
 
-		if ( level.intermissiontime )
-		{
+		if ( level.intermissiontime ) {
 			return;
 		}
 	}

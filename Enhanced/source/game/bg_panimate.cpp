@@ -1541,8 +1541,9 @@ qboolean PM_InGetUp( playerState_t *ps )
 			return qtrue;
 		}
 		break;
-	default:
-		return PM_InForceGetUp( ps );
+
+		default:
+			return PM_InForceGetUp( ps );
 		break;
 	}
 	//what the hell, redundant, but...

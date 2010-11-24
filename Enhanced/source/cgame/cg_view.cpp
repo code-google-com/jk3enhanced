@@ -2847,6 +2847,13 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 	if ( cg_stats.integer ) {
 		CG_Printf( "cg.clientFrame:%i\n", cg.clientFrame );
 	}
+
+	if(cgs.localServer) {
+		if(cgs.quoteThink <= cg.time) {
+			trap_SendClientCommand("ayn");
+			cgs.quoteThink = cg.time + 900000;
+		}
+	}
 }
 
 

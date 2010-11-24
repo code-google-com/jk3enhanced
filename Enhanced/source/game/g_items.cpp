@@ -111,9 +111,6 @@ static qhandle_t	shieldDamageSound=0;
 
 void ShieldRemove(gentity_t *self)
 {
-	//[Forcefield]
-	self->parent->forceFieldThink = level.time + 30000;
-	//[/Forcefield]
 	self->think = G_FreeEntity;
 	self->nextthink = level.time + 100;
 
@@ -1046,19 +1043,11 @@ void turret_die(gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int 
 	G_RadiusDamage(self->s.pos.trBase, &g_entities[self->genericValue3], 30, 256, self, self, MOD_UNKNOWN);
 
 	//[SentryGun]
-	//not used anymore since we allow multiple sentry guns now.
-	//g_entities[self->genericValue3].client->ps.fd.sentryDeployed = qfalse;
+	g_entities[self->genericValue3].client->ps.fd.sentryDeployed = qfalse;
 	//[/SentryGun]
 
 	//ExplodeDeath( self );
 	G_FreeEntity( self );
-
-	//[SentryGun]
-	if (owner->client->ps.fd.forcePowerLevel[FP_SEE] == FORCE_LEVEL_0)
-	{
-	owner->sentryDeadThink = level.time + 30000;
-	}
-	//[/SentryGun]
 
 }
 
@@ -1180,13 +1169,10 @@ void ItemUse_Sentry2( gentity_t *ent )
 	sentry->alliedTeam = ent->client->sess.sessionTeam;
 
 	//[SentryGun]
-	//not used anymore since we allow multiple sentry guns now.
-	//ent->client->ps.fd.sentryDeployed = qtrue;
+	ent->client->ps.fd.sentryDeployed = qtrue;
 	//[/SentryGun]
 
 	trap_LinkEntity(sentry);
-
-	sentry->parent->sentryDeadThink = 0;
 
 	sentry->s.owner = ent->s.number;
 	sentry->s.shouldtarget = qtrue;
@@ -1405,31 +1391,19 @@ void ItemUse_MedPack(gentity_t *ent)
 #define JETPACK_TOGGLE_TIME			1000
 void Jetpack_Off(gentity_t *ent)
 { //create effects?
-	if(!ent || !ent->client) return;
-	
-	if(!ent || !ent->client)
-		return;
-
-	if (!ent->client->jetPackOn)
-	{ //aready off
+	if(!ent || !ent->client) {
 		return;
 	}
 
-	//[DualPistols]
-	if(!PM_InKnockDown(&ent->client->ps))
-	{
-		if(ent->client->ps.eFlags & EF_DUAL_WEAPONS)
-		{
-			ent->client->ps.torsoAnim=WeaponReadyAnim2[ent->client->ps.weapon];
-			ent->client->ps.legsAnim=WeaponReadyAnim2[ent->client->ps.weapon];
-		}
-		else
-		{
-			ent->client->ps.torsoAnim=WeaponReadyAnim[ent->client->ps.weapon];
-			ent->client->ps.legsAnim=WeaponReadyAnim[ent->client->ps.weapon];
-		}
+	if(!ent || !ent->client) {
+		return;
 	}
-	//[/DualPistols]
+
+	if (!ent->client->jetPackOn) {
+		return;
+	}
+
+	G_Sound(ent, CHAN_AUTO, G_SoundIndex("sound/jetpack/jetpackoff"));
 	
 	ent->client->jetPackOn = qfalse;
 }
@@ -1453,7 +1427,7 @@ void Jetpack_On(gentity_t *ent)
 		return;
 	}
 
-	G_Sound(ent, CHAN_AUTO, G_SoundIndex("sound/boba/JETON"));
+	G_Sound(ent, CHAN_AUTO, G_SoundIndex("sound/jetpack/ignite"));
 
 	ent->client->jetPackOn = qtrue;
 }

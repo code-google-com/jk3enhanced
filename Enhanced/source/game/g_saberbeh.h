@@ -22,7 +22,7 @@ struct sabmech_s {
 	qboolean doKnockdown;
 
 	//Do butterFingers (disarment)
-	qboolean doButterFingers;
+	qboolean doDisarm;
 
 	//did a parry (do knockaway animation)
 	qboolean doParry;

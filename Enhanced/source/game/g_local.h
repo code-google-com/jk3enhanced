@@ -547,13 +547,6 @@ struct gentity_s {
 	qboolean	freeAfterEvent;
 	qboolean	unlinkAfterEvent;
 
-	//[SentryGun]
-	int			sentryDeadThink; //For dead sentrys
-	//[/SentryGun]
-	//[ForceField]
-	int			forceFieldThink;
-	//[/ForceField]
-
 	qboolean	physicsObject;		// if true, it can be pushed by movers and fall off edges
 									// all game items are physicsObjects, 
 	float		physicsBounce;		// 1.0 = continuous bounce, 0.0 = no bounce
@@ -2408,3 +2401,4 @@ void DisableStackTrace(void);
 
 
 
+const char* GetRandQuote();

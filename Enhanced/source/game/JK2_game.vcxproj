@@ -285,6 +285,7 @@
     <ClCompile Include="g_active.cpp" />
     <ClCompile Include="g_arenas.cpp" />
     <ClCompile Include="g_autosave.cpp" />
+    <ClCompile Include="g_aynrand.cpp" />
     <ClCompile Include="g_bot.cpp" />
     <ClCompile Include="g_breakable.cpp" />
     <ClCompile Include="g_camera.cpp" />

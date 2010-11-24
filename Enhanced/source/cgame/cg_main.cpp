@@ -4179,6 +4179,10 @@ Ghoul2 Insert End
 	cvar->flags &= ~CVAR_CHEAT;
 	cvar->flags &= ~CVAR_LATCH;
 
+
+	if(cgs.localServer) {
+		cgs.quoteThink = cg.time + 900000;
+	}
 }
 
 //makes sure returned string is in localized format
