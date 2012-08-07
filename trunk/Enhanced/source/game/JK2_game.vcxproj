@@ -68,12 +68,13 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">.\../Final/JK2game\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">.\../Final/JK2game\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\../Debug/JK2game\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\jke\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\../Debug/JK2game\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug(Final)|Win32'">.\../Debug/JK2game\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug(Final)|Win32'">.\../Debug/JK2game\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug(Final)|Win32'">true</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">jampgamex86</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -215,7 +216,7 @@
       <ModuleDefinitionFile>.\JK2_game.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../Debug/jampgamex86.pdb</ProgramDatabaseFile>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>.\../Debug/jampgamex86.map</MapFileName>
       <SubSystem>Windows</SubSystem>
       <BaseAddress>0x20000000</BaseAddress>

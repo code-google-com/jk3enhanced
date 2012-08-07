@@ -68,12 +68,13 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">.\../Final/JK2cgame\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">.\../Final/JK2cgame\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\../Debug/JK2cgame\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\jke\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\../Debug/JK2cgame\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug(Final)|Win32'">.\../Debug/JK2cgame\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug(Final)|Win32'">.\../Debug/JK2cgame\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug(Final)|Win32'">true</LinkIncremental>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cgamex86</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -222,7 +223,7 @@
       <ModuleDefinitionFile>.\JK2_cgame.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../Debug/cgamex86.pdb</ProgramDatabaseFile>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>.\../Debug/cgamex86.map</MapFileName>
       <SubSystem>Windows</SubSystem>
       <BaseAddress>0x30000000</BaseAddress>
