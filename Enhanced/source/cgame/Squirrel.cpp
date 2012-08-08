@@ -1,29 +1,28 @@
-#include "sqplus.h"
+#include "sqrat.h"
+#include "squirrel.h"
+//#pragma comment(lib,"squirrelD.lib")
+//#pragma comment(lib,"sqstdlibD.lib")
+//#pragma comment(lib,"sqplusD.lib")
 
-#pragma comment(lib,"squirrelD.lib")
-#pragma comment(lib,"sqstdlibD.lib")
-#pragma comment(lib,"sqplusD.lib")
-
-using namespace SqPlus;
+using namespace Sqrat;
 
 #include "cg_local.h"
 
-SQInteger RegisterEffect(HSQUIRRELVM v)
+HSQUIRRELVM vm;
+
+int RegisterEffect(const char* path)
 {
-	StackHandler sa(v);
-	return trap_FX_RegisterEffect(sa.GetString(2));
+	return trap_FX_RegisterEffect(path);
 }
 
-SQInteger RegisterSound(HSQUIRRELVM v)
+int RegisterSound(const char* path)
 {
-	StackHandler sa(v);
-	return trap_S_RegisterSound(sa.GetString(2));
+	return trap_S_RegisterSound(path);
 }
 
-SQInteger RegisterModel(HSQUIRRELVM v)
+int RegisterModel(const char* path)
 {
-	StackHandler sa(v);
-	return trap_R_RegisterModel(sa.GetString(2));
+	return trap_R_RegisterModel(path);
 }
 
 class E11Test
@@ -140,14 +139,13 @@ public:
 class EffectManager
 {
 public:
-	static int Register(HSQUIRRELVM v)
+	static int Register(const char* path)
 	{
-		StackHandler sa(v);
-		return trap_FX_RegisterEffect(sa.GetString(2));
+		return trap_FX_RegisterEffect(path);
 	}
 };
 
-void printfunc(HSQUIRRELVM v, const SQChar *s, ...) 
+void printFunc(HSQUIRRELVM v, const SQChar *s, ...) 
 { 
 	va_list arglist; 
 	char		text[1024];
@@ -158,17 +156,60 @@ void printfunc(HSQUIRRELVM v, const SQChar *s, ...)
 	va_end(arglist); 
 }
 
+void printErrorFunc(HSQUIRRELVM v, const SQChar *s, ...) 
+{ 
+	va_list arglist; 
+	char		text[1024];
+
+	va_start(arglist, s); 
+	vsprintf(text, s, arglist);
+	CG_Printf(va("[Script Error] %s", text));
+	va_end(arglist); 
+}
+
 void LoadSquirrel(void)
 {
-	SquirrelVM::Init();
-	sq_setprintfunc(SquirrelVM::GetVMPtr(),printfunc);
-	RegisterGlobal(RegisterEffect, "RegisterEffect");
-	RegisterGlobal(RegisterSound,"RegisterSound");
-	RegisterGlobal(RegisterModel,"RegisterModel");
-	BindConstant<int>(NULL_SOUND,"NULL_SOUND");
-	BindConstant<int>(NULL_HANDLE,"NULL_MODEL");
 
-	SQClassDef<E11Test>("E11")
+	vm = sq_open(1024);
+	sq_setprintfunc(vm, printFunc, printErrorFunc);
+	DefaultVM::Set(vm);
+
+	//RegisterGlobal(RegisterEffect, "RegisterEffect");
+	//RegisterGlobal(RegisterSound,"RegisterSound");
+	//RegisterGlobal(RegisterModel,"RegisterModel");
+
+	//BindConstant<int>(NULL_SOUND,"NULL_SOUND");
+	//BindConstant<int>(NULL_HANDLE,"NULL_MODEL");
+	ConstTable(vm)
+		.Const("NULL_SOUND", NULL_SOUND)
+		.Const("NULL_MODEL", NULL_HANDLE)
+		;
+
+	RootTable().Bind("E11", Class<E11Test>()
+		.StaticFunc("SetMuzzleEffect", &E11Test::SetMuzzleEffect)
+		.StaticFunc("SetFlashSound", &E11Test::SetFlashSound)
+		.StaticFunc("SetSelectSound", &E11Test::SetSelectSound)
+		.StaticFunc("SetFiringSound", &E11Test::SetFiringSound)
+		.StaticFunc("SetChargeSound", &E11Test::SetChargeSound)
+		.StaticFunc("SetMissileSound", &E11Test::SetMissileSound)
+		.StaticFunc("SetMissileHitSound", &E11Test::SetMissileHitSound)
+		.StaticFunc("SetAltFlashSound", &E11Test::SetAltFlashSound)
+		.StaticFunc("SetAltFiringSound", &E11Test::SetAltFiringSound)
+		.StaticFunc("SetAltChargeSound", &E11Test::SetAltChargeSound)
+		.StaticFunc("SetAltMuzzleEffect", &E11Test::SetAltMuzzleEffect)
+		.StaticFunc("SetAltMissileSound", &E11Test::SetAltMissileSound)
+		.StaticFunc("SetWallImpactEffect", &E11Test::SetWallImpactEffect)
+		.StaticFunc("SetFleshImpactEffect", &E11Test::SetFleshImpactEffect)
+		.StaticFunc("SetDroidImpactEffect", &E11Test::SetDroidImpactEffect)
+		.StaticFunc("SetShotEffect", &E11Test::SetShotEffect)
+		.StaticFunc("SetAltMissileHitSound", &E11Test::SetAltMissileHitSound)
+		.StaticFunc("SetMissileModel", &E11Test::SetMissileModel)
+		.StaticFunc("SetAltMissileModel", &E11Test::SetAltMissileModel)
+		.StaticFunc("SetMissileDLight", &E11Test::SetMissileDLight)
+		.StaticFunc("SetAltMissileDLight", &E11Test::SetAltMissileDLight)
+	);
+
+	/*SQClassDef<E11Test>("E11")
 		.staticFunc(&E11Test::SetMuzzleEffect,"SetMuzzleEffect")
 		.staticFunc(&E11Test::SetFlashSound,"SetFlashSound")
 		.staticFunc(&E11Test::SetSelectSound,"SetSelectSound")
@@ -189,21 +230,21 @@ void LoadSquirrel(void)
 		.staticFunc(&E11Test::SetMissileModel,"SetMissileModel")
 		.staticFunc(&E11Test::SetAltMissileModel,"SetAltMissileModel")
 		.staticFunc(&E11Test::SetMissileDLight,"SetMissileDLight")
-		.staticFunc(&E11Test::SetAltMissileDLight,"SetAltMissileDLight");
+		.staticFunc(&E11Test::SetAltMissileDLight,"SetAltMissileDLight");*/
 
-	SQClassDef<EffectManager>("Effect")
-		.staticFunc(&EffectManager::Register, "Register");
-
+	RootTable().Bind("Effect", Table()
+		.Func("Register", &EffectManager::Register)
+	);
 }
 
 void CloseSquirrel(void)
 {
-	SquirrelVM::Shutdown();
+	sq_close(vm);
 }
 
 void RunScript(const char* file)
 {
-	try
+	/*try
 	{
 		char gamepath[1024];
 		char path[1024];
@@ -222,18 +263,25 @@ void RunScript(const char* file)
 
 		trap_FS_FCloseFile(f);*/
 		
-		SquirrelObject sqFile = SquirrelVM::CompileScript(path);
+		/*SquirrelObject sqFile = SquirrelVM::CompileScript(path);
 		SquirrelVM::RunScript(sqFile);
 	}
 	catch(SquirrelError&e)
 	{
 		CG_Printf("Squirrel Error: %s\n",e.desc);
-	}
+	}*/
 }
 
-void RunFunction(const char* func)
+void RunFunction(const char* funcName)
 {
-	try
+	Function func(RootTable(vm), funcName);
+	if(func.IsNull()) {
+		CG_Printf("Squirrel Error: Problem loading func %s\n", funcName);
+		return;
+	}
+	
+	func.Execute();
+	/*try
 	{
 		SquirrelFunction<void> startFunc = SquirrelFunction<void>(func);
 		startFunc();
@@ -241,7 +289,7 @@ void RunFunction(const char* func)
 	catch(SquirrelError&e)
 	{
 		CG_Printf("Squirrel Error: %s\n",e.desc);
-	}
+	}*/
 }
 
 //Add RegisterSound,RegisterEffect,RegisterModel, couple different NULL_'s, and several FX_ functions
