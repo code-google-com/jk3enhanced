@@ -5,13 +5,11 @@ const float BLASTER_SPREAD2 = 0.7f;
 const int BLASTER_VELOCITY = 3450;
 const int BLASTER_DAMAGE = 80;
 
-void WP_FireBlaster( gentity_t *ent, qboolean altFire )
-{
+void WP_FireBlaster( gentity_t *ent, qboolean altFire ) {
 	WP_FireBlasterMissile( ent, muzzle, forward, altFire );
 }
 
-void WP_FireBlasterMissile( gentity_t *ent, vec3_t start, vec3_t dir, qboolean altFire )
-{
+void WP_FireBlasterMissile( gentity_t *ent, vec3_t start, vec3_t dir, qboolean altFire ) {
 	int velocity	= BLASTER_VELOCITY;
 	int	damage		= BLASTER_DAMAGE;
 	gentity_t *missile;
