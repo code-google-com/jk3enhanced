@@ -391,7 +391,7 @@
 		}
 
 		// Force Speed Title
-		itemDef 
+	/*	itemDef 
 		{
 			name					setfp_speed
 			//[ExpSys]
@@ -452,7 +452,7 @@
 				setitemcolor	setfp_speed forecolor 0.8 0.8 0.8 1
 			}
 		}
-
+*/
 		// Force Sight title
 		itemDef 
 		{
