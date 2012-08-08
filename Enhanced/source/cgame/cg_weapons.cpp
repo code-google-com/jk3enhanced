@@ -1853,7 +1853,6 @@ Caused by an EV_FIRE_WEAPON event
 */
 void CG_FireWeapon( centity_t *cent, qboolean altFire ) {
 	entityState_t *ent;
-	int				c;
 	weaponInfo_t	*weap;
 	int mishap = cg.predictedPlayerState.saberAttackChainCount;
 	ent = &cent->currentState;

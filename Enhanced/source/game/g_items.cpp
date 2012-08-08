@@ -1025,7 +1025,7 @@ void turret_die(gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int 
 		G_UseTargets( self, attacker );
 	}
 
-	if (!g_entities[self->genericValue3].inuse || !g_entities[self->genericValue3].client)
+	if (!owner->inuse || !owner->client)
 	{
 		G_FreeEntity(self);
 		return;
@@ -1040,10 +1040,10 @@ void turret_die(gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int 
 	VectorSet( self->s.angles, 0, 0, 1 );
 
 	G_PlayEffect(EFFECT_EXPLOSION_PAS, self->s.pos.trBase, self->s.angles);
-	G_RadiusDamage(self->s.pos.trBase, &g_entities[self->genericValue3], 30, 256, self, self, MOD_UNKNOWN);
+	G_RadiusDamage(self->s.pos.trBase, owner, 30, 256, self, self, MOD_UNKNOWN);
 
 	//[SentryGun]
-	g_entities[self->genericValue3].client->ps.fd.sentryDeployed = qfalse;
+	owner->client->ps.fd.sentryDeployed = qfalse;
 	//[/SentryGun]
 
 	//ExplodeDeath( self );
