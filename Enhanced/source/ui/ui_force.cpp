@@ -392,7 +392,8 @@ void UpdateForceUsed()
 		//bgForcePowerCost[FP_SABER_DEFENSE][FORCE_LEVEL_1] = 1;	
 
 		//Made Force Seeing Level 1 a pre-req to taking any additional force powers, except in the case of free sabers.
-		if(uiRank[FP_SEE].uiForcePowersRank <= FORCE_LEVEL_0)
+		//09-08-2012: commented this out for simplification
+		/* if(uiRank[FP_SEE].uiForcePowersRank <= FORCE_LEVEL_0)
 		{//can't use a saber if we're not Force sensitive!
 			uiRank[FP_SABER_OFFENSE].uiForcePowersRank=0;
 			//[StanceSelection]
@@ -422,9 +423,9 @@ void UpdateForceUsed()
 				Menu_ShowItemByName(menu, "effectfield", qfalse);
 				Menu_ShowItemByName(menu, "nosaber", qtrue);
 			}
-		}
+		} */ 
 		// Also, check if there is no saberattack.  If there isn't, there had better not be any defense or throw!
-		else if (uiRank[FP_SABER_OFFENSE].uiForcePowersRank<1)
+		if (uiRank[FP_SABER_OFFENSE].uiForcePowersRank<1)
 		//if (uiRank[FP_SABER_OFFENSE].uiForcePowersRank<1)
 		{
 			Menu_ShowItemByName(menu, "setfp_saberattack", qtrue);
@@ -455,7 +456,7 @@ void UpdateForceUsed()
 				Menu_ShowItemByName(menu, "effectfield", qfalse);
 				Menu_ShowItemByName(menu, "nosaber", qtrue);
 			}
-		}
+
 		else
 		{
 			if (menu)
