@@ -875,6 +875,7 @@ void UpdateForceUsed()
 		prevRank[i]=uiRank[i];
 	}
 }
+}
 
 //Mostly parts of other functions merged into one another.
 //Puts the current UI stuff into a string, legalizes it, and then reads it back out.
