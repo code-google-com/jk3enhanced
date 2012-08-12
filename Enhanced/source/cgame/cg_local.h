@@ -1727,8 +1727,6 @@ typedef struct {
 	char			mapURL[MAX_QPATH];  
 	//[/MapURLs]
 
-	int				quoteThink;
-
 } cgs_t;
 
 typedef struct siegeExtended_s
