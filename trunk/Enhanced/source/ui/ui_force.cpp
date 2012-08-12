@@ -359,132 +359,134 @@ void UpdateForceUsed()
 	}
 
 	menu = Menus_FindByName("ingame_playerforce");
-	// Set the cost of the saberattack according to whether its free.
-	if (ui_freeSaber.integer)
-	{	// Make saber free
-		bgForcePowerCost[FP_SABER_OFFENSE][FORCE_LEVEL_1] = 0;
-		bgForcePowerCost[FP_SABER_DEFENSE][FORCE_LEVEL_1] = 0;
-		// Make sure that we have one freebie in saber if applicable.
-		if (uiRank[FP_SABER_OFFENSE].uiForcePowersRank<1)
-		{
-			uiRank[FP_SABER_OFFENSE].uiForcePowersRank=1;
-		}
-		if (uiRank[FP_SABER_DEFENSE].uiForcePowersRank<1)
-		{
-			uiRank[FP_SABER_DEFENSE].uiForcePowersRank=1;
-		}
-		if (menu)
-		{
-			Menu_ShowItemByName(menu, "setFP_SABER_DEFENSE", qtrue);
-			Menu_ShowItemByName(menu, "setfp_saberthrow", qtrue);
-			Menu_ShowItemByName(menu, "effectentry", qtrue);
-			Menu_ShowItemByName(menu, "effectfield", qtrue);
-			Menu_ShowItemByName(menu, "nosaber", qfalse);
-		}
-	}
-	else
-	{	// Make saber normal cost
-		//[ExpSys]
-		//use defines since we're tweaking these values for the experience system.
-		bgForcePowerCost[FP_SABER_OFFENSE][FORCE_LEVEL_1] = SABER_OFFENSE_L1;
-		bgForcePowerCost[FP_SABER_DEFENSE][FORCE_LEVEL_1] = SABER_DEFENSE_L1;
-		//bgForcePowerCost[FP_SABER_OFFENSE][FORCE_LEVEL_1] = 1;
-		//bgForcePowerCost[FP_SABER_DEFENSE][FORCE_LEVEL_1] = 1;	
-
-		//Made Force Seeing Level 1 a pre-req to taking any additional force powers, except in the case of free sabers.
-		//09-08-2012: commented this out for simplification
-		/* if(uiRank[FP_SEE].uiForcePowersRank <= FORCE_LEVEL_0)
-		{//can't use a saber if we're not Force sensitive!
-			uiRank[FP_SABER_OFFENSE].uiForcePowersRank=0;
-			//[StanceSelection]
-			uiRank[NUM_FORCE_POWERS+SK_BLUESTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_REDSTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_PURPLESTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_GREENSTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_DUALSTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_STAFFSTYLE].uiForcePowersRank=0;
-			//[/StanceSelection]
-			uiRank[FP_SABERTHROW].uiForcePowersRank=0;
-			uiRank[FP_SABER_DEFENSE].uiForcePowersRank=0;
-			if (menu)
+	if(menu) {
+		// Set the cost of the saberattack according to whether its free.
+		if (ui_freeSaber.integer)
+		{	// Make saber free
+			bgForcePowerCost[FP_SABER_OFFENSE][FORCE_LEVEL_1] = 0;
+			bgForcePowerCost[FP_SABER_DEFENSE][FORCE_LEVEL_1] = 0;
+			// Make sure that we have one freebie in saber if applicable.
+			if (uiRank[FP_SABER_OFFENSE].uiForcePowersRank<1)
 			{
-				Menu_ShowItemByName(menu, "setfp_saberattack", qfalse);
-				//[StanceSelection]
-				Menu_ShowItemByName(menu, "setfp_bluestyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_redstyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_greenstyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_purplestyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_dualstyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_staffstyle", qfalse);
-				//[/StanceSelection]
-				Menu_ShowItemByName(menu, "setfp_saberdefend", qfalse);
-				Menu_ShowItemByName(menu, "setfp_saberthrow", qfalse);
-				Menu_ShowItemByName(menu, "effectentry", qfalse);
-				Menu_ShowItemByName(menu, "effectfield", qfalse);
-				Menu_ShowItemByName(menu, "nosaber", qtrue);
+				uiRank[FP_SABER_OFFENSE].uiForcePowersRank=1;
 			}
-		} */ 
-		// Also, check if there is no saberattack.  If there isn't, there had better not be any defense or throw!
-		if (uiRank[FP_SABER_OFFENSE].uiForcePowersRank<1)
-		//if (uiRank[FP_SABER_OFFENSE].uiForcePowersRank<1)
-		{
-			Menu_ShowItemByName(menu, "setfp_saberattack", qtrue);
-			//[/ExpSys]
-			//[StanceSelection]
-			uiRank[NUM_FORCE_POWERS+SK_BLUESTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_REDSTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_PURPLESTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_GREENSTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_DUALSTYLE].uiForcePowersRank=0;
-			uiRank[NUM_FORCE_POWERS+SK_STAFFSTYLE].uiForcePowersRank=0;
-			//[/StanceSelection]
-			uiRank[FP_SABER_DEFENSE].uiForcePowersRank=0;
-			uiRank[FP_SABERTHROW].uiForcePowersRank=0;
-			if (menu)
+			if (uiRank[FP_SABER_DEFENSE].uiForcePowersRank<1)
 			{
-				//[StanceSelection]
-				Menu_ShowItemByName(menu, "setfp_bluestyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_redstyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_greenstyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_purplestyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_dualstyle", qfalse);
-				Menu_ShowItemByName(menu, "setfp_staffstyle", qfalse);
-				//[/StanceSelection]
-				Menu_ShowItemByName(menu, "setfp_saberdefend", qfalse);
-				Menu_ShowItemByName(menu, "setfp_saberthrow", qfalse);
-				Menu_ShowItemByName(menu, "effectentry", qfalse);
-				Menu_ShowItemByName(menu, "effectfield", qfalse);
-				Menu_ShowItemByName(menu, "nosaber", qtrue);
+				uiRank[FP_SABER_DEFENSE].uiForcePowersRank=1;
 			}
-
-		else
-		{
 			if (menu)
 			{
-				Menu_ShowItemByName(menu, "setfp_saberdefend", qtrue);
-				if(uiForceRank >= 10)
-					Menu_ShowItemByName(menu, "setfp_bluestyle", qtrue); // soresu
-
-				if(uiForceRank >= 30)
-					Menu_ShowItemByName(menu, "setfp_redstyle", qtrue);//djem so
-
-				if(uiForceRank >= 20)
-					Menu_ShowItemByName(menu, "setfp_greenstyle", qtrue);//makashi
-
-				if(uiForceRank >= 60)
-					Menu_ShowItemByName(menu, "setfp_purplestyle", qtrue);//juyo
-				
-				if(uiForceRank >= 40)
-					Menu_ShowItemByName(menu, "setfp_dualstyle", qtrue);//Dual
-
-				if(uiForceRank >= 50)
-					Menu_ShowItemByName(menu, "setfp_staffstyle", qtrue);//Staff
-
-
+				Menu_ShowItemByName(menu, "setFP_SABER_DEFENSE", qtrue);
 				Menu_ShowItemByName(menu, "setfp_saberthrow", qtrue);
 				Menu_ShowItemByName(menu, "effectentry", qtrue);
 				Menu_ShowItemByName(menu, "effectfield", qtrue);
 				Menu_ShowItemByName(menu, "nosaber", qfalse);
+			}
+		}
+		else
+		{	// Make saber normal cost
+			//[ExpSys]
+			//use defines since we're tweaking these values for the experience system.
+			bgForcePowerCost[FP_SABER_OFFENSE][FORCE_LEVEL_1] = SABER_OFFENSE_L1;
+			bgForcePowerCost[FP_SABER_DEFENSE][FORCE_LEVEL_1] = SABER_DEFENSE_L1;
+			//bgForcePowerCost[FP_SABER_OFFENSE][FORCE_LEVEL_1] = 1;
+			//bgForcePowerCost[FP_SABER_DEFENSE][FORCE_LEVEL_1] = 1;	
+
+			//Made Force Seeing Level 1 a pre-req to taking any additional force powers, except in the case of free sabers.
+			//09-08-2012: commented this out for simplification
+			/* if(uiRank[FP_SEE].uiForcePowersRank <= FORCE_LEVEL_0)
+			{//can't use a saber if we're not Force sensitive!
+				uiRank[FP_SABER_OFFENSE].uiForcePowersRank=0;
+				//[StanceSelection]
+				uiRank[NUM_FORCE_POWERS+SK_BLUESTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_REDSTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_PURPLESTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_GREENSTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_DUALSTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_STAFFSTYLE].uiForcePowersRank=0;
+				//[/StanceSelection]
+				uiRank[FP_SABERTHROW].uiForcePowersRank=0;
+				uiRank[FP_SABER_DEFENSE].uiForcePowersRank=0;
+				if (menu)
+				{
+					Menu_ShowItemByName(menu, "setfp_saberattack", qfalse);
+					//[StanceSelection]
+					Menu_ShowItemByName(menu, "setfp_bluestyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_redstyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_greenstyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_purplestyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_dualstyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_staffstyle", qfalse);
+					//[/StanceSelection]
+					Menu_ShowItemByName(menu, "setfp_saberdefend", qfalse);
+					Menu_ShowItemByName(menu, "setfp_saberthrow", qfalse);
+					Menu_ShowItemByName(menu, "effectentry", qfalse);
+					Menu_ShowItemByName(menu, "effectfield", qfalse);
+					Menu_ShowItemByName(menu, "nosaber", qtrue);
+				}
+			} */ 
+			// Also, check if there is no saberattack.  If there isn't, there had better not be any defense or throw!
+			if (uiRank[FP_SABER_OFFENSE].uiForcePowersRank<1)
+			//if (uiRank[FP_SABER_OFFENSE].uiForcePowersRank<1)
+			{
+				Menu_ShowItemByName(menu, "setfp_saberattack", qtrue);
+				//[/ExpSys]
+				//[StanceSelection]
+				uiRank[NUM_FORCE_POWERS+SK_BLUESTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_REDSTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_PURPLESTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_GREENSTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_DUALSTYLE].uiForcePowersRank=0;
+				uiRank[NUM_FORCE_POWERS+SK_STAFFSTYLE].uiForcePowersRank=0;
+				//[/StanceSelection]
+				uiRank[FP_SABER_DEFENSE].uiForcePowersRank=0;
+				uiRank[FP_SABERTHROW].uiForcePowersRank=0;
+				if (menu)
+				{
+					//[StanceSelection]
+					Menu_ShowItemByName(menu, "setfp_bluestyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_redstyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_greenstyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_purplestyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_dualstyle", qfalse);
+					Menu_ShowItemByName(menu, "setfp_staffstyle", qfalse);
+					//[/StanceSelection]
+					Menu_ShowItemByName(menu, "setfp_saberdefend", qfalse);
+					Menu_ShowItemByName(menu, "setfp_saberthrow", qfalse);
+					Menu_ShowItemByName(menu, "effectentry", qfalse);
+					Menu_ShowItemByName(menu, "effectfield", qfalse);
+					Menu_ShowItemByName(menu, "nosaber", qtrue);
+				}
+
+			else
+			{
+				if (menu)
+				{
+					Menu_ShowItemByName(menu, "setfp_saberdefend", qtrue);
+					if(uiForceRank >= 10)
+						Menu_ShowItemByName(menu, "setfp_bluestyle", qtrue); // soresu
+
+					if(uiForceRank >= 30)
+						Menu_ShowItemByName(menu, "setfp_redstyle", qtrue);//djem so
+
+					if(uiForceRank >= 20)
+						Menu_ShowItemByName(menu, "setfp_greenstyle", qtrue);//makashi
+
+					if(uiForceRank >= 60)
+						Menu_ShowItemByName(menu, "setfp_purplestyle", qtrue);//juyo
+				
+					if(uiForceRank >= 40)
+						Menu_ShowItemByName(menu, "setfp_dualstyle", qtrue);//Dual
+
+					if(uiForceRank >= 50)
+						Menu_ShowItemByName(menu, "setfp_staffstyle", qtrue);//Staff
+
+
+					Menu_ShowItemByName(menu, "setfp_saberthrow", qtrue);
+					Menu_ShowItemByName(menu, "effectentry", qtrue);
+					Menu_ShowItemByName(menu, "effectfield", qtrue);
+					Menu_ShowItemByName(menu, "nosaber", qfalse);
+				}
 			}
 		}
 	}
