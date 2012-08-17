@@ -23,6 +23,11 @@ const float FPBAR_W		= 65.0f;
 const float FPBAR_X		= 537.0f;
 const float FPBAR_Y		= 420.0f;
 
+const float MBAR_HEIGHT		= 7.0f;
+const float MBAR_WIDTH		= 65.0f;
+const float MBAR_X		= 537.0f;
+const float MBAR_Y		= 410.0f;
+
 #define DPBAR_H			65.0f
 #define DPBAR_W			13.0f
 #define DPBAR_X			538.0f
@@ -285,12 +290,28 @@ void CG_DrawArmorTicMethod(menuDef_t *menuHUD)
 	}
 }
 
+void CG_DrawBalanceBarMethod(centity_t *cent, menuDef_t *menuHUD) {
+	int				i;
+	float mishapPercent = (((float)cg.snap->ps.saberAttackChainCount / MISHAPLEVEL_MAX) * MBAR_WIDTH) ;
+	int x = MBAR_X;
+	int y = MBAR_Y;
+	int width = MBAR_WIDTH;
+	int height = MBAR_HEIGHT;
+
+	if (!menuHUD) {
+		return;
+	}
+
+	CG_DrawRect(x - 1.0f, y - 1.0f, width + 2.1f, height + 2.1f, 1.0f, colorTable[CT_BLACK]);
+	CG_FillRect(x + ( width - mishapPercent), y, width-(width-mishapPercent), FPBAR_H, colorTable[CT_RED]);
+}
 
 //Balance
 void CG_DrawBalanceTicMethod(centity_t *cent, menuDef_t *menuHUD)
 {
 	itemDef_t		*focusItem;
 	int				i;
+	float mishapPercent = ((float)cg.snap->ps.saberAttackChainCount / MISHAPLEVEL_MAX) * 100.0f;
 
 	if (!menuHUD)
 	{//Can we find the menu?
@@ -551,7 +572,6 @@ void CG_DrawSaberStyleTicMethod(centity_t *cent, menuDef_t *menuHUD)
 
 }
 
-
 //Force
 void CG_DrawForcePower( menuDef_t *menuHUD )
 {
@@ -599,7 +619,12 @@ void CG_DrawForcePower( menuDef_t *menuHUD )
 
 	CG_DrawRect(FPBAR_X - 1.0f, FPBAR_Y - 1.0f, FPBAR_W + 2.1f, FPBAR_H + 2.1f, 1.0f, colorTable[CT_BLACK]);
 	CG_FillRect(FPBAR_X + ( FPBAR_W- percent), FPBAR_Y, FPBAR_W-(FPBAR_W-percent), FPBAR_H, aColor);
-	CG_FillRect((FPBAR_X), FPBAR_Y, (FPBAR_W)-percent, FPBAR_H, cColor);
+	//CG_FillRect((FPBAR_X), FPBAR_Y, (FPBAR_W)-percent, FPBAR_H, cColor);
+
+	//if(lostPercent > 0) {
+		CG_FillRect(FPBAR_X, FPBAR_Y, FPBAR_W-percent, FPBAR_H, colorTable[CT_RED]);
+		//CG_FillRect((FPBAR_X), FPBAR_Y, (FPBAR_W)-lostPercent, FPBAR_H, colorTable[CT_RED]);
+	//}
 
 	//CG_DrawRect(FPBAR_X - 1.0f, FPBAR_Y - 1.0f, FPBAR_W + 2.1f, FPBAR_H + 2.1f, 1.0f, colorTable[CT_BLACK]);
 	//CG_FillRect(FPBAR_X, FPBAR_Y, FPBAR_W-(FPBAR_W-percent), FPBAR_H, aColor);
@@ -614,10 +639,14 @@ void CG_DrawForcePower( menuDef_t *menuHUD )
 
 	if (focusItem)
 	{// Print force amount
-		trap_R_SetColor( colorTable[CT_WHITE] );	
+		Vector4Copy(colorTable[CT_BLACK], cColor);
+
+		cColor[3] = ((float)cg.snap->ps.fd.forcePower / 100.0f) * -0.75f;
+
+		trap_R_SetColor( cColor );	
 
 		CG_DrawNumField (
-			FPBAR_X - 19.0f, 
+			FPBAR_X -1.0f, 
 			FPBAR_Y + 0.3f, 
 			3, 
 			cg.snap->ps.fd.forcePower, 
@@ -748,7 +777,8 @@ void JKEHUD(centity_t *cent)
 			}*/
 
 			CG_DrawForcePower(menuHUD);
-			CG_DrawBalanceTicMethod(cent, menuHUD);
+			//CG_DrawBalanceTicMethod(cent, menuHUD);
+			CG_DrawBalanceBarMethod(cent, menuHUD);
 
 			// Draw ammo tics or saber style
 			if ( cent->currentState.weapon == WP_SABER ) {
