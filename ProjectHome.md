@@ -1,0 +1,1 @@
+JK3 Enhanced is a mod for Star Wars : Jedi Knight Jedi Academy that aims to create a fun team based gameplay
